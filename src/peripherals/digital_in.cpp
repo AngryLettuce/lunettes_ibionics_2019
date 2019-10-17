@@ -15,7 +15,7 @@ Digital_in::Digital_in(int pin) {
 }
 
 int Digital_in::read() {
-    digitalRead(pin_number);
+    return digitalRead(pin_number);
 }
 
 void Digital_in::set_pull(int pull) {

@@ -3,10 +3,13 @@
  *  @author Patrice Buteau
  *  @version 9 octobre 2019
  */
+#include <iostream>
+ 
 #include <wiringPi.h>
 
 #include "button.h"
 
+using namespace std;
 
 Button::Button(int button) :
  	input(button) {
@@ -18,6 +21,7 @@ Button::Button(int button) :
 
 int Button::scan_button() {
 	int scan_result = input.read();
+	//cout << scan_result << endl;
 	if(scan_result == HIGH) {
 		button_state = NOT_PRESSED;
 	}
