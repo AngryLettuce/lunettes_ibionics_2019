@@ -25,6 +25,6 @@ for j = 1:resolution(2)
     end
 end 
 
-%save(strcat('angles', '_', num2str(resolution(1)), '_', num2str(resolution(2)), '.mat'), 'angleMat', '-v7.3')
+save(strcat('angles', '_', num2str(resolution(1)), '_', num2str(resolution(2)), '.mat'), 'angleMat', '-v7.3')
 end
 

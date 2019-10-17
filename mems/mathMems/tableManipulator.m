@@ -10,7 +10,7 @@ close all;
 resolution = [400, 400];
 
 % Wall position relative to MEMS
-Zmw = 1000;
+Zmw = 270;
 
 % Laser's position relative to MEMS
 Xlm = 0;
@@ -35,7 +35,7 @@ yCoord = wallcorners(1,2);
 zCoord = wallcorners(1,3);
 
 %% angle matrix and XYZ matrix
-XYZ_precision = 0.01;
+XYZ_precision = 0.05;
 tic
 
 % Gen  XYZ tables

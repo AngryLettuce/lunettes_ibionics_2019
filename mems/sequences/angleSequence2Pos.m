@@ -7,7 +7,7 @@ function posSequence = angleSequence2Pos(sequence)
 
     Vlm = [Xlm Ylm Zlm];
 
-    Zmw = 1000;
+    Zmw = 330;
 
     posSequence = zeros(length(sequence), 2);
     %Default Normal of the mems

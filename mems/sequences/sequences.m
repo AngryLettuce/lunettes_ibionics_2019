@@ -1,7 +1,7 @@
 clc;
 clearvars -except table angleMat;
 close all;
-addpath('../')
+addpath('../mathMems')
 
 %% load table
 
