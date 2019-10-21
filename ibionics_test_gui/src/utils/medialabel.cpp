@@ -1,4 +1,4 @@
-#include "medialabel.h"
+#include "includes/utils/medialabel.h"
 
 
 MediaLabel::MediaLabel(QWidget *parent, QString filename) : QLabel(parent)

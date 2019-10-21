@@ -7,11 +7,11 @@
 #include <QLabel>
 #include <QPixmap>
 
-#include "memstab.h"
-#include "lasertab.h"
-#include "eyetab.h"
-#include "worldtab.h"
-#include "gpiotab.h"
+#include "includes/tabs/memstab.h"
+#include "includes/tabs/lasertab.h"
+#include "includes/tabs/eyetab.h"
+#include "includes/tabs/worldtab.h"
+#include "includes/tabs/gpiotab.h"
 
 class MainWindow : public QMainWindow
 {

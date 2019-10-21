@@ -1,4 +1,4 @@
-#include "gpiotab.h"
+#include "includes/tabs/gpiotab.h"
 
 GPIOTab::GPIOTab(QWidget *parent) : QWidget(parent)
 {

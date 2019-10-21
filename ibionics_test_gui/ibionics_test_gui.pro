@@ -15,24 +15,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += \
+    src/ \
+    src/tabs/ \
+    src/utils/ \
+    includes/ \
+    includes/tabs/ \
+    includes/utils/
+
+
 SOURCES += \
-    eyetab.cpp \
-    gpiotab.cpp \
-    lasertab.cpp \
     main.cpp \
-    mainwindow.cpp \
-    medialabel.cpp \
-    memstab.cpp \
-    worldtab.cpp
+    src/mainwindow.cpp \
+    src/tabs/eyetab.cpp \
+    src/tabs/gpiotab.cpp \
+    src/tabs/lasertab.cpp \
+    src/tabs/memstab.cpp \
+    src/tabs/worldtab.cpp \
+    src/utils/medialabel.cpp
 
 HEADERS += \
-    eyetab.h \
-    gpiotab.h \
-    lasertab.h \
-    mainwindow.h \
-    medialabel.h \
-    memstab.h \
-    worldtab.h
+    includes/mainwindow.h \
+    includes/tabs/eyetab.h \
+    includes/tabs/gpiotab.h \
+    includes/tabs/lasertab.h \
+    includes/tabs/memstab.h \
+    includes/tabs/worldtab.h \
+    includes/utils/medialabel.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
