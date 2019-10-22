@@ -12,7 +12,6 @@
 
 #include "mems.h"
 #include "../peripherals/spi.h"
-#include "lookUpTable.h"
 
 #define FULL_RESET 0x280001
 #define ENABLE_INTERNAL_REF 0x380001

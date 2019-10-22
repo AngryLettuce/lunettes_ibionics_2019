@@ -20,8 +20,10 @@ using namespace std;
 int main() {
     wiringPiSetupGpio(); // TODO : Should be done once in gpio.h
     Laser_pos_control laser_pos_control;
-    laser_pos_control.draw_circluarLoop(5);
-    laser_pos_control.manual_mode();
+    //laser_pos_control.mems.stop();
+    //laser_pos_control.draw_rectangle(400);
+    laser_pos_control.set_max_angles();
+    laser_pos_control.draw_rectangle(400);
     //laser_pos_control.set_max_angles();
     //short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
 	//laser_pos_control.recalculateAnglesMat(angleMat);

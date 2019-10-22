@@ -10,7 +10,7 @@
 #include <wiringPi.h>
 
 #include "laser_pos_control.h"
-#include "lookUpTable.h"
+#include "../../mathMems/lookUpTable.h"
 #include "../../sequences/infinity_LUT.h"
 #include "../../sequences/closingRect_LUT.h"
 #include "../../sequences/rectangle_LUT.h"
@@ -225,6 +225,7 @@ void Laser_pos_control::draw_rectangle(int time_delay) {
 	for (int i = 0; i < RECTANGLE_SEQUENCE_LENGTH; i++) {
 		angles = getAngles(rectangle_LUT[i][0], rectangle_LUT[i][1]);
 		mems.send_angle_x(*angles++);
+		//cout << *angles << endl;
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
@@ -235,6 +236,7 @@ void Laser_pos_control::draw_Closingrectangle(int time_delay) {
 	for (int i = 0; i < CLOSING_RECTANGLE_LENGTH; i++) {
 		angles = getAngles(closingRect_LUT[i][0], closingRect_LUT[i][1]);
 		mems.send_angle_x(*angles++);
+		//cout << *angles << endl;
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
@@ -255,6 +257,7 @@ void Laser_pos_control::draw_infinity(int time_delay) {
 	for (int i = 0; i < INFINITY_SEQUENCE_LENGTH; i++) {
 		angles = getAngles(infinity_LUT[i][0], infinity_LUT[i][1]);
 		mems.send_angle_x(*angles++);
+		//cout << *angles << endl;
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	} 
@@ -265,7 +268,7 @@ void Laser_pos_control::draw_circluarLoop(int time_delay){
 	for (int i = 0; i < CIRCULAR_LOOP_SEQUENCE_LENGTH; i++) {
 		angles = getAngles(circularLoop_LUT[i][0], circularLoop_LUT[i][1]);
 		mems.send_angle_x(*angles++);
-		cout << *angles << endl;
+		//cout << *angles << endl;
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	} 
@@ -286,20 +289,22 @@ float* Laser_pos_control::manual_mode() {
             return angles;
         }
         if(button3.scan_button() == PRESSED) {
-		cout << "BUTTON 3!" << endl;
+		//cout << "BUTTON 3!" << endl;
             axis ^= 1;
         }
         if(axis) {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
                 //cout << "BUTTON 1!" << endl;
 		angle_x += momentum;
+		
 		cout << angle_x << endl;
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
             }
             else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
                 //cout << "BUTTON 2!" << endl;
-		angle_x -= momentum; 
+		angle_x -= momentum;
+		cout << angle_x << endl; 
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
             }
