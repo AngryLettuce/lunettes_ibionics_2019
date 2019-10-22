@@ -14,7 +14,7 @@
 #include "laser.h"
 #include "button.h"
 
-#define CAMERA_RESOLUTION 400
+#define CAMERA_RESOLUTION 200
 
 using namespace arma;
 
