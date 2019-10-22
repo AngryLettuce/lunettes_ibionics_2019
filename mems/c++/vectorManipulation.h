@@ -4,7 +4,7 @@
 #include <armadillo>
 #include <vector>
 
-#define CAMERA_RESOLUTION 400
+#define CAMERA_RESOLUTION 200
 
 using namespace arma;
 

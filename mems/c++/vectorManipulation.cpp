@@ -6,14 +6,14 @@
 
 
 
-#define MEMS_TILT_ANGLE 22
+#define MEMS_TILT_ANGLE 21
 #define X_LASER_TO_MEMS 0
 #define Y_LASER_TO_MEMS 0
 #define Z_LASER_TO_MEMS 18.5
 #define Z_MEMS_TO_WALL 1000
-#define RESOLUTION_WIDTH 400
-#define RESOLUTION_HEIGHT 400
-#define XYZ_MATRIX_PRECISION 0.05
+#define ZN 47.65947
+#define XYZ_MATRIX_PRECISION 0.1
+//#define XYZ_MATRIX_LENGTH 23989
 // Laser's position relative to MEMS (in mm)
 double constexpr VLM[3] = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS };
 
@@ -35,7 +35,7 @@ void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][
 void memsNorm(double xAngle, double yAngle, rowvec& norm) {
 
 	// MEMS default position(22 degrees, Zn = 45)
-	double Zn = 45;
+	double Zn = ZN;
 	double Xn = -Zn / tan((180.0 - 90.0 + xAngle) * M_PI / 180.0);
 	double Yn = -Zn / tan((180.0 - 90.0 - MEMS_TILT_ANGLE + yAngle) * M_PI / 180.0);
 
@@ -172,6 +172,7 @@ void genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMat[][CAMERA_RESOLUTI
 			//angleMat[j][i][1] = short(angles[1] * 1000);
 		};
 	}
+
 }
 
 void findAngles(double x, double y, mat XYZ_Matrix, double* angles) {
