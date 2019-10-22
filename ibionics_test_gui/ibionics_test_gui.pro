@@ -32,6 +32,7 @@ SOURCES += \
     src/tabs/lasertab.cpp \
     src/tabs/memstab.cpp \
     src/tabs/worldtab.cpp \
+    src/utils/gpioview.cpp \
     src/utils/medialabel.cpp
 
 HEADERS += \
@@ -41,7 +42,9 @@ HEADERS += \
     includes/tabs/lasertab.h \
     includes/tabs/memstab.h \
     includes/tabs/worldtab.h \
+    includes/utils/gpioview.h \
     includes/utils/medialabel.h
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -49,4 +52,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    images/pepe.png
+    images/eye.jpg

@@ -2,9 +2,7 @@
 #define EYETAB_H
 
 #include <Qt>
-//#include <QSize>
-#include <QTabWidget> //Keep?
-#include <QWidget>
+#include <QTabWidget>
 #include <QLayout>
 #include <QCamera>
 #include <QCameraInfo>

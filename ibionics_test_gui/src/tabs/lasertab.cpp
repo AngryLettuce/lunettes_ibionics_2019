@@ -13,7 +13,6 @@ LaserTab::LaserTab(QWidget *parent) : QWidget(parent)
     laserOff = new QPushButton(this);
     laserOff->setText("Laser OFF");
 
-
     //Intensity
     QLabel *intenLbl = new QLabel("Intensity: ",this);
     QComboBox *intenCombo = new QComboBox();
@@ -43,13 +42,10 @@ void LaserTab::laserEventHandler()
     //qDebug("From Laser Tab");
     QPushButton *releasedBtn = qobject_cast<QPushButton*>(sender());
     if(releasedBtn->text() == "Laser ON")
-    {
         qDebug("Laser Turned ON");
-    }
+
     else if(releasedBtn->text() == "Laser OFF")
-    {
         qDebug("Laser Turned OFF");
-    }
 
 }
 

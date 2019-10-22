@@ -46,8 +46,8 @@ void MainWindow::tabChange(int currentIndex)
 
     if (currentIndex == memsIndex)
     {
-        gpioTab->spi2->setStyleSheet("QLabel{background-color: springgreen;}");
-        gpioTab->memsEnable->setStyleSheet("QLabel{background-color: springgreen;}");
+        gpioTab->spi2->inUse(true);
+        gpioTab->memsEnable->inUse(true);
 
         worldCamTab->viewfinder->close();
         eyeCamTab->viewfinder->close();
@@ -57,13 +57,13 @@ void MainWindow::tabChange(int currentIndex)
 
     else if (currentIndex == laserIndex)
     {
-        gpioTab->laserEnable->setStyleSheet("QLabel{background-color: springgreen;}");
-        gpioTab->laserEnCal->setStyleSheet("QLabel{background-color: springgreen;}");
-        gpioTab->laserEnChannelLow->setStyleSheet("QLabel{background-color: springgreen;}");
-        gpioTab->laserEnChannelMid->setStyleSheet("QLabel{background-color: springgreen;}");
-        gpioTab->laserEnChannelHigh->setStyleSheet("QLabel{background-color: springgreen;}");
-        gpioTab->laserRegen->setStyleSheet("QLabel{background-color: springgreen;}");
-        gpioTab->i2c0->setStyleSheet("QLabel{background-color: springgreen;}");
+        gpioTab->laserEnable->inUse(true);
+        gpioTab->laserEnCal->inUse(true);
+        gpioTab->laserEnChannelLow->inUse(true);
+        gpioTab->laserEnChannelMid->inUse(true);
+        gpioTab->laserEnChannelHigh->inUse(true);
+        gpioTab->laserRegen->inUse(true);
+        gpioTab->i2c0->inUse(true);
 
         worldCamTab->viewfinder->close();
         eyeCamTab->viewfinder->close();
@@ -74,7 +74,7 @@ void MainWindow::tabChange(int currentIndex)
     else if(currentIndex == eyeCamIndex)
     {
 
-        gpioTab->i2c1->setStyleSheet("QLabel{background-color: springgreen;}");
+        gpioTab->i2c1->inUse(true);
         worldCamTab->camera->stop();
         worldCamTab->viewfinder->close();
         eyeCamTab->viewfinder->show();
@@ -84,7 +84,7 @@ void MainWindow::tabChange(int currentIndex)
 
     else if(currentIndex == worldCamIndex)
     {
-        gpioTab->i2c1->setStyleSheet("QLabel{background-color: springgreen;}");
+        gpioTab->i2c1->inUse(true);
         eyeCamTab->camera->stop();
         worldCamTab->viewfinder->show();
         eyeCamTab->viewfinder->close();
