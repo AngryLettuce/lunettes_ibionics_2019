@@ -1,7 +1,9 @@
 clc;
 clearvars -except table angleMat;
 close all;
-addpath('../')
+%addpath('../')
+
+resolution = 200;
 
 %% load table
 
@@ -19,10 +21,10 @@ step = 10;
 % bottomBorder = squeeze(angleMat(400, 2:step:end, :));
 % rightBorder = squeeze(angleMat(end-1:-step:1, 400, :));
 % topBorder = squeeze(angleMat(1, end-1:-step:2, :));
-leftBorder = [0:step:399 ; zeros(1,400/step)];
-bottomBorder = [ones(1, 400/step) * 399 ;  0:step:399];
-rightBorder = [399:-step:0 ; ones(1,400/step) * 399];
-topBorder = [zeros(1, 400/step) ; 399:-step:0];
+leftBorder = [0:step:resolution-1 ; zeros(1,resolution/step)];
+bottomBorder = [ones(1, resolution/step) * (resolution-1) ;  0:step:resolution-1];
+rightBorder = [resolution-1:-step:0 ; ones(1,resolution/step) * (resolution-1)];
+topBorder = [zeros(1, resolution/step) ; resolution-1:-step:0];
 
 rectSequence = horzcat(leftBorder, bottomBorder, rightBorder, topBorder);
 rectSequence = rectSequence';
@@ -33,14 +35,14 @@ rectSequence = rectSequence';
 
 spiralRes = 100;
 % given values
-pos = [200 200 ;    % startpoint
-       340 340 ] ;  % endpoint
+pos = [resolution/2 resolution/2 ;    % startpoint
+       resolution-20 resolution-20 ] ;  % endpoint
 nturns = 3 ;    % number of turns (integer value)
 % engine
 dp = diff(pos,1,1) ;
 R = hypot(dp(1), dp(2)) ;
 phi0 = atan2(dp(2), dp(1)) ;
-phi = linspace(0, nturns*2*pi, spiralRes) ; % 10000 = resolution
+phi = linspace(0, nturns*2*pi, spiralRes) ; 
 r = linspace(0, R, numel(phi)) ;
 x = round(pos(1,1) + r .* cos(phi + phi0)) ;
 y = round(pos(1,2) + r  .* sin(phi + phi0)) ;
@@ -59,7 +61,7 @@ end
 %% closing rectangle sequence 
 closingRectSequence = [];
 step = 10;
-for closing = [0:40:399]
+for closing = [0:resolution/10:resolution-1]
 
 %     leftBorder = squeeze(angleMat(1 + closing:step:end-closing, 1 + closing, :));
 %     bottomBorder = squeeze(angleMat(400 - closing, 2 +closing:step:end - closing, :));
@@ -67,10 +69,10 @@ for closing = [0:40:399]
 %     topBorder = squeeze(angleMat(1 + closing, end-1 - closing:-step:2 + closing, :));
 %     tempClosingRectSequence = double(vertcat(leftBorder, bottomBorder, rightBorder, topBorder)) / 1000;
 %     closingRectSequence = vertcat(closingRectSequence, tempClosingRectSequence);    leftBorder = squeeze(angleMat(1 + closing:step:end-closing, 1 + closing, :));
-        leftBorder = [0 + closing:step:399-closing ;  ones(1, (400 - 2 * closing)/step) *(0 + closing)];
-        bottomBorder = [(ones(1, (400- 2*closing)/step) * (399 - closing)) ;  (0 +closing:step:399 - closing)];
-        rightBorder = [399 - closing:-step:0 + closing ;  ones(1, (400- 2*closing)/step) * (399 - closing)];
-        topBorder = [ones(1,(400-2*closing)/step) * (0 + closing); 399 - closing:-step:0 + closing];
+        leftBorder = [0 + closing:step:(resolution-1)-closing ;  ones(1, (resolution - 2 * closing)/step) *(0 + closing)];
+        bottomBorder = [(ones(1, (resolution- 2*closing)/step) * ((resolution-1) - closing)) ;  (0 +closing:step:(resolution-1) - closing)];
+        rightBorder = [(resolution-1) - closing:-step:0 + closing ;  ones(1, (resolution- 2*closing)/step) * ((resolution-1) - closing)];
+        topBorder = [ones(1,(resolution-2*closing)/step) * (0 + closing); (resolution-1) - closing:-step:0 + closing];
         tempClosingRectSequence = horzcat(leftBorder, bottomBorder, rightBorder, topBorder);
         closingRectSequence = horzcat(closingRectSequence, tempClosingRectSequence);
 
@@ -83,8 +85,8 @@ a = 1;
 x = (a .* sqrt(2) .*  cos(t)) ./ (sin(t).^2 + 1);
 y = (a .* sqrt(2) .*  cos(t) .* sin(t)) ./  (sin(t).^2 + 1);
 
-x = x / (max(x) /175) + 200;
-y = y / (max(y) /150) + 200;
+x = x / (max(x) /(resolution/2 -12.5)) + resolution/2;
+y = y / (max(y) /(resolution/2 -25)) + resolution/2;
 
 
 x = round(x);
@@ -104,8 +106,8 @@ end
 
 %% circularLoop Sequence
 t = 0:pi/100:2*pi;
-x = (sin(2*t) + 1) * 200;
-y = (sin(3*t) + 1) * 200;
+x = (sin(2*t) + 1) * (resolution/2);
+y = (sin(3*t) + 1) * (resolution/2);
 
 x = round(x);
 y = round(y);
@@ -127,8 +129,8 @@ a = 4.23;
 t = -15:0.05:20;
 x = ((a+b)*cos(t) - b*cos((a/b +1) * t));
 y = ((a+b)*sin(t) - b*sin((a/b +1) * t));
-x = round(mat2gray(x) * 400);
-y = round(mat2gray(y) * 400);
+x = round(mat2gray(x) * resolution);
+y = round(mat2gray(y) * resolution);
 flowerSequence = (zeros(length(x), 2));
 % x(x==0) = 1;
 % y(y==0) = 1;
@@ -152,32 +154,32 @@ sequence2LookUp('circularLoop_LUT.h', 'circularLoop_LUT', circularLoopSequence);
 %% plot index sequence
 figure()
 plot(rectSequence(:,1), rectSequence(:,2), '.')
-axis([0 400 0 400])
+axis([0 resolution 0 resolution])
 title('Simple Rectangle')
 
 figure()
 plot(closingRectSequence(:,1), closingRectSequence(:,2), '.')
-axis([0 400 0 400])
+axis([0 resolution 0 resolution])
 title('Closing Rectangle')
 
 figure()
 plot(spiralSequence(:,1), spiralSequence(:,2), '.')
-axis([0 400 0 400])
+axis([0 resolution 0 resolution])
 title('Spiral')
 
 figure()
 plot(infinitySequence(:,1), infinitySequence(:,2), '.')
-axis([0 400 0 400])
+axis([0 resolution 0 resolution])
 title('infinity')
 
 figure()
 plot(circularLoopSequence(:,1), circularLoopSequence(:,2), '.')
-axis([0 400 0 400])
+axis([0 resolution 0 resolution])
 title('Circular Loop')
 
 figure()
 plot(flowerSequence(:,1), flowerSequence(:,2), '.')
-axis([0 400 0 400])
+axis([0 resolution 0 resolution])
 title('Flower Sequence')
 
 
