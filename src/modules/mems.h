@@ -45,6 +45,12 @@ public:
 	 * @brief Disable the mems mirror and put it back at zero in x and y.
 	 */
 	void stop();
+	/**
+	 * @brief Saturate the angle inside the safe range.
+	 * @param angle angle (deg).
+	 * @return the saturated angle.
+	 */
+	float saturate_angle(float angle);
 private:
 	Spi spi;
 	Digital_out enable;
@@ -68,6 +74,12 @@ private:
 	 * @return the corresponding voltage diff.
 	 */
 	float angle_to_voltage_diff(float angle);
+	/**
+	 * @brief Convert a voltage diff to an angle.
+	 * @param voltage_diff the voltage diff to convert (V).
+	 * @return the corresponding angle.
+	 */
+	float voltage_diff_to_angle(float voltage_diff);
 	/**
 	 * @brief Itinialize the DAC.
 	 */

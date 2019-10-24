@@ -19,6 +19,7 @@
 #define ENABLE_SOFT_LDAC 0x300000
 #define VBIAS 80
 #define V_DIFF_MAX 120
+#define V_DIFF_TO_ANGLE_FACTOR 0.046
 
 #define SPI_CHANNEL 0
 #define GPIO39_MEMS_EN_DRV 39
@@ -103,11 +104,20 @@ void Mems::send_voltage_diff_y(float voltage_diff) {
 float Mems::saturate_voltage_diff(float voltage_diff) {
   if(voltage_diff > V_DIFF_MAX) {
 	  voltage_diff = V_DIFF_MAX;
-  }
-  else if(voltage_diff < -V_DIFF_MAX) {
+  } else if(voltage_diff < -V_DIFF_MAX) {
 	  voltage_diff = -V_DIFF_MAX;
   }
   return voltage_diff;
+}
+
+float Mems::saturate_angle(float angle) {
+	float max_angle = voltage_diff_to_angle(V_DIFF_MAX);
+	if(angle > max_angle) {
+		angle = max_angle;
+	} else if(angle < -max_angle) {
+		angle = -max_angle;
+	}
+	return angle;
 }
 
 void Mems::stop() {
@@ -119,7 +129,11 @@ void Mems::stop() {
 }
 
 float Mems::angle_to_voltage_diff(float angle) {
-	return 1/0.046*angle;
+	return angle/V_DIFF_TO_ANGLE_FACTOR;
+}
+
+float Mems::voltage_diff_to_angle(float voltage_diff) {
+	return voltage_diff*V_DIFF_TO_ANGLE_FACTOR;
 }
 
 void Mems::send_angle_x(float angle) {

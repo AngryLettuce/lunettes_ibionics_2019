@@ -65,7 +65,6 @@ void Laser_pos_control::recalculateAnglesMat(short angleMat[][CAMERA_RESOLUTION]
 }
 
 void Laser_pos_control::memsNorm(double xAngle, double yAngle, rowvec &norm) {
-	
 	// MEMS default position(22 degrees, Zn = 45)
 	double Zn = Z_MEMS_TO_PCB;
 	double Xn = -Zn / tan((180.0 - 90.0 + xAngle) * M_PI / 180.0);
@@ -77,7 +76,6 @@ void Laser_pos_control::memsNorm(double xAngle, double yAngle, rowvec &norm) {
 }
 
 void Laser_pos_control::findReflectedVector(rowvec norm, rowvec &reflectVect) {
-
 	double lenC;
 	lenC = (VLM[0] * norm[0] + VLM[1] * norm[1] + VLM[2] * norm[2]) / (pow(norm[0], 2) + pow(norm[1], 2) + pow(norm[2], 2));
 
@@ -149,7 +147,7 @@ void Laser_pos_control::genPixMat(mat wallCorners, mat &pixMat) {
 
 	rowvec width  = linspace<rowvec>(minY, maxY, resolution);
 	rowvec height = linspace<rowvec>(maxX, minX, resolution);
-	
+
 	double deltaWidth = abs(width[1] - width[0]);
 	double deltaHeight = abs(height[1] - height[0]);
 
@@ -169,14 +167,12 @@ int Laser_pos_control::calcArraySize() {
 }
 
 void Laser_pos_control::genXYZ_Matrix(mat &XYZ_Matrix) {
-
 	rowvec N(3);
 	rowvec reflectVector(3);
 	int matrixIterator = 0;
 
 	for (double i = maxAngles[0]; i < maxAngles[1]; i += XYZ_MATRIX_PRECISION) {
 		for (double j = maxAngles[2]; j < maxAngles[3]; j += XYZ_MATRIX_PRECISION) {
-			
 			memsNorm(i, j, N);
 			findReflectedVector(N, reflectVector);
 			reflectVector.insert_cols(3, rowvec{ i,j });
@@ -260,7 +256,7 @@ void Laser_pos_control::draw_infinity(int time_delay) {
 		//cout << *angles << endl;
 		mems.send_angle_y(*angles);
 		delay(time_delay);
-	} 
+	}
 }
 
 void Laser_pos_control::draw_circluarLoop(int time_delay){
@@ -271,7 +267,7 @@ void Laser_pos_control::draw_circluarLoop(int time_delay){
 		//cout << *angles << endl;
 		mems.send_angle_y(*angles);
 		delay(time_delay);
-	} 
+	}
 }
 
 float* Laser_pos_control::manual_mode() {
@@ -282,6 +278,10 @@ float* Laser_pos_control::manual_mode() {
     int axis = 0;
     float angle_x = 0;
     float angle_y = 0;
+
+	mems.send_angle_x(0);
+	mems.send_angle_x(0);
+
     while(1) {
         if(button4.scan_button() == PRESSED) {
             angles[0] = angle_x;
@@ -289,43 +289,36 @@ float* Laser_pos_control::manual_mode() {
             return angles;
         }
         if(button3.scan_button() == PRESSED) {
-		//cout << "BUTTON 3!" << endl;
             axis ^= 1;
         }
         if(axis) {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
-                //cout << "BUTTON 1!" << endl;
-		angle_x += momentum;
-		
-		cout << angle_x << endl;
+				angle_x += momentum;
+				angle_x = saturate_angle(angle_x);
+				cout << angle_x << endl;
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
-            }
-            else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
-                //cout << "BUTTON 2!" << endl;
-		angle_x -= momentum;
-		cout << angle_x << endl; 
+            } else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
+				angle_x -= momentum;
+				angle_x = saturate_angle(angle_x);
+				cout << angle_x << endl;
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
-            }
-            else {
+            } else {
                 momentum = delta_angle;
             }
-        }
-        else {
+        } else {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
-                //cout << "BUTTON 1!" << endl;
-		angle_y += momentum; 
+				angle_y += momentum;
+				angle_y = saturate_angle(angle_y);
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
-            }
-            else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
-                //cout << "BUTTON 2!" << endl;
-		angle_y -= momentum; 
+			} else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
+				angle_y -= momentum;
+				angle_y = saturate_angle(angle_y);
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
-            }
-            else {
+            } else {
                 momentum = delta_angle;
             }
         }
@@ -342,8 +335,7 @@ void Laser_pos_control::set_max_angles() {
         if(corner == 0) {
             maxAngles[0] = angles[0];
             maxAngles[3] = angles[1];
-        }
-        else {
+        } else {
             maxAngles[1] = angles[0];
             maxAngles[2] = angles[1];
         }
