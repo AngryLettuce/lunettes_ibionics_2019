@@ -21,8 +21,8 @@ INCLUDEPATH += \
     src/utils/ \
     includes/ \
     includes/tabs/ \
-    includes/utils/
-
+    includes/utils/ \
+    lib/
 
 SOURCES += \
     main.cpp \
@@ -46,6 +46,7 @@ HEADERS += \
     includes/utils/medialabel.h
 
 
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
@@ -53,3 +54,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     images/eye.jpg
+
+unix:!macx: LIBS += -L$$PWD/lib/ -lwiringPi
+
+INCLUDEPATH += $$PWD/.
+DEPENDPATH += $$PWD/.
