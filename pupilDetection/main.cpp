@@ -12,11 +12,11 @@ using namespace cv;
 int main() {
 
     cout<<"testing eye detection"<<endl;
-    cv::Mat image = cv::imread("eye1.jpeg");
+    cv::Mat image = cv::imread("eye3.jpeg");
     Mat dst;
     Point cord;
 
-    HOUGHPARAMS hough;
+    HOUGHCIRCLE hough;
 
     cord = hough.applyHoughMethod(image,dst,1, 2.0, 2.0, 100,100, 1, 1);
 

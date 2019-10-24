@@ -1,6 +1,6 @@
 //
 // Created by Michel Gauthier on 10/19/19
-// Circle detection by hough circle
+//
 //
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -11,12 +11,14 @@
 using namespace std;
 using namespace cv;
 
-void HOUGHPARAMS::HoughParams(double param1,double param2,int minRadius,int maxRadius,double minDist)
+void HOUGHCIRCLE::HoughCircle(double param1,double param2,int minRadius,int maxRadius,double minDist)
 {
     //assigner variable du constructeur
+
 }
 
-Point HOUGHPARAMS::applyHoughMethod(Mat image,Mat output,int method, double dp, double minDist, double param1,double param2, int minRadius, int maxRadius)
+//ajouter slider pour modifier parametre et afficher le point detecter
+Point HOUGHCIRCLE::applyHoughMethod(Mat image,Mat output,int method, double dp, double minDist, double param1,double param2, int minRadius, int maxRadius)
 {
     Point cord;
 
@@ -41,13 +43,14 @@ Point HOUGHPARAMS::applyHoughMethod(Mat image,Mat output,int method, double dp, 
         circle(image, center, 3, Scalar(255,255,255), -1, 8, 0 );
         cord = center;
         // draw the circle outline
-        circle( image, center, radius, Scalar(0,0,255), 3, 8, 0 );
+        circle( image, center, radius, Scalar(255,255,0), 3, 8, 0 );
     }
-    /*
-    namedWindow( "circles", 1 );
+
+    resize(image, image, Size(image.cols/2, image.rows/2));
+    namedWindow( "circles", WINDOW_AUTOSIZE);
     imshow( "circles", image );
     waitKey(0);
-    */
+
     return cord;
 
 }

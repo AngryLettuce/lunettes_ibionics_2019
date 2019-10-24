@@ -12,7 +12,7 @@
 using namespace std;
 using namespace cv;
 
-class HOUGHPARAMS
+class HOUGHCIRCLE
 {
     double minDist;
     double  param1 = 100;
@@ -20,13 +20,13 @@ class HOUGHPARAMS
     Mat tmps;
 
 
-    void HoughParams(double param1,double param2,int minRadius,int maxRadius,double minDist);
+    void HoughCircle(double param1,double param2,int minRadius,int maxRadius,double minDist);
 
     public:
 
 
 
     Point applyHoughMethod(cv::Mat image,cv::Mat output,int method, double dp, double minDist, double param1,double param2, int minRadius, int maxRadius);
-
+    //enlever des param et utiliser celle du constructuer,variable priver
 };
 #endif //PUPILDETECTION_HOUGHCIRCLE_H
