@@ -21,7 +21,7 @@
 #define V_DIFF_MAX 120
 #define V_DIFF_TO_ANGLE_FACTOR 0.046
 
-#define SPI_CHANNEL 0
+#define SPI_CHANNEL 2
 #define GPIO39_MEMS_EN_DRV 39
 #define GPIO4_MEMS_FILT_X 4 //this should be a 60kHz clock
 //#define GPIO21_MEMS_FILT_Y 21  //this should be a 60kHz clock
@@ -29,7 +29,7 @@
 //-----------------------------------------
 
 Mems::Mems() :
-	spi(SPI_CHANNEL, 500000, 1),
+	spi(SPI_CHANNEL, 250000, 1),
 	enable(GPIO39_MEMS_EN_DRV),
 	clock(GPIO4_MEMS_FILT_X),
 	cs(GPIO7_MEMS_CS) {
