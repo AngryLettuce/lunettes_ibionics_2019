@@ -7,7 +7,7 @@ angleMat = int16(zeros(resolution(2), resolution(1),2));
 
 for j = 1:resolution(2)
     for i = 1:resolution(1)
-        
+        pixMat(i,2)
         modules = (pixMat(j,1)-xyzMat(:,1)).^2 + (pixMat(i,2)-xyzMat(:,2)).^2;
         [M, I] = min(modules);
         aX = xyzMat(I, 4);

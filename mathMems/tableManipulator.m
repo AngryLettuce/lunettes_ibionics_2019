@@ -8,7 +8,7 @@ close all;
 
 %video resolution
 resolution = [11, 11];
-XYZ_precision = 0.01;
+XYZ_precision = 0.1;
 memsAngle = 21;
 
 % Wall position relative to MEMS

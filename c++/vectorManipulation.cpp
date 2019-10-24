@@ -9,13 +9,13 @@
 #define MEMS_TILT_ANGLE 21
 #define X_LASER_TO_MEMS 0
 #define Y_LASER_TO_MEMS 0
-#define Z_LASER_TO_MEMS 18.5
+#define Z_LASER_TO_MEMS -1
 #define Z_MEMS_TO_WALL 1000
-#define ZN 47.65947
+//#define ZN 47.65947
 #define XYZ_MATRIX_PRECISION 0.1
 //#define XYZ_MATRIX_LENGTH 23989
 // Laser's position relative to MEMS (in mm)
-double constexpr VLM[3] = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS };
+rowvec VLM = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS };
 
 void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][2]) {
 	mat wallCorners(4, 3);
@@ -29,9 +29,10 @@ void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][
 	genXYZ_Matrix(maxAngles, XYZ_Matrix);
 
 	genAnglesTable(pixMat, XYZ_Matrix, angleMat);
+
 }
 
-
+/*
 void memsNorm(double xAngle, double yAngle, rowvec& norm) {
 
 	// MEMS default position(22 degrees, Zn = 45)
@@ -65,7 +66,8 @@ void findReflectedVector(rowvec norm, rowvec& reflectVect) {
 		reflectVect[i] = vRef[i] * fact;
 	}
 }
-
+*/
+/*
 double* getAngle(int xCoord, int yCoord) {
 	static double XYAngles[2];
 
@@ -74,34 +76,25 @@ double* getAngle(int xCoord, int yCoord) {
 
 	return XYAngles;
 }
-
+*/
 
 void findWallCorners(rowvec maxAngles, mat& wallCorners) {
-	//mat wallCorners(4, 3);
-	double Xn, Yn;
-	rowvec reflectVector1(3);
-	rowvec reflectVector2(3);
-	rowvec reflectVector3(3);
-	rowvec NULC(3);
-	NULC[2] = Z_MEMS_TO_WALL;
 
-	NULC[0] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 + maxAngles[1]));
-	NULC[1] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 - MEMS_TILT_ANGLE + maxAngles[3]));
-	findReflectedVector(NULC, reflectVector1);
+	float x, y;
+	//top left (min aX, min aY)
+	angle2XY(maxAngles[0], maxAngles[2], x, y);
+	wallCorners.row(0) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//left bottom (min aX, max aY)
+	angle2XY(maxAngles[0], maxAngles[3], x, y);
+	wallCorners.row(1) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//right bottom (max aX, max aY)
+	angle2XY(maxAngles[1], maxAngles[3], x, y);
+	wallCorners.row(2) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//top left (max aX, min aY)
+	angle2XY(maxAngles[1], maxAngles[2], x, y);
+	wallCorners.row(3) = rowvec{ x, y, Z_MEMS_TO_WALL };
 
-	NULC[0] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0));
-	NULC[1] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 - MEMS_TILT_ANGLE + maxAngles[2]));
-	findReflectedVector(NULC, reflectVector2);
 
-	NULC[0] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 + maxAngles[0]));
-	NULC[1] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 - MEMS_TILT_ANGLE + maxAngles[3]));
-	findReflectedVector(NULC, reflectVector3);
-
-	wallCorners.row(0) = rowvec{ reflectVector1[0],reflectVector1[1], Z_MEMS_TO_WALL };
-	wallCorners.row(1) = rowvec{ reflectVector1[0],reflectVector2[1], Z_MEMS_TO_WALL };
-	wallCorners.row(2) = rowvec{ reflectVector3[0],reflectVector2[1], Z_MEMS_TO_WALL };
-	wallCorners.row(3) = rowvec{ reflectVector3[0],reflectVector3[1], Z_MEMS_TO_WALL };
-	//return wallCorners;
 }
 
 void genPixMat(mat wallCorners, mat& pixMat) {
@@ -116,8 +109,8 @@ void genPixMat(mat wallCorners, mat& pixMat) {
 	minY = wallCorners.col(1).min();
 	maxY = wallCorners.col(1).max();
 
-	rowvec width = linspace<rowvec>(minY, maxY, resolution);
-	rowvec height = linspace<rowvec>(maxX, minX, resolution);
+	rowvec width = linspace<rowvec>(minX, maxX, resolution);
+	rowvec height = linspace<rowvec>(maxY, minY, resolution);
 
 	double deltaWidth = abs(width[1] - width[0]);
 	double deltaHeight = abs(height[1] - height[0]);
@@ -129,6 +122,7 @@ void genPixMat(mat wallCorners, mat& pixMat) {
 
 	pixMat.row(0) = width;
 	pixMat.row(1) = height;
+
 }
 
 
@@ -139,42 +133,43 @@ int calcArraySize(rowvec maxAngles) {
 
 void genXYZ_Matrix(rowvec maxAngles, mat& XYZ_Matrix) {
 
-	rowvec N(3);
+	//rowvec N(3);
 	rowvec reflectVector(3);
 	int matrixIterator = 0;
-
+	float x, y;
 	for (double i = maxAngles[0]; i < maxAngles[1]; i += XYZ_MATRIX_PRECISION) {
 		for (double j = maxAngles[2]; j < maxAngles[3]; j += XYZ_MATRIX_PRECISION) {
 
-			memsNorm(i, j, N);
-			findReflectedVector(N, reflectVector);
-			reflectVector.insert_cols(3, rowvec{ i,j });
-			XYZ_Matrix.row(matrixIterator) = reflectVector;
+			//memsNorm(i, j, N);
+			//findReflectedVector(N, reflectVector);
+			//reflectVector.insert_cols(3, rowvec{ i,j });
+			angle2XY(i, j, x, y);
+			XYZ_Matrix.row(matrixIterator) = rowvec{ x, y, Z_MEMS_TO_WALL, i, j };
+			//XYZ_Matrix.row(matrixIterator) = reflectVector;
 			matrixIterator++;
-			reflectVector.shed_cols(3, 4);
+			//reflectVector.shed_cols(3, 4);
 		}
 	}
 }
 
 void genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMat[][CAMERA_RESOLUTION][2]) {
-	double angles[2];
+	//double angles[2];
 	mat modules;
 	uword minIndex;
 	for (int j = 0; j < CAMERA_RESOLUTION; j++) {
 		for (int i = 0; i < CAMERA_RESOLUTION; i++) {
-			modules = (pow(XYZ_Matrix.col(0) - pixMat(1, j), 2) + pow(XYZ_Matrix.col(1) - pixMat(0, 1), 2));
+			modules = (pow(XYZ_Matrix.col(0) - pixMat(0, j), 2) + pow(XYZ_Matrix.col(1) - pixMat(1, i), 2));
 			minIndex = modules.index_min();
-
 			//findAngles(pixMat(1,j), pixMat(0,i), XYZ_Matrix, angles);
-			angleMat[j][i][0] = short(XYZ_Matrix(minIndex, 3) * 1000);
-			angleMat[j][i][1] = short(XYZ_Matrix(minIndex, 4) * 1000);
+			angleMat[i][j][0] = short(XYZ_Matrix(minIndex, 3) * 1000);
+			angleMat[i][j][1] = short(XYZ_Matrix(minIndex, 4) * 1000);
 			//angleMat[j][i][0] = short(angles[0] * 1000);
 			//angleMat[j][i][1] = short(angles[1] * 1000);
 		};
 	}
 
 }
-
+/*
 void findAngles(double x, double y, mat XYZ_Matrix, double* angles) {
 	int xTol = 8;
 	int yTol = 15;
@@ -195,37 +190,28 @@ void findAngles(double x, double y, mat XYZ_Matrix, double* angles) {
 	angles[1] = tempMat(middleIdx, 4);
 
 }
+*/
 
+void angle2XY(float aX, float aY, float &x, float &y) {
+	float theta_x = deg2rad(aX);
+	float theta_y = deg2rad(aY);
+	float alpha = deg2rad(MEMS_TILT_ANGLE) - theta_x + M_PI / 2;
+	float beta =  -theta_y;
+	float zn = sin(alpha)*cos(beta);
+	float xn = cos(alpha)*cos(beta);
+	float yn = sin(beta);
+	rowvec N = { xn, yn, zn };
+	N = N / sqrt(pow(xn, 2) + pow(yn, 2) + pow(zn, 2));
 
-//bool sortcol(const std::vector<double>& v1, const std::vector<double>& v2) {
-//	return v1[1] < v2[1];
-//}
+	//reflexion
+	rowvec reflexion = VLM-2*(VLM[0] *N[0] + VLM[1] * N[1] + VLM[2] * N[2]) * N;
+	float k = Z_MEMS_TO_WALL / reflexion[2];
+	x = k * reflexion[0];
+	y = k * reflexion[1];
 
+}
 
-//
-//template<typename T>
-//std::vector<double> linspace(T start_in, T end_in, int num_in)
-//{
-//	std::vector<double> linspaced;
-//
-//	double start = static_cast<double>(start_in);
-//	double end = static_cast<double>(end_in);
-//	double num = static_cast<double>(num_in);
-//
-//	if (num == 0) { return linspaced; }
-//	if (num == 1)
-//	{
-//		linspaced.push_back(start);
-//		return linspaced;
-//	}
-//
-//	double delta = (end - start) / (num - 1);
-//
-//	for (int i = 0; i < num - 1; ++i)
-//	{
-//		linspaced.push_back(start + delta * i);
-//	}
-//	linspaced.push_back(end); // I want to ensure that start and end
-//							  // are exactly the same as the input
-//	return linspaced;
-//}
+double deg2rad(float angle) {
+	return (angle * M_PI / 180);
+}
+

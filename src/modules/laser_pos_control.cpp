@@ -21,11 +21,8 @@
 #define MEMS_TILT_ANGLE 21
 #define X_LASER_TO_MEMS 0
 #define Y_LASER_TO_MEMS 0
-#define Z_LASER_TO_MEMS 18.5
-#define Z_MEMS_TO_PCB 47.65947
+#define Z_LASER_TO_MEMS -1
 #define Z_MEMS_TO_WALL 1000
-//#define RESOLUTION_WIDTH 400
-//#define RESOLUTION_HEIGHT 400
 #define XYZ_MATRIX_PRECISION 0.1
 #define RECTANGLE_SEQUENCE_LENGTH 1596
 #define SPIRAL_RESOLUTION 400
@@ -36,7 +33,7 @@
 using namespace std;
 
 // Laser's position relative to MEMS (in mm)
-double constexpr VLM[3] = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS }; // TODO: put inside class?
+rowvec VLM = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS }; // TODO: put inside class?
 
 
 Laser_pos_control::Laser_pos_control() :
@@ -64,73 +61,21 @@ void Laser_pos_control::recalculateAnglesMat(short angleMat[][CAMERA_RESOLUTION]
 	genAnglesTable(pixMat, XYZ_Matrix, angleMat);
 }
 
-void Laser_pos_control::memsNorm(double xAngle, double yAngle, rowvec &norm) {
-	// MEMS default position(22 degrees, Zn = 45)
-	double Zn = Z_MEMS_TO_PCB;
-	double Xn = -Zn / tan((180.0 - 90.0 + xAngle) * M_PI / 180.0);
-	double Yn = -Zn / tan((180.0 - 90.0 - MEMS_TILT_ANGLE + yAngle) * M_PI / 180.0);
-
-	norm[0] = Xn;
-	norm[1] = Yn;
-	norm[2] = Zn;
-}
-
-void Laser_pos_control::findReflectedVector(rowvec norm, rowvec &reflectVect) {
-	double lenC;
-	lenC = (VLM[0] * norm[0] + VLM[1] * norm[1] + VLM[2] * norm[2]) / (pow(norm[0], 2) + pow(norm[1], 2) + pow(norm[2], 2));
-
-	double vPar[3];
-	double vPer[3];
-	double vRef[3];
-	double fact;
-	for (int i = 0; i < 3; i++) {
-		vPar[i] = lenC * norm[i];
-		vPer[i] = VLM[i] - vPar[i];
-		vRef[i] = vPar[i] - vPer[i];
-	}
-
-	fact = Z_MEMS_TO_WALL / vRef[2];
-
-	for (int i = 0; i < 3; i++) {
-		reflectVect[i] = vRef[i] * fact;
-	}
-}
-
-float *Laser_pos_control::getAngles(int xCoord, int yCoord) {
-	static float XYAngles[2];
-
-	XYAngles[0] = float(angleTable[xCoord][yCoord][0]) / 1000;
-	XYAngles[1] = float(angleTable[xCoord][yCoord][1]) / 1000;
-
-	return XYAngles;
-}
 
 void Laser_pos_control::findWallCorners(mat &wallCorners) {
-	//mat wallCorners(4, 3);
-	double Xn, Yn;
-	rowvec reflectVector1(3);
-	rowvec reflectVector2(3);
-	rowvec reflectVector3(3);
-	rowvec NULC(3);
-	NULC[2] = Z_MEMS_TO_WALL;
-
-	NULC[0] = -Z_MEMS_TO_WALL / tan(M_PI/180 * (180.0 - 90.0 + maxAngles[1]));
-	NULC[1] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 - MEMS_TILT_ANGLE + maxAngles[3]));
-	findReflectedVector(NULC, reflectVector1);
-
-	NULC[0] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0));
-	NULC[1] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 - MEMS_TILT_ANGLE + maxAngles[2]));
-	findReflectedVector(NULC, reflectVector2);
-
-	NULC[0] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 + maxAngles[0]));
-	NULC[1] = -Z_MEMS_TO_WALL / tan(M_PI / 180 * (180.0 - 90.0 - MEMS_TILT_ANGLE + maxAngles[3]));
-	findReflectedVector(NULC, reflectVector3);
-
-	wallCorners.row(0) = rowvec {reflectVector1[0],reflectVector1[1], Z_MEMS_TO_WALL };
-	wallCorners.row(1) = rowvec {reflectVector1[0],reflectVector2[1], Z_MEMS_TO_WALL };
-	wallCorners.row(2) = rowvec {reflectVector3[0],reflectVector2[1], Z_MEMS_TO_WALL };
-	wallCorners.row(3) = rowvec {reflectVector3[0],reflectVector3[1], Z_MEMS_TO_WALL };
-	//return wallCorners;
+	float x, y;
+	//top left (min aX, min aY)
+	angle2XY(maxAngles[0], maxAngles[2], x, y);
+	wallCorners.row(0) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//left bottom (min aX, max aY)
+	angle2XY(maxAngles[0], maxAngles[3], x, y);
+	wallCorners.row(1) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//right bottom (max aX, max aY)
+	angle2XY(maxAngles[1], maxAngles[3], x, y);
+	wallCorners.row(2) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//top left (max aX, min aY)
+	angle2XY(maxAngles[1], maxAngles[2], x, y);
+	wallCorners.row(3) = rowvec{ x, y, Z_MEMS_TO_WALL };
 }
 
 void Laser_pos_control::genPixMat(mat wallCorners, mat &pixMat) {
@@ -145,8 +90,8 @@ void Laser_pos_control::genPixMat(mat wallCorners, mat &pixMat) {
 	minY = wallCorners.col(1).min();
 	maxY = wallCorners.col(1).max();
 
-	rowvec width  = linspace<rowvec>(minY, maxY, resolution);
-	rowvec height = linspace<rowvec>(maxX, minX, resolution);
+	rowvec width = linspace<rowvec>(minX, maxX, resolution);
+	rowvec height = linspace<rowvec>(maxY, minY, resolution);
 
 	double deltaWidth = abs(width[1] - width[0]);
 	double deltaHeight = abs(height[1] - height[0]);
@@ -167,33 +112,32 @@ int Laser_pos_control::calcArraySize() {
 }
 
 void Laser_pos_control::genXYZ_Matrix(mat &XYZ_Matrix) {
-	rowvec N(3);
 	rowvec reflectVector(3);
 	int matrixIterator = 0;
-
+	float x, y;
 	for (double i = maxAngles[0]; i < maxAngles[1]; i += XYZ_MATRIX_PRECISION) {
 		for (double j = maxAngles[2]; j < maxAngles[3]; j += XYZ_MATRIX_PRECISION) {
-			memsNorm(i, j, N);
-			findReflectedVector(N, reflectVector);
-			reflectVector.insert_cols(3, rowvec{ i,j });
-			XYZ_Matrix.row(matrixIterator) = reflectVector;
+			angle2XY(i, j, x, y);
+			XYZ_Matrix.row(matrixIterator) = rowvec{ x, y, Z_MEMS_TO_WALL, i, j };
 			matrixIterator++;
-			reflectVector.shed_cols(3,4);
 		}
 	}
 }
 
 void Laser_pos_control::genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMat[][CAMERA_RESOLUTION][2]) {
-	double angles[2];
+	mat modules;
+	uword minIndex;
 	for (int j = 0; j < CAMERA_RESOLUTION; j++) {
 		for (int i = 0; i < CAMERA_RESOLUTION; i++) {
-			findAngles(pixMat(1,j), pixMat(0,i), XYZ_Matrix, angles);
-			angleMat[j][i][0] = short(angles[0] * 1000);
-			angleMat[j][i][1] = short(angles[1] * 1000);
+			modules = (pow(XYZ_Matrix.col(0) - pixMat(0, j), 2) + pow(XYZ_Matrix.col(1) - pixMat(1, i), 2));
+			minIndex = modules.index_min();
+			angleMat[i][j][0] = short(XYZ_Matrix(minIndex, 3) * 1000);
+			angleMat[i][j][1] = short(XYZ_Matrix(minIndex, 4) * 1000);
 		};
 	}
 }
 
+/*
 void Laser_pos_control::findAngles(double x, double y, mat XYZ_Matrix, double *angles) {
 	int xTol = 8;
 	int yTol = 15;
@@ -214,7 +158,30 @@ void Laser_pos_control::findAngles(double x, double y, mat XYZ_Matrix, double *a
 	angles[1] = tempMat(middleIdx,4);
 
 }
+*/
 
+void Laser_pos_control::angle2XY(float aX, float aY, float &x, float &y) {
+	float theta_x = deg2rad(aX);
+	float theta_y = deg2rad(aY);
+	float alpha = deg2rad(MEMS_TILT_ANGLE) - theta_x + M_PI / 2;
+	float beta = -theta_y;
+	float zn = sin(alpha)*cos(beta);
+	float xn = cos(alpha)*cos(beta);
+	float yn = sin(beta);
+	rowvec N = { xn, yn, zn };
+	N = N / sqrt(pow(xn, 2) + pow(yn, 2) + pow(zn, 2));
+
+	//reflexion
+	rowvec reflexion = VLM - 2 * (VLM[0] * N[0] + VLM[1] * N[1] + VLM[2] * N[2]) * N;
+	float k = Z_MEMS_TO_WALL / reflexion[2];
+	x = k * reflexion[0];
+	y = k * reflexion[1];
+
+}
+
+double Laser_pos_control::deg2rad(float angle) {
+	return (angle * M_PI / 180);
+}
 
 void Laser_pos_control::draw_rectangle(int time_delay) {
 	float *angles;
