@@ -60,11 +60,6 @@ private:
     Button button3;
     Button button4;
     rowvec maxAngles;
-	float *getAngles(int xCoord, int yCoord);
-
-    void memsNorm(double xAngle, double yAngle, rowvec &norm);
-
-    void findReflectedVector(rowvec norm, rowvec &reflectVect);
 
     void findWallCorners(mat &wallCorners);
 
@@ -76,7 +71,11 @@ private:
 
     void genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMat[][CAMERA_RESOLUTION][2]);
 
-    void findAngles(double x, double y, mat XYZ_Matrix, double *angles);
+    //void findAngles(double x, double y, mat XYZ_Matrix, double *angles);
+
+	void angle2XY(float aX, float aY, float &x, float &y);
+
+	double deg2rad(float angle);
 
     int calcArraySize();
 };

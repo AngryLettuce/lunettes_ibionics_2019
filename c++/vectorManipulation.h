@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lookUpTable.h"
+//#include "lookUpTable.h"
 #include <armadillo>
 #include <vector>
 
@@ -10,20 +10,25 @@ using namespace arma;
 
 void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][2]);
 
-void memsNorm(double xAngle, double yAngle, rowvec& norm);
+//void memsNorm(double xAngle, double yAngle, rowvec& norm);
 
-void findReflectedVector(rowvec norm, rowvec& reflectVect);
+//void findReflectedVector(rowvec norm, rowvec& reflectVect);
 
 void findWallCorners(rowvec maxAngles, mat& wallCorners);
 
 void genPixMat(mat wallCorners, mat& pixMat);
 
-double* getAngle(int xCoord, int yCoord);
+//double* getAngle(int xCoord, int yCoord);
 
 void genXYZ_Matrix(rowvec maxAngles, mat& XYZ_Matrix);
 
 void genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMat[][CAMERA_RESOLUTION][2]);
-void findAngles(double x, double y, mat XYZ_Matrix, double* angles);
+
+//void findAngles(double x, double y, mat XYZ_Matrix, double* angles);
+
+void angle2XY(float aX, float aY, float &x, float &y);
+
+double deg2rad(float angle);
 
 int calcArraySize(rowvec maxAngles);
 
