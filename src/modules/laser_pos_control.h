@@ -65,7 +65,7 @@ private:
 
     void genPixMat(mat wallCorners, mat &pixMat);
 
-    double *getAngle(int xCoord, int yCoord);
+    float *getAngles(int xCoord, int yCoord);
 
     void genXYZ_Matrix(mat &XYZ_Matrix);
 
