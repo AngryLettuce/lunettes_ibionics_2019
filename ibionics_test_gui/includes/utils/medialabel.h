@@ -7,7 +7,7 @@
 #include <QMouseEvent>
 #include <QObject>
 #include <QDebug>
-#include "includes/tabs/memstab.h"
+#include "memstab.h"
 
 class MemsTab; //foward declaration to avoid circular dependencies with memstab.h
 

@@ -1,4 +1,4 @@
-#include "includes/tabs/lasertab.h"
+#include "lasertab.h"
 
 LaserTab::LaserTab(QWidget *parent) : QWidget(parent)
 {

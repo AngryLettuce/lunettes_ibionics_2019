@@ -1,4 +1,4 @@
-#include "includes/tabs/eyetab.h"
+#include "eyetab.h"
 
 EyeTab::EyeTab(QWidget *parent) : QWidget(parent)
 {

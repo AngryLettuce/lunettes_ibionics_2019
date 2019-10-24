@@ -15,35 +15,37 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+BASE_FOLDER = ./..
+
 INCLUDEPATH += \
-    src/ \
-    src/tabs/ \
-    src/utils/ \
-    includes/ \
-    includes/tabs/ \
-    includes/utils/ \
-    lib/
+    $${BASE_FOLDER}/src/ \
+    $${BASE_FOLDER}/src/tabs/ \
+    $${BASE_FOLDER}/src/utils/ \
+    $${BASE_FOLDER}/includes/ \
+    $${BASE_FOLDER}/includes/tabs/ \
+    $${BASE_FOLDER}/includes/utils/ \
+    $${BASE_FOLDER}/lib/
 
 SOURCES += \
     main.cpp \
-    src/mainwindow.cpp \
-    src/tabs/eyetab.cpp \
-    src/tabs/gpiotab.cpp \
-    src/tabs/lasertab.cpp \
-    src/tabs/memstab.cpp \
-    src/tabs/worldtab.cpp \
-    src/utils/gpioview.cpp \
-    src/utils/medialabel.cpp
+    $${BASE_FOLDER}/src/mainwindow.cpp \
+    $${BASE_FOLDER}/src/tabs/eyetab.cpp \
+    $${BASE_FOLDER}/src/tabs/gpiotab.cpp \
+    $${BASE_FOLDER}/src/tabs/lasertab.cpp \
+    $${BASE_FOLDER}/src/tabs/memstab.cpp \
+    $${BASE_FOLDER}/src/tabs/worldtab.cpp \
+    $${BASE_FOLDER}/src/utils/gpioview.cpp \
+    $${BASE_FOLDER}/src/utils/medialabel.cpp
 
 HEADERS += \
-    includes/mainwindow.h \
-    includes/tabs/eyetab.h \
-    includes/tabs/gpiotab.h \
-    includes/tabs/lasertab.h \
-    includes/tabs/memstab.h \
-    includes/tabs/worldtab.h \
-    includes/utils/gpioview.h \
-    includes/utils/medialabel.h
+    $${BASE_FOLDER}/includes/mainwindow.h \
+    $${BASE_FOLDER}/includes/tabs/eyetab.h \
+    $${BASE_FOLDER}/includes/tabs/gpiotab.h \
+    $${BASE_FOLDER}/includes/tabs/lasertab.h \
+    $${BASE_FOLDER}/includes/tabs/memstab.h \
+    $${BASE_FOLDER}/includes/tabs/worldtab.h \
+    $${BASE_FOLDER}/includes/utils/gpioview.h \
+    $${BASE_FOLDER}/includes/utils/medialabel.h
 
 
 

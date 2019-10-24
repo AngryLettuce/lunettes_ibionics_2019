@@ -1,4 +1,4 @@
-#include "includes/tabs/worldtab.h"
+#include "worldtab.h"
 
 WorldTab::WorldTab(QWidget *parent) : QWidget(parent)
 {

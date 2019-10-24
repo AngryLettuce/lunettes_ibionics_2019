@@ -1,4 +1,4 @@
-#include "includes/tabs/memstab.h"
+#include "memstab.h"
 
 
 MemsTab::MemsTab(QWidget *parent) : QWidget(parent)

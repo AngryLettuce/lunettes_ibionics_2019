@@ -7,7 +7,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QPixmap>
-#include "includes/utils/medialabel.h"
+#include "medialabel.h"
 
 class MediaLabel; //foward declaration to avoid circular dependencies with medialabel.h
 
