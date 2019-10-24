@@ -9,6 +9,6 @@ find_package(OpenCV REQUIRED)
 #path is necessary since otherwise, cmake assigns /opt/local a higher priority and ocv2.4 will be used
 
 
-add_executable(pupilDetection main.cpp HoughCircle/houghCircle.cpp HoughCircle/houghCircle.h)
+add_executable(pupilDetection main.cpp HoughCircle/houghCircle.cpp HoughCircle/houghCircle.h Gradient/gradient.cpp Gradient/gradient.h)
 
 target_link_libraries( pupilDetection ${OpenCV_LIBS} )

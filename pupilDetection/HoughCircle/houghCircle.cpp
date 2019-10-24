@@ -1,5 +1,6 @@
 //
-// Created by ibionics-michel on 10/19/19.
+// Created by Michel Gauthier on 10/19/19
+// Circle detection by hough circle
 //
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
