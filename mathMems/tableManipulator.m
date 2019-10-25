@@ -21,10 +21,10 @@ Zlm = -1;
 Vlm = [Xlm Ylm Zlm];
 
 %maximum angles
-maxaX = 5.52;
-minaX = -0.70;
-maxaY = 5.52;
-minaY = -0.88;
+maxaX = 4.14;
+minaX = 0.18;
+maxaY = 4.2;
+minaY = -0.14;
 maxAngles = [minaX maxaX minaY maxaY];
 
 %% Getting the wall surface 
@@ -37,7 +37,6 @@ pixMat = genPixMat(wallcorners, resolution);
 % Gen  XYZ tables
 %table = genXYZ(Vlm, maxAngles, Zmw, XYZ_precision);
 table = genXYZ(Vlm, maxAngles, Zmw, XYZ_precision, memsAngle);
-
 tic
 %angles lookup table
 angleMat = genAngleTable_V2(pixMat, table, resolution);
