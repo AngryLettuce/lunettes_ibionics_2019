@@ -20,10 +20,22 @@ using namespace std;
 int main() {
     wiringPiSetupGpio(); // TODO : Should be done once in gpio.h
     Laser_pos_control laser_pos_control;
+    std::cout<< "Initialized" << endl;
     //laser_pos_control.mems.stop();
     //laser_pos_control.draw_rectangle(400);
-    laser_pos_control.set_max_angles();
-    laser_pos_control.draw_rectangle(400);
+    //laser_pos_control.set_max_angles();
+    std::cout<< "Max angles set" << endl;
+	//laser_pos_control.recalculateAnglesMat();
+        
+    while(1) {
+           // laser_pos_control.mems.send_angle_x(0);
+           laser_pos_control.draw_rectangle(1);
+           //laser_pos_control.draw_circluarLoop(100);
+        delay(1000);
+        laser_pos_control.send_pos(100,100);
+        delay(2000);
+    }
+    
     //laser_pos_control.set_max_angles();
     //short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
 	//laser_pos_control.recalculateAnglesMat(angleMat);

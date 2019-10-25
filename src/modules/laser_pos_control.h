@@ -27,7 +27,7 @@ public:
 	 */
 	Laser_pos_control();
 
-	void recalculateAnglesMat(short angleMat[][CAMERA_RESOLUTION][2]);
+	void recalculateAnglesMat();
 	/**
 	 * @brief send the rectangle sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
@@ -62,13 +62,18 @@ public:
 	 * @return last x and y angle sent
 	 */
     float* manual_mode();
+	/**
+	 * @brief Send the x and y coordinates to the MEMS
+	 */
+    void send_pos(int x, int y);
 private:
     Button button1;
     Button button2;
     Button button3;
     Button button4;
-    rowvec maxAngles; // TODO: Verify if {minX, maxX, minY, maxY}
-	rowvec VLM;
+    rowvec maxAngles; // {minX, maxX, minY, maxY}
+    rowvec VLM;
+    //short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
 
     void findWallCorners(mat &wallCorners);
 

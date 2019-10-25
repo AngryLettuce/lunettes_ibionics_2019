@@ -8,6 +8,8 @@
  * the gpio utility to load the SPI drivers into the
  * kernel: gpio load spi
  */
+//#include <iostream>
+ 
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
@@ -38,7 +40,9 @@ void Spi::send(unsigned char* data, int len) {
         wiringPiSPIDataRW(channel, data, len);
     } else if(channel == 2) {
         digitalWrite(GPIO44_SPI2_CS, LOW);
+        delayMicroseconds(2);
         for(int byte=0; byte < len; byte++) {
+            //std::cout << (int)data[byte] << std::endl;
             for(int bit=0; bit < 8; bit++) {
                 digitalWrite(GPIO_SPI2_SCK, HIGH);
                 digitalWrite(GPIO41_SPI2_MOSI, (data[byte] & 0x80) >> 7);
@@ -50,7 +54,7 @@ void Spi::send(unsigned char* data, int len) {
             }
 
         }
-
+        delayMicroseconds(2);
         digitalWrite(GPIO44_SPI2_CS, HIGH);
     }
 }

@@ -23,9 +23,9 @@
 #define Z_LASER_TO_MEMS -1
 #define Z_MEMS_TO_WALL 1000
 #define XYZ_MATRIX_PRECISION 0.1
-#define RECTANGLE_SEQUENCE_LENGTH 1596
-#define SPIRAL_RESOLUTION 400
-#define CLOSING_RECTANGLE_LENGTH 480
+#define RECTANGLE_SEQUENCE_LENGTH 80
+#define SPIRAL_RESOLUTION 100
+#define CLOSING_RECTANGLE_LENGTH 240
 #define INFINITY_SEQUENCE_LENGTH 101
 #define CIRCULAR_LOOP_SEQUENCE_LENGTH 201
 
@@ -43,7 +43,7 @@ Laser_pos_control::Laser_pos_control() :
 }
 
 
-void Laser_pos_control::recalculateAnglesMat(short angleMat[][CAMERA_RESOLUTION][2]) {
+void Laser_pos_control::recalculateAnglesMat() {
 	mat wallCorners(4, 3);
 	findWallCorners(wallCorners);
 
@@ -54,23 +54,23 @@ void Laser_pos_control::recalculateAnglesMat(short angleMat[][CAMERA_RESOLUTION]
 	mat XYZ_Matrix(matrixSize, 5);
 	genXYZ_Matrix(XYZ_Matrix);
 
-	genAnglesTable(pixMat, XYZ_Matrix, angleMat);
+	genAnglesTable(pixMat, XYZ_Matrix, angleTable);
 }
 
 
 void Laser_pos_control::findWallCorners(mat &wallCorners) {
 	float x, y;
-	//top left (min aX, min aY)
-	angle2XY(maxAngles[0], maxAngles[2], x, y);
-	wallCorners.row(0) = rowvec{ x, y, Z_MEMS_TO_WALL };
-	//left bottom (min aX, max aY)
-	angle2XY(maxAngles[0], maxAngles[3], x, y);
-	wallCorners.row(1) = rowvec{ x, y, Z_MEMS_TO_WALL };
-	//right bottom (max aX, max aY)
-	angle2XY(maxAngles[1], maxAngles[3], x, y);
-	wallCorners.row(2) = rowvec{ x, y, Z_MEMS_TO_WALL };
 	//top left (max aX, min aY)
 	angle2XY(maxAngles[1], maxAngles[2], x, y);
+	wallCorners.row(0) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//left bottom (min aX, min aY)
+	angle2XY(maxAngles[0], maxAngles[2], x, y);
+	wallCorners.row(1) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//right bottom (min aX, max aY)
+	angle2XY(maxAngles[0], maxAngles[3], x, y);
+	wallCorners.row(2) = rowvec{ x, y, Z_MEMS_TO_WALL };
+	//top right (max aX, max aY)
+	angle2XY(maxAngles[1], maxAngles[3], x, y);
 	wallCorners.row(3) = rowvec{ x, y, Z_MEMS_TO_WALL };
 }
 
@@ -168,8 +168,8 @@ void Laser_pos_control::findAngles(double x, double y, mat XYZ_Matrix, double *a
 void Laser_pos_control::angle2XY(float aX, float aY, float &x, float &y) {
 	float theta_x = deg2rad(aX);
 	float theta_y = deg2rad(aY);
-	float alpha = deg2rad(MEMS_TILT_ANGLE) - theta_x + M_PI / 2;
-	float beta = -theta_y;
+	float alpha = deg2rad(MEMS_TILT_ANGLE) - theta_y + M_PI / 2;
+	float beta = theta_x;
 	float zn = sin(alpha)*cos(beta);
 	float xn = cos(alpha)*cos(beta);
 	float yn = sin(beta);
@@ -252,7 +252,7 @@ float* Laser_pos_control::manual_mode() {
     float angle_y = 0;
 
 	mems.send_angle_x(0);
-	mems.send_angle_x(0);
+	mems.send_angle_y(0);
 
     while(1) {
         if(button4.scan_button() == PRESSED) { // Exit
@@ -286,12 +286,14 @@ float* Laser_pos_control::manual_mode() {
 				// Increase y angle
 				angle_y += momentum;
 				angle_y = mems.saturate_angle(angle_y);
+				cout << angle_y << endl;
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
 			} else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
 				// Decrease y angle
 				angle_y -= momentum;
 				angle_y = mems.saturate_angle(angle_y);
+				cout << angle_y << endl;
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
             } else { // reset momentum
@@ -309,12 +311,19 @@ void Laser_pos_control::set_max_angles() {
         float *angles;
         angles = manual_mode();
         if(corner == 0) { // Up left corner
-            maxAngles[0] = angles[0];
-            maxAngles[3] = angles[1];
+            maxAngles[1] = angles[0]; // maxX
+            maxAngles[2] = angles[1]; // minY
         } else { // Down right corner
-            maxAngles[1] = angles[0];
-            maxAngles[2] = angles[1];
+            maxAngles[0] = angles[0]; // minX
+            maxAngles[3] = angles[1]; // maxY
         }
         corner++;
     }
+    maxAngles.print();
+}
+
+void Laser_pos_control::send_pos(int x, int y){
+	float *XYAngles;
+	XYAngles = getAngles(x,y);
+	mems.send_angles(XYAngles[0], XYAngles[1]);
 }

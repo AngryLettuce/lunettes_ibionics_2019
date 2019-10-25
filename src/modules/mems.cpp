@@ -21,7 +21,7 @@
 #define V_DIFF_MAX 120
 #define V_DIFF_TO_ANGLE_FACTOR 0.046
 
-#define SPI_CHANNEL 2
+#define SPI_CHANNEL 0
 #define GPIO39_MEMS_EN_DRV 39
 #define GPIO4_MEMS_FILT_X 4 //this should be a 60kHz clock
 //#define GPIO21_MEMS_FILT_Y 21  //this should be a 60kHz clock
@@ -90,8 +90,8 @@ void Mems::send_voltage_diff_x(float voltage_diff) {
 
 void Mems::send_voltage_diff_y(float voltage_diff) {
   voltage_diff = saturate_voltage_diff(voltage_diff);
-  unsigned short bin_pos = VBIAS*65536/200 + (voltage_diff*65536/200)/2;
-  unsigned short bin_neg = VBIAS*65536/200 - (voltage_diff*65536/200)/2;
+  unsigned short bin_pos = VBIAS*65536/200 - (voltage_diff*65536/200)/2;
+  unsigned short bin_neg = VBIAS*65536/200 + (voltage_diff*65536/200)/2;
   unsigned int address = (unsigned int)2 << 16;
   unsigned int data1 = address | bin_pos;
   address = (unsigned int)3 << 16;
