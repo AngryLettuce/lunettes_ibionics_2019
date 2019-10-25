@@ -17,7 +17,6 @@
 #include "../../sequences/spiral_LUT.h"
 #include "../../sequences/circularLoop_LUT.h"
 
-
 #define MEMS_TILT_ANGLE 21
 #define X_LASER_TO_MEMS 0
 #define Y_LASER_TO_MEMS 0
@@ -32,10 +31,6 @@
 
 using namespace std;
 
-// Laser's position relative to MEMS (in mm)
-rowvec VLM = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS }; // TODO: put inside class?
-
-
 Laser_pos_control::Laser_pos_control() :
     laser(),
     mems(),
@@ -44,6 +39,7 @@ Laser_pos_control::Laser_pos_control() :
     button3(GPIO13_BUTTON3),
     button4(GPIO19_BUTTON4) {
     maxAngles = {-3.7, 3.7, -3.5, 4.5};
+	VLM = {X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS};
 }
 
 
@@ -259,42 +255,46 @@ float* Laser_pos_control::manual_mode() {
 	mems.send_angle_x(0);
 
     while(1) {
-        if(button4.scan_button() == PRESSED) {
+        if(button4.scan_button() == PRESSED) { // Exit
             angles[0] = angle_x;
             angles[1] = angle_y;
             return angles;
         }
-        if(button3.scan_button() == PRESSED) {
+        if(button3.scan_button() == PRESSED) { // Change of axis
             axis ^= 1;
         }
         if(axis) {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
+				// Increase x angle
 				angle_x += momentum;
 				angle_x = mems.saturate_angle(angle_x);
 				cout << angle_x << endl;
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
             } else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
+				// Decrease x angle
 				angle_x -= momentum;
 				angle_x = mems.saturate_angle(angle_x);
 				cout << angle_x << endl;
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
-            } else {
+            } else { // reset momentum
                 momentum = delta_angle;
             }
         } else {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
+				// Increase y angle
 				angle_y += momentum;
 				angle_y = mems.saturate_angle(angle_y);
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
 			} else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
+				// Decrease y angle
 				angle_y -= momentum;
 				angle_y = mems.saturate_angle(angle_y);
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
-            } else {
+            } else { // reset momentum
                 momentum = delta_angle;
             }
         }
@@ -308,10 +308,10 @@ void Laser_pos_control::set_max_angles() {
     while(corner <= 1) {
         float *angles;
         angles = manual_mode();
-        if(corner == 0) {
+        if(corner == 0) { // Up left corner
             maxAngles[0] = angles[0];
             maxAngles[3] = angles[1];
-        } else {
+        } else { // Down right corner
             maxAngles[1] = angles[0];
             maxAngles[2] = angles[1];
         }

@@ -48,18 +48,27 @@ public:
 	 * @param time_delay delay between mirror commands.
 	 */
 	void draw_infinity(int time_delay);
-
+	/**
+	 * @brief send the circular loop symbol sequence to the mems mirror.
+	 * @param time_delay delay between mirror commands.
+	 */
     void draw_circluarLoop(int time_delay);
-
+	/**
+	 * @brief Set the maximum angles in x and y using the manual mode
+	 */
     void set_max_angles();
-
+	/**
+	 * @brief Control manually the MEMS mirror.
+	 * @return last x and y angle sent
+	 */
     float* manual_mode();
 private:
     Button button1;
     Button button2;
     Button button3;
     Button button4;
-    rowvec maxAngles;
+    rowvec maxAngles; // TODO: Verify if {minX, maxX, minY, maxY}
+	rowvec VLM;
 
     void findWallCorners(mat &wallCorners);
 
@@ -79,7 +88,5 @@ private:
 
     int calcArraySize();
 };
-
-
 
 #endif /* SRC_MODULES_LASER_POS_CONTROL_H_ */

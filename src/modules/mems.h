@@ -38,16 +38,6 @@ public:
 	 */
 	void send_angles(float angle_x, float angle_y);
 	/**
-	 * @brief Send an angle command for the x axis directly with the voltage diff.
-	 * @param voltage_diff x voltage difference (V).
-	 */
-	void send_voltage_diff_x(float voltage_diff);
-	/**
-	 * @brief Send an angle command for the y axis directly with the voltage diff.
-	 * @param voltage_diff y voltage difference (V).
-	 */
-	void send_voltage_diff_y(float voltage_diff);
-	/**
 	 * @brief Disable the mems mirror and put it back at zero in x and y.
 	 */
 	void stop();
@@ -68,6 +58,16 @@ private:
 	 * @param data data to be sent
 	 */
 	void send_data(unsigned int data);
+	/**
+	 * @brief Send an angle command for the x axis directly with the voltage diff.
+	 * @param voltage_diff x voltage difference (V).
+	 */
+	void send_voltage_diff_x(float voltage_diff);
+	/**
+	 * @brief Send an angle command for the y axis directly with the voltage diff.
+	 * @param voltage_diff y voltage difference (V).
+	 */
+	void send_voltage_diff_y(float voltage_diff);
 	/**
 	 * @brief Saturate the voltage diff. inside the safe range.
 	 * @param voltage_diff voltage difference (V).
