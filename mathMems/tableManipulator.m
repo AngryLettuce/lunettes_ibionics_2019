@@ -7,8 +7,8 @@ close all;
 %% Constants and Variables
 
 %video resolution
-resolution = [11, 11];
-XYZ_precision = 0.1;
+resolution = [200, 200];
+XYZ_precision = 0.01;
 memsAngle = 21;
 
 % Wall position relative to MEMS
@@ -21,10 +21,10 @@ Zlm = -1;
 Vlm = [Xlm Ylm Zlm];
 
 %maximum angles
-maxaX = 3.7;
-minaX = -3.7;
-maxaY = 3.5;
-minaY = -3.5;
+maxaX = 5.52;
+minaX = -0.70;
+maxaY = 5.52;
+minaY = -0.88;
 maxAngles = [minaX maxaX minaY maxaY];
 
 %% Getting the wall surface 
@@ -42,7 +42,7 @@ tic
 %angles lookup table
 angleMat = genAngleTable_V2(pixMat, table, resolution);
 toc
-%mat2LookUp(angleMat);
+mat2LookUp(angleMat);
 
 
 

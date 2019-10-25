@@ -1,7 +1,7 @@
 function  mat2LookUp(angleMat)
 
 
-dlmwrite('lookUpTable.h','static constexpr short angleTable[200][200][2] = ','delimiter','');
+dlmwrite('lookUpTable.h','static short angleTable[200][200][2] = ','delimiter','');
 
 dlmwrite('lookUpTable.h','{','delimiter','','-append');
 
