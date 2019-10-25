@@ -145,3 +145,8 @@ void Mems::send_angle_y(float angle) {
 	float voltage_diff = angle_to_voltage_diff(angle);
 	send_voltage_diff_y(voltage_diff);
 }
+
+void Mems::send_angles(float angle_x, float angle_y) {
+	send_angle_x(angle_x);
+	send_angle_y(angle_y);
+}

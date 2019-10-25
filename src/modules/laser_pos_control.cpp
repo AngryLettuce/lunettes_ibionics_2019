@@ -105,7 +105,7 @@ void Laser_pos_control::genPixMat(mat wallCorners, mat &pixMat) {
 	pixMat.row(1) = height;
 }
 
-float* Laser_pos_control::getAngle(int xCoord, int yCoord) {
+float* Laser_pos_control::getAngles(int xCoord, int yCoord) {
 	static float XYAngles[2];
 
 	XYAngles[0] = float(angleTable[xCoord][yCoord][0]) / 1000;

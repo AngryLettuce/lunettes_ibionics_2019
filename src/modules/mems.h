@@ -32,6 +32,12 @@ public:
 	 */
 	void send_angle_y(float angle);
 	/**
+	 * @brief Send both angles.
+	 * @param angle_x x angle (deg).
+	 * @param angle_y y angle (deg).
+	 */
+	void send_angles(float angle_x, float angle_y);
+	/**
 	 * @brief Send an angle command for the x axis directly with the voltage diff.
 	 * @param voltage_diff x voltage difference (V).
 	 */
