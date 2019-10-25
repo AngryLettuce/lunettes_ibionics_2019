@@ -8,9 +8,8 @@
  * the gpio utility to load the SPI drivers into the
  * kernel: gpio load spi
  */
-
+#include <wiringPi.h>
 #include <wiringPiSPI.h>
-#include <pigpio.h>
 
 #include "spi.h"
 
@@ -23,10 +22,13 @@ Spi::Spi(int chan, int speed, int mode) {
     channel = chan;
     if(chan == 0) {
         wiringPiSPISetupMode(channel, speed, mode);
-    } else if(chan == 2) { // using bit banging for spi2 in
-        gpioInitialise(); // TODO: Verify if it interferes with wiringPiSetupGpio()
-        bbSPIOpen(GPIO44_SPI2_CS, GPIO40_SPI2_MISO,
-                    GPIO41_SPI2_MOSI, GPIO_SPI2_SCK, speed, mode);
+    } else if(chan == 2) { // using bit banging for spi2 in mode 1
+        pinMode(GPIO44_SPI2_CS, OUTPUT);
+        pinMode(GPIO_SPI2_SCK, OUTPUT);
+        pinMode(GPIO41_SPI2_MOSI, OUTPUT);
+        pinMode(GPIO40_SPI2_MISO, INPUT);
+
+        digitalWrite(GPIO44_SPI2_CS, HIGH);
     }
 }
 
@@ -35,7 +37,20 @@ void Spi::send(unsigned char* data, int len) {
     if(channel == 0) {
         wiringPiSPIDataRW(channel, data, len);
     } else if(channel == 2) {
-        char* inBuf;
-        bbSPIXfer(GPIO44_SPI2_CS, (char *)data, inBuf, len);
+        digitalWrite(GPIO44_SPI2_CS, LOW);
+        for(int byte=0; byte < len; byte++) {
+            for(int bit=0; bit < 8; bit++) {
+                digitalWrite(GPIO_SPI2_SCK, HIGH);
+                digitalWrite(GPIO41_SPI2_MOSI, (data[byte] & 0x80) >> 7);
+                data[byte] <<= 1;
+                delayMicroseconds(2);
+                digitalWrite(GPIO_SPI2_SCK, LOW);
+                //in = (in << 1) | digitalRead(GPIO40_SPI2_MISO);
+                delayMicroseconds(2);
+            }
+
+        }
+
+        digitalWrite(GPIO44_SPI2_CS, HIGH);
     }
 }
