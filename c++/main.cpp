@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include "vectorManipulation.h"
+//#include "lookUpTable.h"
 
 using namespace std;
 using namespace arma;

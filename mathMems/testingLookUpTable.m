@@ -4,25 +4,59 @@ close all
 
 %% testing .h table
 
-% Laser's position relative to MEMS
+%video resolution
+resolution = [200, 200];
+%XYZ_precision = 0.01;
+memsAngle = 21;
+
+% Wall position relative to MEMS
+Zmw = 27;
+
+
 Xlm = 0;
 Ylm = 0;
-Zlm = 18.5;
-
+Zlm = -1;
 Vlm = [Xlm Ylm Zlm];
 
-Zmw = 1000;
+%maximum angles
+maxaX = 4.14;
+minaX = 0.18;
+maxaY = 4.2;
+minaY = -0.14;
+maxAngles = [minaX maxaX minaY maxaY];
 
-aX = -3.690;
-aY = 4.486;
-%Default Normal of the mems
-N = memsNorm(aX, aY);
-normX = [0 N(1)];
-normY = [0 N(2)];
-normZ = [0 N(3)];
+wallcorners = findWallCorners(Vlm, Zmw, maxAngles, memsAngle); % laser's range at wall
 
-% Default reflected vector
-[Xmw, Ymw, Zmw] = findReflectedVector(Vlm, N, Zmw);
-laserX = [0 Xmw];
-laserY = [0 Ymw];
-laserZ = [0 Zmw];
+pixMat = genPixMat(wallcorners, resolution);
+
+angleTable = load('angles_200_200.mat');
+angleMat = angleTable.angleMat;
+
+X = zeros(resolution(1) * resolution(2),1);
+Y = zeros(resolution(1) * resolution(2),1);
+XpixMat = zeros(resolution(1) * resolution(2),1);
+YpixMat = zeros(resolution(1) * resolution(2),1);
+i = 1;
+for x = 1:resolution(1) 
+    for y = 1:resolution(2)
+        [xpos, ypos] = angle2XY(double(angleMat(x,y,1))/1000, double(angleMat(x,y,2))/1000, Zmw, Vlm, memsAngle);
+        X(i) = xpos;
+        XpixMat(i) = pixMat(x,1);
+        YpixMat(i) = pixMat(y,2);
+        Y(i) = ypos;
+        i = i + 1;
+    end
+end
+
+figure 
+plot(X,Y, '.')
+
+figure
+plot(XpixMat, YpixMat, '.')
+
+figure
+hold on
+plot(X,Y,'.')
+plot(XpixMat, YpixMat, '.')
+hold off
+

@@ -8,17 +8,18 @@ close all;
 
 %video resolution
 resolution = [200, 200];
-XYZ_precision = 0.01;
+XYZ_precision = 0.005;
 memsAngle = 21;
 
 % Wall position relative to MEMS
-Zmw = 1000;
+Zmw = 27;
 
 
 Xlm = 0;
 Ylm = 0;
 Zlm = -1;
 Vlm = [Xlm Ylm Zlm];
+angleBuffer = 1;
 
 %maximum angles
 maxaX = 4.14;
@@ -36,6 +37,8 @@ pixMat = genPixMat(wallcorners, resolution);
 
 % Gen  XYZ tables
 %table = genXYZ(Vlm, maxAngles, Zmw, XYZ_precision);
+
+maxAngles = [minaX-angleBuffer maxaX+angleBuffer minaY-angleBuffer maxaY+angleBuffer];
 table = genXYZ(Vlm, maxAngles, Zmw, XYZ_precision, memsAngle);
 tic
 %angles lookup table
