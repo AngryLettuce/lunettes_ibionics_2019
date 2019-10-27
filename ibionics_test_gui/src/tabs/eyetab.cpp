@@ -10,7 +10,7 @@ EyeTab::EyeTab(QWidget *parent) : QWidget(parent)
 
     if (QCameraInfo::availableCameras().count() > 0)
     {
-        //qDebug("At least on camera was found");
+        qDebug("At least on camera was found");
         QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
         foreach (const QCameraInfo &cameraInfo, cameras)
         {

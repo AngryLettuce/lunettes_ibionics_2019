@@ -24,7 +24,8 @@ INCLUDEPATH += \
     $${BASE_FOLDER}/includes/ \
     $${BASE_FOLDER}/includes/tabs/ \
     $${BASE_FOLDER}/includes/utils/ \
-    $${BASE_FOLDER}/lib/
+    $${BASE_FOLDER}/lib/ \
+   # /usr/local/include/opencv4
 
 SOURCES += \
     main.cpp \
@@ -47,7 +48,17 @@ HEADERS += \
     $${BASE_FOLDER}/includes/utils/gpioview.h \
     $${BASE_FOLDER}/includes/utils/medialabel.h
 
+#opencv with linux
+unix:!mac {
+    message("* Using settings for Unix/Linux.")
+    INCLUDEPATH += /usr/local/include/opencv
 
+    LIBS += -L/usr/local/lib/ \
+        -lopencv_core \
+        -lopencv_highgui \
+        -lopencv_imgproc \
+        -lopencv_videoio
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -57,7 +68,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     images/eye.jpg
 
-unix:!macx: LIBS += -L$$PWD/lib/ -lwiringPi
+#unix:!macx: LIBS += -L$$PWD/lib/ -lwiringPi
 
 INCLUDEPATH += $$PWD/.
 DEPENDPATH += $$PWD/.
