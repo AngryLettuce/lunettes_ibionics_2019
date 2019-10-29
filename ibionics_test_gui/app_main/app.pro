@@ -27,10 +27,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #message("Make sure the right libraries for OpenCV are in your Environment Path (32 or 64bits)")
 #If one of the two doesn't work, it's probably because you have only one in your path
 
-PATH_TO_MINGW_64 = C:/Qt/5.12.3/mingw73_64/mkspecs/win32-g++
+PATH_TO_MINGW_64 = C:/Qt/5.13.1/mingw73_64/mkspecs/win32-g++
 PATH_TO_MINGW_32 = C:/Qt/5.12.3/mingw73_32/mkspecs/win32-g++
 
 BASE_FOLDER = ./..
+
 
 #------------Messages for debugging purpose-----------#
 #message("Don't forget to update your MinGW path in the .pro file!!!")
@@ -48,10 +49,36 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
     OPENCV_LIBS_FOLDER = ./../lib/x86
 }
 
-SOURCES         +=  main.cpp \
-                mainwindow.cpp
+SOURCES     +=  main.cpp \
+                ../src/utils/threads.cpp \
+                mainwindow.cpp \
+                $${BASE_FOLDER}/src/tabs/eyetab.cpp \
+                $${BASE_FOLDER}/src/tabs/gpiotab.cpp \
+                $${BASE_FOLDER}/src/tabs/lasertab.cpp \
+                $${BASE_FOLDER}/src/tabs/memstab.cpp \
+                $${BASE_FOLDER}/src/tabs/worldtab.cpp \
+                $${BASE_FOLDER}/src/utils/gpioview.cpp \
+                $${BASE_FOLDER}/src/utils/medialabel.cpp \
+                $${BASE_FOLDER}/src/utils/crop.cpp \
+                #$${BASE_FOLDER}/src/utils/dev_tool.cpp \
+                $${BASE_FOLDER}/src/utils/edgeDetection.cpp \
+                $${BASE_FOLDER}/src/utils/houghCircle.cpp
 
-HEADERS         +=  mainwindow.h
+
+HEADERS     +=  mainwindow.h \
+                $${BASE_FOLDER}/includes/tabs/eyetab.h \
+                $${BASE_FOLDER}/includes/tabs/gpiotab.h \
+                $${BASE_FOLDER}/includes/tabs/lasertab.h \
+                $${BASE_FOLDER}/includes/tabs/memstab.h \
+                $${BASE_FOLDER}/includes/tabs/worldtab.h \
+                $${BASE_FOLDER}/includes/utils/gpioview.h \
+                $${BASE_FOLDER}/includes/utils/medialabel.h \
+                $${BASE_FOLDER}/includes/utils/crop.h \
+                #$${BASE_FOLDER}/includes/utils/dev_tool.h \
+                $${BASE_FOLDER}/includes/utils/edgeDetection.h \
+                $${BASE_FOLDER}/includes/utils/houghCircle.h \
+                $${BASE_FOLDER}/includes/utils/grayLevelsTable.h \
+                ../includes/utils/threads.h
 
 FORMS           +=  mainwindow.ui
 
@@ -109,3 +136,4 @@ unix:LIBS +=    $${OPENCV_LIBS_FOLDER}/libopencv_calib3d.so \
 #        -lopencv_imgproc320     \/
 #        -lopencv_features2d320  \
 #        -lopencv_calib3d320
+

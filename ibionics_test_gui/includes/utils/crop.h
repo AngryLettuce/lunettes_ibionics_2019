@@ -8,11 +8,12 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
+
 #include <iostream>
 using namespace std;
 using namespace cv;
 
-cv::Mat cropRegion(cv::Mat imgOr,int x,int y,int DIM_L,int DIM_C);
+void cropRegion(cv::Mat imgOr,cv::Mat *imgZoom, int x,int y,int DIM_L,int DIM_C);
 
 
 #endif //TRAITEMENT_CXX_CROP_H
