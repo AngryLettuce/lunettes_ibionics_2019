@@ -1,46 +1,49 @@
 clc;
 clearvars;
 close all;
-%addpath('../')
 
-
-%% Constants and Variables
-
+%% Constants 
 %video resolution
 resolution = [200, 200];
-XYZ_precision = 0.005;
-memsAngle = 21;
 
-% Wall position relative to MEMS
-Zmw = 27;
-
-
-Xlm = 0;
-Ylm = 0;
-Zlm = -1;
-Vlm = [Xlm Ylm Zlm];
+%precision on the MEMS angles
+XYZ_precision = 0.01;
 angleBuffer = 1;
 
+%MEMS angles
+angleXOffset = -0.4156;
+angleYOffset = -0.1129;
+memsAngleY = 21 + angleYOffset;
+memsAngleX = 0  + angleXOffset;
+memsAngles  = [memsAngleX, memsAngleY];
+
+% Wall position relative to MEMS
+Zmw = 301;
+
+%Incident vector (laser)
+Xlm = -0.04665;
+Ylm = -0.07412;
+Zlm = -0.9665;
+Vlm = [Xlm Ylm Zlm];
+Vlm = Vlm/norm(Vlm);
+
 %maximum angles
-maxaX = 4.14;
-minaX = 0.18;
-maxaY = 4.2;
-minaY = -0.14;
+minaX = 0.34;
+maxaX = 4.22;
+minaY = -0.52;
+maxaY = 3.46;
 maxAngles = [minaX maxaX minaY maxaY];
 
 %% Getting the wall surface 
-wallcorners = findWallCorners(Vlm, Zmw, maxAngles, memsAngle); % laser's range at wall
-
+wallcorners = findWallCorners(Vlm, Zmw, maxAngles, memsAngles); % laser's range at wall
 pixMat = genPixMat(wallcorners, resolution);
-
 %% angle matrix and XYZ matrix
-
-% Gen  XYZ tables
-%table = genXYZ(Vlm, maxAngles, Zmw, XYZ_precision);
-
-maxAngles = [minaX-angleBuffer maxaX+angleBuffer minaY-angleBuffer maxaY+angleBuffer];
-table = genXYZ(Vlm, maxAngles, Zmw, XYZ_precision, memsAngle);
 tic
+% Gen  XYZ tables
+%add the buffer to the max angles to allow the MEMS to reach all corners
+maxAngles = [minaX-angleBuffer maxaX+angleBuffer minaY-angleBuffer maxaY+angleBuffer];
+table = genXYZ(Vlm, maxAngles, Zmw, XYZ_precision, memsAngles);
+
 %angles lookup table
 angleMat = genAngleTable_V2(pixMat, table, resolution);
 toc

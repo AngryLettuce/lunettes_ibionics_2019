@@ -1,10 +1,10 @@
-function [x,y] = angle2XY(aX, aY, z, d, memsAngle)
+function [x,y] = angle2XY(aX, aY, z, d, memsAngles)
     %syms k x y
     
     theta_x = deg2rad(aX);
     theta_y = deg2rad(aY);
-    alpha = deg2rad(memsAngle)-theta_y + deg2rad(90);
-    beta = theta_x;
+    alpha = deg2rad(memsAngles(2))- theta_y + deg2rad(90);
+    beta = deg2rad(memsAngles(1)) + theta_x;
     zn = sin(alpha)*cos(beta);
     xn = cos(alpha)*cos(beta);
     yn = sin(beta);

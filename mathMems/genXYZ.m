@@ -1,4 +1,4 @@
-function [array] = genXYZ(d, maxAngles, Z, delta, memsAngle)
+function [array] = genXYZ(d, maxAngles, Z, delta, memsAngles)
 array = single(zeros(calcArraySize(maxAngles, delta), 5));
 i = 1;
 for aX = maxAngles(1) : delta : maxAngles(2) 
@@ -6,7 +6,7 @@ for aX = maxAngles(1) : delta : maxAngles(2)
         
 %         %Default Normal of the mems
 %         N = memsNorm(aX, aY);
-         [X,Y] = angle2XY(aX, aY, Z, d, memsAngle);
+         [X,Y] = angle2XY(aX, aY, Z, d, memsAngles);
 %         % Default reflected vector
 %         [X, Y, Z] = findReflectedVector(Vlm, N, Z);
         array(i, :) = single([X, Y, Z, aX, aY]);
