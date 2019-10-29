@@ -6,24 +6,24 @@ close all;
 %video resolution
 resolution = [200, 200];
 
+% Wall position relative to MEMS
+Zmw = 301;
+
 %precision on the MEMS angles
 XYZ_precision = 0.01;
 angleBuffer = 1;
 
 %MEMS angles
-angleXOffset = -0.4156;
-angleYOffset = -0.1129;
+angleXOffset = 0.0001;
+angleYOffset = 0.2101;
 memsAngleY = 21 + angleYOffset;
 memsAngleX = 0  + angleXOffset;
 memsAngles  = [memsAngleX, memsAngleY];
 
-% Wall position relative to MEMS
-Zmw = 301;
-
 %Incident vector (laser)
-Xlm = -0.04665;
-Ylm = -0.07412;
-Zlm = -0.9665;
+Xlm = -0.0745;
+Ylm = -0.0969;
+Zlm = -1.01276;
 Vlm = [Xlm Ylm Zlm];
 Vlm = Vlm/norm(Vlm);
 
