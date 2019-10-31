@@ -7,31 +7,31 @@ close all;
 resolution = [200, 200];
 
 % Wall position relative to MEMS
-Zmw = 301;
+Zmw = 341.24;
 
 %precision on the MEMS angles
 XYZ_precision = 0.01;
 angleBuffer = 1;
 
 %MEMS angles
-angleXOffset = 0.0001;
-angleYOffset = 0.2101;
+angleXOffset = 0;%0.0001;
+angleYOffset = 0;%0.2101;
 memsAngleY = 21 + angleYOffset;
 memsAngleX = 0  + angleXOffset;
 memsAngles  = [memsAngleX, memsAngleY];
 
 %Incident vector (laser)
-Xlm = -0.0745;
-Ylm = -0.0969;
-Zlm = -1.01276;
+Xlm = 0;%-0.0745;
+Ylm = 0;%-0.0969;
+Zlm = -1;%-1.01276;
 Vlm = [Xlm Ylm Zlm];
 Vlm = Vlm/norm(Vlm);
 
 %maximum angles
-minaX = 0.34;
-maxaX = 4.22;
-minaY = -0.52;
-maxaY = 3.46;
+minaX = 0.2;
+maxaX = 3.92;
+minaY = -0.18;
+maxaY = 3.08;
 maxAngles = [minaX maxaX minaY maxaY];
 
 %% Getting the wall surface 
