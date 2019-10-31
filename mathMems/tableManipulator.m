@@ -14,16 +14,16 @@ XYZ_precision = 0.01;
 angleBuffer = 1;
 
 %MEMS angles
-angleXOffset = 0;%0.0001;
-angleYOffset = 0;%0.2101;
+angleXOffset = -0.00353;
+angleYOffset = -0.49224;
 memsAngleY = 21 + angleYOffset;
 memsAngleX = 0  + angleXOffset;
 memsAngles  = [memsAngleX, memsAngleY];
 
 %Incident vector (laser)
-Xlm = 0;%-0.0745;
-Ylm = 0;%-0.0969;
-Zlm = -1;%-1.01276;
+Xlm = -0.00159;
+Ylm = -0.05573;
+Zlm = -0.97768;
 Vlm = [Xlm Ylm Zlm];
 Vlm = Vlm/norm(Vlm);
 
