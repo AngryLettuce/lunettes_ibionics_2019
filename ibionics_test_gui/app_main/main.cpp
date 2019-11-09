@@ -2,6 +2,8 @@
 #include "threads.h"
 #include <QApplication>
 
+std::mutex mx;
+
 int main(int argc, char *argv[])
 {
     /*
@@ -10,7 +12,30 @@ int main(int argc, char *argv[])
     */
 
     std::thread eyeThread = startEyeThread();
-    std::thread WorldThread = startWorldThread();
+    //cv::Mat3b img = cv::imread("C:/Users/houma/Documents/ibionics2/ibionics_test_gui/app_main/test.png",1);
+    cv::Mat3b *img = new cv::Mat3b;
+    *img = cv::imread("C:/Users/houma/Documents/ibionics2/ibionics_test_gui/app_main/test.png",1);
+    //cv::imshow("Avant Thread", *img);
+
+    std::thread WorldThread = startWorldThread(img);
+
+    //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    //cv::imshow("Apres Thread", *img);
+
+    while(1)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        if(!img->empty())
+        {
+            //std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            mx.lock();
+            //cv::imshow("From Main Loop", *img);
+            //std::cout<< img.
+            std::cout<<"In main"<<endl;
+            mx.unlock();
+        }
+    }
+
 
     QApplication a(argc, argv);
     MainWindow w;
