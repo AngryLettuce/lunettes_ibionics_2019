@@ -86,10 +86,13 @@ void WorldThread(int id, cv::Mat3b *img)
                 */
 
                 //cv::imshow("test", imgZoom);
-                cv::imshow("From Thread Loop", *img);
+                //cv::imshow("From Thread Loop", *img);
                 //edge detection
                 //sobel_sequence(imgZoom,imgZoom,gray_LUT);
-
+                mx.lock();
+                cv::imshow("in world thread",*img);
+                std::cout <<(int) img->at<Vec3b> (45,45)[0] <<std::endl;
+                mx.unlock();
 
                 //cv::imshow("test1 ", imgZoom);
 

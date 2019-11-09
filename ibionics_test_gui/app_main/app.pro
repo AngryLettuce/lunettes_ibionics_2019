@@ -48,9 +48,10 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_64){
 win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
     OPENCV_LIBS_FOLDER = ./../lib/x86
 }
+unix:{OPENCV_LIBS_FOLDER = /usr/local/lib}
 
 SOURCES     +=  main.cpp \
-                ../src/utils/threads.cpp \
+                $${BASE_FOLDER}/src/utils/threads.cpp \
                 mainwindow.cpp \
                 $${BASE_FOLDER}/src/tabs/eyetab.cpp \
                 $${BASE_FOLDER}/src/tabs/gpiotab.cpp \
@@ -63,6 +64,7 @@ SOURCES     +=  main.cpp \
                 #$${BASE_FOLDER}/src/utils/dev_tool.cpp \
                 $${BASE_FOLDER}/src/utils/edgeDetection.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp
+
 
 
 HEADERS     +=  mainwindow.h \
@@ -78,7 +80,7 @@ HEADERS     +=  mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/edgeDetection.h \
                 $${BASE_FOLDER}/includes/utils/houghCircle.h \
                 $${BASE_FOLDER}/includes/utils/grayLevelsTable.h \
-                ../includes/utils/threads.h
+                $${BASE_FOLDER}/includes/utils/threads.h
 
 FORMS           +=  mainwindow.ui
 
@@ -121,7 +123,6 @@ unix:LIBS +=    $${OPENCV_LIBS_FOLDER}/libopencv_calib3d.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_stitching.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_video.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_videoio.so
-
 
 # more correct variant, how set includepath and libs for mingw
 # add system variable: OPENCV_SDK_DIR=D:/opencv/opencv-build/install

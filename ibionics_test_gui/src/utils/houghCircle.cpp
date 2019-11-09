@@ -47,9 +47,9 @@ Point HOUGHCIRCLE::applyHoughMethod(Mat image,Mat output,int method, double dp, 
     }
 
     resize(image, image, Size(image.cols/2, image.rows/2));
-    namedWindow( "circles", WINDOW_AUTOSIZE);
-    imshow( "circles", image );
-    waitKey(0);
+    //namedWindow( "circles", WINDOW_AUTOSIZE);
+    //imshow( "circles", image );
+    //waitKey(0);
 
     return cord;
 
