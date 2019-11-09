@@ -48,7 +48,7 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_64){
 win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
     OPENCV_LIBS_FOLDER = ./../lib/x86
 }
-
+unix:{OPENCV_LIBS_FOLDER = /usr/local/lib}
 SOURCES     +=  main.cpp \
                 ../src/utils/threads.cpp \
                 mainwindow.cpp \
@@ -62,7 +62,8 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/crop.cpp \
                 #$${BASE_FOLDER}/src/utils/dev_tool.cpp \
                 $${BASE_FOLDER}/src/utils/edgeDetection.cpp \
-                $${BASE_FOLDER}/src/utils/houghCircle.cpp
+                $${BASE_FOLDER}/src/utils/houghCircle.cpp \
+                $${BASE_FOLDER}/src/utils/ellipsefit.cpp
 
 
 HEADERS     +=  mainwindow.h \
@@ -78,7 +79,8 @@ HEADERS     +=  mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/edgeDetection.h \
                 $${BASE_FOLDER}/includes/utils/houghCircle.h \
                 $${BASE_FOLDER}/includes/utils/grayLevelsTable.h \
-                ../includes/utils/threads.h
+                $${BASE_FOLDER}/includes/utils/threads.h \
+                $${BASE_FOLDER}/includes/utils/ellipsefit.h
 
 FORMS           +=  mainwindow.ui
 
