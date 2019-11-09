@@ -20,7 +20,7 @@ void HOUGHCIRCLE::HoughCircle(double param1,double param2,int minRadius,int maxR
 //ajouter slider pour modifier parametre et afficher le point detecter
 Point HOUGHCIRCLE::applyHoughMethod(Mat image,Mat output,int method, double dp, double minDist, double param1,double param2, int minRadius, int maxRadius)
 {
-    Point cord;
+    static Point cord;
 
     // Convert it to gray
     cvtColor( image, tmps, COLOR_BGR2GRAY );

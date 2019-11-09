@@ -101,10 +101,30 @@ void EyeThread(int id)
     */
     //bool EYELOOP = true;
 
+    //load image for test
+    cv::Mat image = cv::imread("../../ibionics_test_gui/images/eye.jpg", 1);
+    cv::cvtColor(image,image,cv::COLOR_RGB2GRAY);
+
+
+    cv::Mat imageEye = cv::imread("../../ibionics_test_gui/images/eye.jpg", 1);
+
+
+    //testing eye detection
+    applyEllipseMethod(image,posX,posY);
+
+    cv::circle(imageEye, cv::Point (posX,posY),3, (255, 255, 255), -1);
+
+    std::cout<< std::endl<<"------------------"<< std::endl;
+    std::cout<< "position transmise : "<< posX<< ", "<< posY << std::endl;
+
+    cv::namedWindow("detection oeil",1);
+    cv::imshow("detection oeil",imageEye);
 
     while (1)
     {
         //Read image
+        //need to be in gray
+        //applyEllipseMethod(image,posX,posY);
 
         //find gaze
 
