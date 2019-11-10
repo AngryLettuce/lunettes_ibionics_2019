@@ -50,7 +50,7 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
 }
 unix:{OPENCV_LIBS_FOLDER = /usr/local/lib}
 SOURCES     +=  main.cpp \
-                ../src/utils/threads.cpp \
+                $${BASE_FOLDER}/src/utils/threads.cpp \
                 mainwindow.cpp \
                 $${BASE_FOLDER}/src/tabs/eyetab.cpp \
                 $${BASE_FOLDER}/src/tabs/gpiotab.cpp \
@@ -64,6 +64,7 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/edgeDetection.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp \
                 $${BASE_FOLDER}/src/utils/ellipsefit.cpp
+
 
 
 HEADERS     +=  mainwindow.h \
@@ -123,7 +124,6 @@ unix:LIBS +=    $${OPENCV_LIBS_FOLDER}/libopencv_calib3d.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_stitching.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_video.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_videoio.so
-
 
 # more correct variant, how set includepath and libs for mingw
 # add system variable: OPENCV_SDK_DIR=D:/opencv/opencv-build/install
