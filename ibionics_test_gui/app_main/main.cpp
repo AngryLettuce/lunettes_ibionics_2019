@@ -86,7 +86,9 @@ int main(int argc, char *argv[])
     while (key != 'q' && key != 'Q')
     {
         src = src_ori.clone();
-        applyHoughMethod(src, param, circles);
+        int posX = 0;
+        int posY = 0;
+        applyHoughMethod(src, param, circles,posX,posY);
 
          //Draw the circles detected
         for (size_t i = 0; i < circles.size(); i++)

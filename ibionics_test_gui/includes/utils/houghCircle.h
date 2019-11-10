@@ -30,6 +30,6 @@ class HoughParams
     //enlever des param et utiliser celle du constructuer,variable priver
 };
 
-void applyHoughMethod(Mat image,HoughParams param,vector<Vec3f> &circles);
+void applyHoughMethod(Mat image,HoughParams param,vector<Vec3f> &circles, int posX,int posY);
 
 #endif //PUPILDETECTION_HOUGHCIRCLE_H
