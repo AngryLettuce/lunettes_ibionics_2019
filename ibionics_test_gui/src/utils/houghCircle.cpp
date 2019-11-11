@@ -67,15 +67,16 @@ void applyHoughMethod(cv::Mat image,int &posX,int &posY)
     vector<Vec3f> circles;
 
     /// Reduce the noise so we avoid false circle detection
-    cv::GaussianBlur( image, image, Size(9, 9), 2, 2 );
+    //cv::GaussianBlur( image, image, Size(5, 5), 2, 2 );
+    cv::medianBlur(image, image, 5);
 
     //apply histogram
-    cv::equalizeHist(image,image);
+    //cv::equalizeHist(image,image);
 
     //for fixe param
     parametre param;
-    HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, image.rows/param.minRadius, image.rows/param.maxRadius);
-
+    //HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, image.rows/param.minRadius, image.rows/param.maxRadius);
+    HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, param.minRadius, param.maxRadius);
 
     //find circle center
     for( size_t i = 0; i < circles.size(); i++ )

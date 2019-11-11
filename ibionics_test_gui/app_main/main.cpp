@@ -30,14 +30,8 @@ int main(int argc, char *argv[])
 
     //cv::Mat img = cv::imread("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/images/test.jpg",1);
 
-    //cv::imshow("Avant Thread", img);
-
-    //std::cout<<"hello friend"<<std::endl;
-
     //std::thread WorldThread = startWorldThread(img);
 
-    //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-    //cv::imshow("Apres Thread", *img);
 /*
     while(1)
     {
@@ -51,65 +45,57 @@ int main(int argc, char *argv[])
             //std::cout<<"In main"<<endl;
             mx.unlock();
         }
-    }*/
-
-    /*
-
-    int param1 = 250;
-    int param2 = 15;
-    int minRadius = 8;
-    int maxRadius = 4;
-    int min_dist = 8;
-    string windowName = "Hough Circle Transform Demo";
-
-    cv::Mat src, src_ori;
-    HoughParams param(param1, param2, minRadius, maxRadius, min_dist);
-    // Read the image
-    src = imread("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/images/eye.jpg", IMREAD_COLOR);
-    src_ori = src.clone();
-    if (!src.data)
-    {
-        return -1;
     }
+*/
 
-    namedWindow(windowName, WINDOW_AUTOSIZE);
-    createTrackbar("Param1", windowName, &param.param1, 300);
-    createTrackbar("Param2", windowName, &param.param2, 150);
-    createTrackbar("minRadius", windowName, &param.minRadius, 15);
-    createTrackbar("maxRadius", windowName, &param.maxRadius, 15);
-    createTrackbar("minDist", windowName, &param.minDist, 15);
+/*
+    //Test Main thread for eyeCam on pi
+    int version = 0;
 
-    vector<Vec3f> circles;
+    cv::Mat image ;
+    cv::Mat image2 ;
+    cv::VideoCapture eyeCam(0); //changer index pour 2ieme camera
+
     char key = 0;
-    while (key != 'q' && key != 'Q')
+    while (key != 'q')
     {
-        src = src_ori.clone();
-        int posX = 0;
-        int posY = 0;
-        applyHoughMethodDyn(src, param, circles,posX,posY);
+        int posX = 10;
+        int posY = 10;
 
-         //Draw the circles detected
-        for (size_t i = 0; i < circles.size(); i++)
+        //Get frame from eyeCam
+        //TO DO
+        eyeCam.read(image);
+        cv::cvtColor(image,image2,cv::COLOR_RGB2GRAY);
+
+        //need to be in gray!!!
+
+
+        if (version == 0)
         {
-            Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-            int radius = cvRound(circles[i][2]);
-            // circle center
-            circle(src, center, 3, Scalar(0, 255, 0), -1, 8, 0);
-            // circle outline
-            circle(src, center, radius, Scalar(0, 0, 255), 3, 8, 0);
+            mx.lock();
+            applyHoughMethod(image2, posX,posY);
+            mx.unlock();
+        }
+        if (version == 1)
+        {
+            mx.lock();
+            applyEllipseMethod(image2,posX,posY); //voir pour mx lock dans la fonction
+            mx.unlock();
         }
 
-        //Show your results
-        imshow(windowName, src);
-        key = (char)waitKey(10);
+        //testing on windows
+        Point center;
+        center.x = posX;
+        center.y = posY;
+        circle(image2, center, 3, Scalar(255,0,0), -1, 8, 0 );
+        cv::imshow("in eye thread",image2);
+        key = char(waitKey(10));
+
+        //debug print found position
+        std::cout << "position trouver : ("<< posX <<", "<<posY<<" )"<< std::endl;
+
     }
-
-
-    */
-
-
-
-
+*/
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

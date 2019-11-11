@@ -121,6 +121,7 @@ void EyeThread(int id)
     //load image for test
     //cv::Mat image = cv::imread("../../ibionics_test_gui/images/eye.jpg", 1);
     cv::Mat image ;
+    cv::Mat image2 ;
     cv::VideoCapture eyeCam(0); //changer index pour 2ieme camera
 
     while (1)
@@ -128,7 +129,7 @@ void EyeThread(int id)
         //Get frame from eyeCam
         //TO DO
         eyeCam.read(image);
-        cv::cvtColor(image,image,cv::COLOR_RGB2GRAY);
+        cv::cvtColor(image,image2,cv::COLOR_RGB2GRAY);
 
         //need to be in gray!!!
 
@@ -136,16 +137,26 @@ void EyeThread(int id)
         if (version == 0)
         {
             mx.lock();
-            applyHoughMethod(image, posX,posY);
+            applyHoughMethod(image2, posX,posY);
             mx.unlock();
         }
         if (version == 1)
         {
             mx.lock();
-            applyEllipseMethod(image,posX,posY); //voir pour mx lock dans la fonction
+            applyEllipseMethod(image2,posX,posY); //voir pour mx lock dans la fonction
             mx.unlock();
         }
 
+        //testing on windows
+        Point center;
+        center.x = posX;
+        center.y = posY;
+        circle(image2, center, 3, Scalar(255,0,0), -1, 8, 0 );
+        cv::imshow("in eye thread",image2);
+
+
+
+        //debug print found position
         mx.lock();
         std::cout << "position trouver : ("<< posX <<", "<<posY<<" )"<< std::endl;
         mx.unlock();

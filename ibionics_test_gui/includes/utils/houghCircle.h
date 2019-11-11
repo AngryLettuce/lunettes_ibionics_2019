@@ -32,11 +32,11 @@ class HoughParams
 
 struct parametre
 {
-    int param1 = 250;
-    int param2 = 15;
-    int minRadius = 8;
-    int maxRadius = 3;
-    int minDist = 8;
+    int param1 = 100;
+    int param2 = 30;
+    int minRadius = 1;
+    int maxRadius = 30;
+    int minDist = 16;
 };
 
 
