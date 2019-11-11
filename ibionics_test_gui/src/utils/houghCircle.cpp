@@ -22,7 +22,7 @@ HoughParams::HoughParams(int p1, int p2, int minRad, int maxRad, int minDis)
 
 //ajouter slider pour modifier parametre et afficher le point detecter
 //mettre coordoner en 2 int
-void applyHoughMethod(Mat image,HoughParams param,vector<Vec3f> &circles,int posX, int posY)
+void applyHoughMethodDyn(Mat image,HoughParams param,vector<Vec3f> &circles,int posX, int posY)
 {
     Mat temps = image;
 
@@ -30,14 +30,17 @@ void applyHoughMethod(Mat image,HoughParams param,vector<Vec3f> &circles,int pos
     cvtColor( image, image, COLOR_BGR2GRAY );
 
     /// Reduce the noise so we avoid false circle detection
-    GaussianBlur( image, image, Size(9, 9), 2, 2 );
+    cv::GaussianBlur( image, image, Size(9, 9), 2, 2 );
 
     //apply histogram
-    equalizeHist(image,image);
+    cv::equalizeHist(image,image);
 
     //vector<Vec3f> circles;
     //apply HoughCircles
     //HoughCircles(image, circles, HOUGH_GRADIENT,2, image.rows/4, 200, 100 );
+
+
+    //for dynamic param
     HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, image.rows/param.minRadius, image.rows/param.maxRadius);
 
     for( size_t i = 0; i < circles.size(); i++ )
@@ -56,7 +59,30 @@ void applyHoughMethod(Mat image,HoughParams param,vector<Vec3f> &circles,int pos
     //namedWindow( "circles", WINDOW_AUTOSIZE);
     //imshow( "circles", temps );
     //waitKey(0);
+}
 
 
+void applyHoughMethod(cv::Mat image,int &posX,int &posY)
+{
+    vector<Vec3f> circles;
+
+    /// Reduce the noise so we avoid false circle detection
+    cv::GaussianBlur( image, image, Size(9, 9), 2, 2 );
+
+    //apply histogram
+    cv::equalizeHist(image,image);
+
+    //for fixe param
+    parametre param;
+    HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, image.rows/param.minRadius, image.rows/param.maxRadius);
+
+
+    //find circle center
+    for( size_t i = 0; i < circles.size(); i++ )
+    {
+        Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+        posX = center.x;
+        posY = center.y;
+    }
 
 }

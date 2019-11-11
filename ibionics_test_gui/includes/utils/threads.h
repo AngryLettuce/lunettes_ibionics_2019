@@ -12,6 +12,7 @@
 #include "edgeDetection.h"
 #include "grayLevelsTable.h"
 #include "ellipsefit.h"
+#include "houghCircle.h"
 
 
 extern std::mutex mx;

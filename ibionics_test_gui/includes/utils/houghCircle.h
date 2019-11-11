@@ -30,6 +30,18 @@ class HoughParams
     //enlever des param et utiliser celle du constructuer,variable priver
 };
 
-void applyHoughMethod(Mat image,HoughParams param,vector<Vec3f> &circles, int posX,int posY);
+struct parametre
+{
+    int param1 = 250;
+    int param2 = 15;
+    int minRadius = 8;
+    int maxRadius = 3;
+    int minDist = 8;
+};
+
+
+void applyHoughMethodDyn(Mat image,HoughParams param,vector<Vec3f> &circles, int posX,int posY);
+
+void applyHoughMethod(Mat image,int &posX,int &posY);
 
 #endif //PUPILDETECTION_HOUGHCIRCLE_H

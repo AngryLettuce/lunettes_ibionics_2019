@@ -8,6 +8,9 @@ bool EYELOOP = true;
 int posX = 10;
 int posY = 10;
 
+//for eye detection
+int version = 0; //0- hough circle 1- ellispe fitting
+
 std::thread startEyeThread()
 {
     //EYELOOP = true;
@@ -54,7 +57,7 @@ void WorldThread(int id, cv::Mat3b *img)
     */
     //bool WORLDLOOP = true;
     //cv::Mat3b img;
-    cv::VideoCapture worldCam(0);
+    cv::VideoCapture worldCam(1);
     //cv::Mat imgZoom;
 
     //Grayscale convert
@@ -91,7 +94,7 @@ void WorldThread(int id, cv::Mat3b *img)
                 //sobel_sequence(imgZoom,imgZoom,gray_LUT);
                 mx.lock();
                 cv::imshow("in world thread",*img);
-                std::cout <<(int) img->at<Vec3b> (45,45)[0] <<std::endl;
+                //std::cout <<(int) img->at<Vec3b> (45,45)[0] <<std::endl; //afficher valeur pixel
                 mx.unlock();
 
                 //cv::imshow("test1 ", imgZoom);
@@ -113,41 +116,42 @@ void EyeThread(int id)
         Adjust MEMS position
 
     */
-    //bool EYELOOP = true;
+
 
     //load image for test
-    cv::Mat image = cv::imread("../../ibionics_test_gui/images/eye.jpg", 1);
-    cv::cvtColor(image,image,cv::COLOR_RGB2GRAY);
-
-
-    cv::Mat imageEye = cv::imread("../../ibionics_test_gui/images/eye.jpg", 1);
-
-
-    //testing eye detection
-    applyEllipseMethod(image,posX,posY);
-
-    cv::circle(imageEye, cv::Point (posX,posY),3, (255, 255, 255), -1);
-
-    std::cout<< std::endl<<"------------------"<< std::endl;
-    std::cout<< "position transmise : "<< posX<< ", "<< posY << std::endl;
-
-    cv::namedWindow("detection oeil",1);
-    cv::imshow("detection oeil",imageEye);
+    //cv::Mat image = cv::imread("../../ibionics_test_gui/images/eye.jpg", 1);
+    cv::Mat image ;
+    cv::VideoCapture eyeCam(0); //changer index pour 2ieme camera
 
     while (1)
     {
-        //Read image
-        //need to be in gray
-        //applyEllipseMethod(image,posX,posY);
+        //Get frame from eyeCam
+        //TO DO
+        eyeCam.read(image);
+        cv::cvtColor(image,image,cv::COLOR_RGB2GRAY);
 
-        //find gaze
+        //need to be in gray!!!
 
 
-        //mx.lock();
-        posX += 100;
-        posY += 100;
-        //mx.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        if (version == 0)
+        {
+            mx.lock();
+            applyHoughMethod(image, posX,posY);
+            mx.unlock();
+        }
+        if (version == 1)
+        {
+            mx.lock();
+            applyEllipseMethod(image,posX,posY); //voir pour mx lock dans la fonction
+            mx.unlock();
+        }
+
+        mx.lock();
+        std::cout << "position trouver : ("<< posX <<", "<<posY<<" )"<< std::endl;
+        mx.unlock();
+
+
+        //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         //std::cout << posX << endl;
         std::this_thread::yield();
         //send pos to laser_pos_control

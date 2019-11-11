@@ -11,31 +11,28 @@ int main(int argc, char *argv[])
     Init wiringPi
     Init laserPos object (maybe local to thread?)
     */
+
     /*
     cv::VideoCapture worldCam(0);
     cv::Mat frame;
     worldCam >> frame;
-    cv::imwrite("test.jpg",frame);*/
+    cv::imwrite("test.jpg",frame);
+    */
 
 
-    //std::thread eyeThread = startEyeThread();
+    std::thread eyeThread = startEyeThread();
 
     //cv::Mat3b img = cv::imread("C:/Users/houma/Documents/ibionics2/ibionics_test_gui/app_main/test.png",1);
 
-    cv::Mat3b *img = new cv::Mat3b;
-    *img = cv::imread("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/images/test.jpg",1);
-    cv::imshow("Avant Thread", *img);
+    //cv::Mat3b *img = new cv::Mat3b;
+    //*img = cv::imread("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/images/test.jpg",1);
+    //cv::imshow("Avant Thread", *img);
 
     //cv::Mat img = cv::imread("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/images/test.jpg",1);
 
-    if(!img->empty())
-    {
-        std::cout<< "not empty"<< std::endl;
-    }
-
     //cv::imshow("Avant Thread", img);
 
-    std::cout<<"hello friend"<<std::endl;
+    //std::cout<<"hello friend"<<std::endl;
 
     //std::thread WorldThread = startWorldThread(img);
 
@@ -56,6 +53,7 @@ int main(int argc, char *argv[])
         }
     }*/
 
+    /*
 
     int param1 = 250;
     int param2 = 15;
@@ -88,7 +86,7 @@ int main(int argc, char *argv[])
         src = src_ori.clone();
         int posX = 0;
         int posY = 0;
-        applyHoughMethod(src, param, circles,posX,posY);
+        applyHoughMethodDyn(src, param, circles,posX,posY);
 
          //Draw the circles detected
         for (size_t i = 0; i < circles.size(); i++)
@@ -107,7 +105,7 @@ int main(int argc, char *argv[])
     }
 
 
-
+    */
 
 
 
