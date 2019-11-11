@@ -11,15 +11,16 @@
 #include "crop.h"
 #include "edgeDetection.h"
 #include "grayLevelsTable.h"
+#include "ellipsefit.h"
 
 
-
+extern std::mutex mx;
 
 std::thread startEyeThread();
-std::thread startWorldThread();
+std::thread startWorldThread(cv::Mat3b *img);
 void stopEyeThread();
 void stopWorldThread();
-void WorldThread(int id);
+void WorldThread(int id, cv::Mat3b *img);
 void EyeThread(int id);
 
 
