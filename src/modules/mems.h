@@ -12,7 +12,7 @@
 
 #include "../peripherals/spi.h"
 #include "../peripherals/digital_out.h"
-#include "../peripherals/clock.h"
+//#include "../peripherals/clock.h"
 
 
 class Mems {
