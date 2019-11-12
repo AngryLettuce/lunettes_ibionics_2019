@@ -292,14 +292,14 @@ float* Laser_pos_control::manual_mode() {
 				// Increase x angle
 				angle_x += momentum;
 				angle_x = mems.saturate_angle(angle_x);
-				cout << angle_x << endl;
+				//cout << angle_x << endl;
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
             } else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
 				// Decrease x angle
 				angle_x -= momentum;
 				angle_x = mems.saturate_angle(angle_x);
-				cout << angle_x << endl;
+				//cout << angle_x << endl;
                 mems.send_angle_x(angle_x);
                 momentum += delta_angle;
             } else { // reset momentum
@@ -310,14 +310,14 @@ float* Laser_pos_control::manual_mode() {
 				// Increase y angle
 				angle_y += momentum;
 				angle_y = mems.saturate_angle(angle_y);
-				cout << angle_y << endl;
+				//cout << angle_y << endl;
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
 			} else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
 				// Decrease y angle
 				angle_y -= momentum;
 				angle_y = mems.saturate_angle(angle_y);
-				cout << angle_y << endl;
+				//cout << angle_y << endl;
                 mems.send_angle_y(angle_y);
                 momentum += delta_angle;
             } else { // reset momentum
