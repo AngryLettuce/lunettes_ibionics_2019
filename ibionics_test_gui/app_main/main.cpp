@@ -2,8 +2,10 @@
 #include "threads.h"
 #include <QApplication>
 #include "houghCircle.h"
+#include "modes.h"
 
 std::mutex mx;
+
 
 int main(int argc, char *argv[])
 {
@@ -49,7 +51,10 @@ int main(int argc, char *argv[])
 */
 
 /*
-    //Test Main thread for eyeCam on pi
+    //==============================================
+    //===== Test Main thread for eyeCam on pi ======
+    //==============================================
+
     int version = 0;
 
     cv::Mat image ;

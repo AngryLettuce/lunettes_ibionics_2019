@@ -120,19 +120,27 @@ void EyeThread(int id)
 
     //load image for test
     //cv::Mat image = cv::imread("../../ibionics_test_gui/images/eye.jpg", 1);
-    cv::Mat image ;
+    cv::Mat image;
     cv::Mat image2 ;
     cv::VideoCapture eyeCam(0); //changer index pour 2ieme camera
+    cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");// for demoMode
 
     while (1)
     {
-        //Get frame from eyeCam
-        //TO DO
-        eyeCam.read(image);
+        if (DEMOMODE) //in demo mode an offline video is used
+        {
+            if (image.empty())
+                cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");
+
+            //eyeVid >> image;
+            eyeVid.read(image);
+            //cv::imshow("frame",image);
+        }
+        else // in normal mode a camera is used
+            eyeCam.read(image);
+
+
         cv::cvtColor(image,image2,cv::COLOR_RGB2GRAY);
-
-        //need to be in gray!!!
-
 
         if (version == 0)
         {
@@ -148,17 +156,17 @@ void EyeThread(int id)
         }
 
         //testing on windows
+
         Point center;
         center.x = posX;
         center.y = posY;
-        circle(image2, center, 3, Scalar(255,0,0), -1, 8, 0 );
+        circle(image2, center, 4, Scalar(255,0,0), -1, 8, 0 );
         cv::imshow("in eye thread",image2);
-
 
 
         //debug print found position
         mx.lock();
-        std::cout << "position trouver : ("<< posX <<", "<<posY<<" )"<< std::endl;
+        std::cout << "position trouvee : ("<< posX <<", "<<posY<<" )"<< std::endl;
         mx.unlock();
 
 

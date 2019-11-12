@@ -81,7 +81,8 @@ HEADERS     +=  mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/houghCircle.h \
                 $${BASE_FOLDER}/includes/utils/grayLevelsTable.h \
                 $${BASE_FOLDER}/includes/utils/threads.h \
-                $${BASE_FOLDER}/includes/utils/ellipsefit.h
+                $${BASE_FOLDER}/includes/utils/ellipsefit.h \
+                $${BASE_FOLDER}/includes/utils/modes.h
 
 FORMS           +=  mainwindow.ui
 

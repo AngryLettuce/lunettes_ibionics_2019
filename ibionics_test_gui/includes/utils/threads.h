@@ -13,8 +13,9 @@
 #include "grayLevelsTable.h"
 #include "ellipsefit.h"
 #include "houghCircle.h"
+#include "modes.h"
 
-
+//Global objects/flags for threads
 extern std::mutex mx;
 
 std::thread startEyeThread();

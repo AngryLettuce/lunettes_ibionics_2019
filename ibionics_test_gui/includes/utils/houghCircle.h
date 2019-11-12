@@ -32,11 +32,21 @@ class HoughParams
 
 struct parametre
 {
+    //DEMOMODE params
+    int param1 = 100;
+    int param2 = 30;
+    int minRadius = 1;
+    int maxRadius = 100;
+    int minDist = 16;
+
+    //Main mode params
+    /*
     int param1 = 100;
     int param2 = 30;
     int minRadius = 1;
     int maxRadius = 30;
     int minDist = 16;
+    */
 };
 
 
