@@ -128,6 +128,7 @@ void EyeThread(int id)
     //cv::VideoCapture eyeVid("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/video_eye/eyeDemo2.mp4"); //demo mode michel 
     //cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");// for demoMode marc
 
+
     while (1)
     {
         if (DEMOMODE) //in demo mode an offline video is used

@@ -2,6 +2,15 @@
 
 bool debug = true;
 
+//testing for ellipse
+bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 )
+{
+    double i = fabs( contourArea(cv::Mat(contour1)) );
+    double j = fabs( contourArea(cv::Mat(contour2)) );
+    return ( i < j );
+}
+
+
 void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 {
     double thresh = 127;
@@ -47,20 +56,25 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 
     int contourSize = contours.size();
 
+    std::sort(contours.begin(),contours.end(),compareContourAreas);
     //std::cout << "nbr contours : "<< contourSize << std::endl;
 
     //find fitting
-    /*
-    double area0 = cv::contourArea(contours[0],false);
+
+    cv::contourArea(contours[0],false);
+
+
 
     if( contours[0].size() > 5 )
      {
        minEllipse[0] = cv::fitEllipse( cv::Mat(contours[0]) );
       std::cout << "fitEllipse "<< minEllipse[0].center << std::endl;
-     }*/
+     }
+
+
 
     //find center
-
+/*
     for( int i = 0; i < (int) contours.size(); i++ )
     {
        //Rect[i] = cv::minAreaRect( cv::Mat(contours[i]) );
@@ -79,7 +93,7 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
     //std::cout << "centre ellipse 0 : " << minEllipse[0].center << std::endl;
     //std::cout << "centre ellipse 1 : " << minEllipse[1].center << std::endl;
 
-
+*/
     //draw point
     int cX = (int) minEllipse[0].center.x;
     int cY = (int) minEllipse[0].center.y;
