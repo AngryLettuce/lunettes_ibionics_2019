@@ -14,16 +14,16 @@
 #define PRESSED         1
 #define HELD_DOWN       2
 // NEXT GPIO DEFINES ARE FROM THE DEVKIT!
-#define GPIO5_BUTTON1   5
-#define GPIO6_BUTTON2   6
-#define GPIO13_BUTTON3 13
-#define GPIO19_BUTTON4 19
-/* HERE ARE THE GOOD GPIOs from our own PCB
+//#define GPIO5_BUTTON1   5
+//#define GPIO6_BUTTON2   6
+//#define GPIO13_BUTTON3 13
+//#define GPIO19_BUTTON4 19
+/* HERE ARE THE GOOD GPIOs from our own PCB*/
 #define GPIO7_BUTTON1 7
 #define GPIO6_BUTTON2 6
 #define GPIO5_BUTTON3 5
 #define GPIO4_BUTTON4 4
-*/
+
 class Button {
 public:
 	/**

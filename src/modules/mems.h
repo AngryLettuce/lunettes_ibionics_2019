@@ -12,7 +12,7 @@
 
 #include "../peripherals/spi.h"
 #include "../peripherals/digital_out.h"
-#include "../peripherals/clock.h"
+//#include "../peripherals/clock.h"
 
 
 class Mems {
@@ -50,8 +50,8 @@ public:
 private:
 	Spi spi;
 	Digital_out enable;
-	Digital_out cs;
-	Clock clock;
+	//Digital_out cs;
+	//Clock clock;
 
 	/**
 	 * @brief Send data to the DAC.
