@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include "vectorManipulation.h"
+#include "anglesPoints.h"
 #include <iostream>
 #include <math.h>
 
@@ -16,6 +17,26 @@
 //#define XYZ_MATRIX_LENGTH 23989
 // Laser's position relative to MEMS (in mm)
 rowvec VLM = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS };
+
+void initAngleMat(short angleMat[][CAMERA_RESOLUTION][2]) {
+	vec X = linspace(0, CAMERA_RESOLUTION - 1, 5);
+	vec Y = linspace(0, CAMERA_RESOLUTION - 1, 5);
+	vec Xi = linspace(0, CAMERA_RESOLUTION - 1, CAMERA_RESOLUTION);
+	vec Yi = linspace(0, CAMERA_RESOLUTION - 1, CAMERA_RESOLUTION);
+	mat ZiX;
+	mat ZiY;
+
+	interp2(X, Y, anglePointsX, Xi, Yi, ZiX);
+	interp2(X, Y, anglePointsY, Xi, Yi, ZiY);
+
+
+	for (int i = 0; i < CAMERA_RESOLUTION; i++) {
+		for (int j = 0; j < CAMERA_RESOLUTION; j++) {
+			angleMat[i][j][0] = ZiX.at(i, j) * 1000;
+			angleMat[i][j][1] = ZiY.at(j, i) * 1000;
+		}
+	}
+}
 
 void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][2]) {
 	mat wallCorners(4, 3);

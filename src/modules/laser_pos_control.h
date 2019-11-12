@@ -26,7 +26,13 @@ public:
 	 * @brief Laser_pos_control constructor.
 	 */
 	Laser_pos_control();
-
+	/**
+	 * @brief Generate the angleMat with a bilinear interpolation
+	 */
+	void initAngleMat();
+	/**
+	 * @brief Recalculate the angleMat with the mathematic model.
+	 */
 	void recalculateAnglesMat();
 	/**
 	 * @brief send the rectangle sequence to the mems mirror.
@@ -73,7 +79,7 @@ private:
     Button button4;
     rowvec maxAngles; // {minX, maxX, minY, maxY}
     rowvec VLM;
-    //short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
+    short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
 
     void findWallCorners(mat &wallCorners);
 

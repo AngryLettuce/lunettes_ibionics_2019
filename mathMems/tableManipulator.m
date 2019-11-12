@@ -36,6 +36,7 @@ maxAngles = [minaX maxaX minaY maxaY];
 
 %% Getting the wall surface 
 wallcorners = findWallCorners(Vlm, Zmw, maxAngles, memsAngles); % laser's range at wall
+
 pixMat = genPixMat(wallcorners, resolution);
 %% angle matrix and XYZ matrix
 tic

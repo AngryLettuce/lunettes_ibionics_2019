@@ -10,6 +10,7 @@
 #include <wiringPi.h>
 
 #include "laser_pos_control.h"
+#include "anglesPoints.h"
 #include "../../mathMems/lookUpTable.h"
 #include "../../sequences/infinity_LUT.h"
 #include "../../sequences/closingRect_LUT.h"
@@ -28,6 +29,8 @@
 #define CLOSING_RECTANGLE_LENGTH 240
 #define INFINITY_SEQUENCE_LENGTH 101
 #define CIRCULAR_LOOP_SEQUENCE_LENGTH 201
+#define xAngles_grid_points 5
+#define yAngles_grid_points 5
 
 using namespace std;
 
@@ -40,6 +43,27 @@ Laser_pos_control::Laser_pos_control() :
     button4(GPIO19_BUTTON4) {
     maxAngles = {-3.7, 3.7, -3.5, 4.5};
 	VLM = {X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS};
+}
+
+
+void Laser_pos_control::initAngleMat() {
+	vec X = linspace(0, CAMERA_RESOLUTION - 1, xAngles_grid_points);
+	vec Y = linspace(0, CAMERA_RESOLUTION - 1, yAngles_grid_points);
+	vec Xi = linspace(0, CAMERA_RESOLUTION - 1, CAMERA_RESOLUTION);
+	vec Yi = linspace(0, CAMERA_RESOLUTION - 1, CAMERA_RESOLUTION);
+	mat ZiX;
+	mat ZiY;
+
+	interp2(X, Y, anglePointsX, Xi, Yi, ZiX);
+	interp2(X, Y, anglePointsY, Xi, Yi, ZiY);
+
+
+	for (int i = 0; i < CAMERA_RESOLUTION; i++) {
+		for (int j = 0; j < CAMERA_RESOLUTION; j++) {
+			angleMat[i][j][0] = ZiX.at(i, j) * 1000;
+			angleMat[i][j][1] = ZiY.at(j, i) * 1000;
+		}
+	}
 }
 
 
