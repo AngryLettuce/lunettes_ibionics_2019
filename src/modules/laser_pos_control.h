@@ -62,12 +62,12 @@ public:
 	/**
 	 * @brief Set the maximum angles in x and y using the manual mode
 	 */
-    void set_max_angles();
+   // void set_max_angles();
 	/**
 	 * @brief Control manually the MEMS mirror.
 	 * @return last x and y angle sent
 	 */
-    float* manual_mode();
+    void manual_mode();
 	/**
 	 * @brief Send the x and y coordinates to the MEMS
 	 */

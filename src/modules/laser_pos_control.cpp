@@ -11,7 +11,7 @@
 
 #include "laser_pos_control.h"
 #include "anglesPoints.h"
-#include "../../mathMems/lookUpTable.h"
+#include "../../mathMems/interpolationBilineaire/lookUpTable.h"
 #include "../../sequences/infinity_LUT.h"
 #include "../../sequences/closingRect_LUT.h"
 #include "../../sequences/rectangle_LUT.h"
@@ -54,8 +54,8 @@ void Laser_pos_control::initAngleMat() {
 	mat ZiX;
 	mat ZiY;
 
-	interp2(X, Y, anglePointsX, Xi, Yi, ZiX);
-	interp2(X, Y, anglePointsY, Xi, Yi, ZiY);
+	//interp2(X, Y, anglePointsX, Xi, Yi, ZiX);
+	//interp2(X, Y, anglePointsY, Xi, Yi, ZiY);
 
 
 	for (int i = 0; i < CAMERA_RESOLUTION; i++) {
@@ -80,7 +80,6 @@ void Laser_pos_control::recalculateAnglesMat() {
 
 	genAnglesTable(pixMat, XYZ_Matrix, angleTable);
 }
-
 
 void Laser_pos_control::findWallCorners(mat &wallCorners) {
 	float x, y;
@@ -216,9 +215,7 @@ void Laser_pos_control::draw_rectangle(int time_delay) {
 	float *angles;
 	for (int i = 0; i < RECTANGLE_SEQUENCE_LENGTH; i++) {
 		angles = getAngles(rectangle_LUT[i][0], rectangle_LUT[i][1]);
-		mems.send_angle_x(*angles++);
-		//cout << *angles << endl;
-		mems.send_angle_y(*angles);
+		mems.send_angles(angles[0], angles[1]);
 		delay(time_delay);
 	}
 }
@@ -266,24 +263,18 @@ void Laser_pos_control::draw_circluarLoop(int time_delay){
 	}
 }
 
-float* Laser_pos_control::manual_mode() {
+void Laser_pos_control::manual_mode() {
     const float delta_angle = 0.02;
     const int wait_delay = 100;
     float momentum = delta_angle;
-    static float angles[2];
     int axis = 0;
-    float angle_x = 0;
-    float angle_y = 0;
+    float angle_x = mems.get_angle_x();
+    float angle_y = mems.get_angle_y();
 
-	mems.send_angle_x(0);
-	mems.send_angle_y(0);
+	mems.send_angle_x(angle_x);
+	mems.send_angle_y(angle_y);
 
-    while(1) {
-        if(button4.scan_button() == PRESSED) { // Exit
-            angles[0] = angle_x;
-            angles[1] = angle_y;
-            return angles;
-        }
+    while(button4.scan_button() != PRESSED) {
         if(button3.scan_button() == PRESSED) { // Change of axis
             axis ^= 1;
         }
@@ -291,49 +282,46 @@ float* Laser_pos_control::manual_mode() {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
 				// Increase x angle
 				angle_x += momentum;
-				angle_x = mems.saturate_angle(angle_x);
-				//cout << angle_x << endl;
-                mems.send_angle_x(angle_x);
+                angle_x = mems.send_angle_x(angle_x);
+		//cout << "X : " << angle_x << endl;
                 momentum += delta_angle;
             } else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
 				// Decrease x angle
 				angle_x -= momentum;
-				angle_x = mems.saturate_angle(angle_x);
-				//cout << angle_x << endl;
-                mems.send_angle_x(angle_x);
+                angle_x = mems.send_angle_x(angle_x);
+		//cout << "X : " << angle_x << endl;
                 momentum += delta_angle;
             } else { // reset momentum
                 momentum = delta_angle;
             }
+	    
         } else {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
 				// Increase y angle
 				angle_y += momentum;
-				angle_y = mems.saturate_angle(angle_y);
-				//cout << angle_y << endl;
-                mems.send_angle_y(angle_y);
+                angle_y = mems.send_angle_y(angle_y);
+		//cout << "Y : "  << angle_y << endl;
                 momentum += delta_angle;
 			} else if(button2.scan_button() == HELD_DOWN || button2.scan_button() == PRESSED) {
 				// Decrease y angle
 				angle_y -= momentum;
-				angle_y = mems.saturate_angle(angle_y);
-				//cout << angle_y << endl;
-                mems.send_angle_y(angle_y);
+                angle_y = mems.send_angle_y(angle_y);
+		//cout << "Y : "  << angle_y << endl;
                 momentum += delta_angle;
             } else { // reset momentum
                 momentum = delta_angle;
             }
+	    
         }
         delay(wait_delay);
     }
 }
 
-void Laser_pos_control::set_max_angles() {
+/*void Laser_pos_control::set_max_angles() { // TODO: get angle_x and angle_y
     int corner = 0;
 
     while(corner <= 1) {
-        float *angles;
-        angles = manual_mode();
+	manual_mode();
         if(corner == 0) { // Up left corner
             maxAngles[1] = angles[0]; // maxX
             maxAngles[2] = angles[1]; // minY
@@ -344,7 +332,7 @@ void Laser_pos_control::set_max_angles() {
         corner++;
     }
     maxAngles.print();
-}
+}*/
 
 void Laser_pos_control::send_pos(int x, int y){
 	float *XYAngles;
