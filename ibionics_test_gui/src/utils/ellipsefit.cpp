@@ -47,7 +47,7 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 
     int contourSize = contours.size();
 
-    std::cout << "nbr contours : "<< contourSize << std::endl;
+    //std::cout << "nbr contours : "<< contourSize << std::endl;
 
     //find fitting
     /*
@@ -72,7 +72,7 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
         if( contours[i].size() > 5 )
          {
            minEllipse[i] = cv::fitEllipse( cv::Mat(contours[i]) );
-          std::cout << "fitEllipse "<< minEllipse[i].center << std::endl;
+          //std::cout << "fitEllipse "<< minEllipse[i].center << std::endl;
           //std::cout << "i = "<< i << std::endl;
          }
      }
@@ -81,8 +81,8 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 
 
     //draw point
-    int cX = (int) minEllipse[1].center.x;
-    int cY = (int) minEllipse[1].center.y;
+    int cX = (int) minEllipse[0].center.x;
+    int cY = (int) minEllipse[0].center.y;
     //int cX = (int) minRect[0].center.x;
     //int cY = (int) minRect[0].center.y;
 
@@ -90,7 +90,7 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
     //centre.x = cX;
     //centre.y = cY;
 
-    std::cout<<"centre en int ("<< cX << ", "<<cY<<") "<<std::endl;
+    //std::cout<<"centre en int ("<< cX << ", "<<cY<<") "<<std::endl;
 
     //cv::circle(eyeShow, centre,7, (255, 255, 255), -1);
 

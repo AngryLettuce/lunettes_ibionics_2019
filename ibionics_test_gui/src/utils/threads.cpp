@@ -149,6 +149,8 @@ void EyeThread(int id)
 
         cv::cvtColor(image,image2,cv::COLOR_RGB2GRAY);
 
+        auto t1 = std::chrono::high_resolution_clock::now();
+
         if (VERSION == 0)
         {
             mx.lock();
@@ -175,10 +177,14 @@ void EyeThread(int id)
 
         //debug print found position
         mx.lock();
-        std::cout << "position trouvee : ("<< posX <<", "<<posY<<" )"<< std::endl;
+        std::cout<< "info video : " << eyeCam.get(cv::CAP_PROP_POS_MSEC) << std::endl;
+        //std::cout << "position trouvee : ("<< posX <<", "<<posY<<" )"<< std::endl;
         mx.unlock();
 
+        auto t2 = std::chrono::high_resolution_clock::now();
 
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+        std::cout <<"Temps ecouler en micro secondes"<< duration << std::endl;
         //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         //std::cout << posX << endl;
         std::this_thread::yield();
