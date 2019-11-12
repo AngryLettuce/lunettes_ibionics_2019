@@ -14,6 +14,8 @@ function pixMat = genPixMat(wallcorners, resolution)
     width  = linspace(minX, maxX, resolution(1));
     height = linspace(maxY, minY, resolution(2));
     
+    grid = meshgrid(width, height);
+    
     %get delta between each val
     deltaWidth = abs(width(2) - width(1));
     deltaHeigth = abs(height(2) - height(1));

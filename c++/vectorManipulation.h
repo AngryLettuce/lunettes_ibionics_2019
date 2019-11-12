@@ -4,9 +4,11 @@
 #include <armadillo>
 #include <vector>
 
-#define CAMERA_RESOLUTION 200
+#define CAMERA_RESOLUTION 400
 
 using namespace arma;
+
+void initAngleMat(short angleMat[][CAMERA_RESOLUTION][2]);
 
 void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][2]);
 
