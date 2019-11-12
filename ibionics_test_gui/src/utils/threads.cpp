@@ -124,8 +124,9 @@ void EyeThread(int id)
     cv::Mat image;
     cv::Mat image2 ;
     cv::VideoCapture eyeCam(0); //changer index pour 2ieme camera
-    cv::VideoCapture eyeVid("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/video_eye/eyeDemo2.mp4");
-    //cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");// for demoMode
+    cv::VideoCapture eyeVid("/home/pi/Desktop/video_eye/eyeDemo2.mp4");//for demo mode on pi
+    //cv::VideoCapture eyeVid("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/video_eye/eyeDemo2.mp4"); //demo mode michel 
+    //cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");// for demoMode marc
 
     while (1)
     {
@@ -140,7 +141,11 @@ void EyeThread(int id)
         }
         else // in normal mode a camera is used
             eyeCam.read(image);
-
+            cv::Mat tmps = image.clone();
+        
+        //for debug
+        if (image.empty())
+            std::cout<< "image de la camera est vide" <<std::endl;
 
         cv::cvtColor(image,image2,cv::COLOR_RGB2GRAY);
 
@@ -162,9 +167,11 @@ void EyeThread(int id)
         Point center;
         center.x = posX;
         center.y = posY;
-        circle(image2, center, 4, Scalar(255,0,0), -1, 8, 0 );
-        cv::imshow("in eye thread",image2);
+        //circle(image2, center, 4, Scalar(255,0,0), -1, 8, 0 );
+        //cv::imshow("in eye thread",image2);
 
+        circle(tmps, center, 4, Scalar(255,0,0), -1, 8, 0 );//image
+        cv::imshow("in eye thread",tmps);
 
         //debug print found position
         mx.lock();
