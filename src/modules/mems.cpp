@@ -21,25 +21,25 @@
 #define V_DIFF_MAX 120
 #define V_DIFF_TO_ANGLE_FACTOR 0.046
 
-#define SPI_CHANNEL 0
+#define SPI_CHANNEL 2
 #define GPIO39_MEMS_EN_DRV 39
-#define GPIO4_MEMS_FILT_X 4 //this should be a 60kHz clock
+//#define GPIO4_MEMS_FILT_X 4 //this should be a 60kHz clock
 //#define GPIO21_MEMS_FILT_Y 21  //this should be a 60kHz clock
-#define GPIO7_MEMS_CS 7 // Temporary
+//#define GPIO7_MEMS_CS 7 // Temporary
 //-----------------------------------------
 
 Mems::Mems() :
 	spi(SPI_CHANNEL, 250000, 1),
-	enable(GPIO39_MEMS_EN_DRV),
-	clock(GPIO4_MEMS_FILT_X),
-	cs(GPIO7_MEMS_CS) {
+	enable(GPIO39_MEMS_EN_DRV) {
+	//clock(GPIO4_MEMS_FILT_X),
+	//cs(GPIO7_MEMS_CS) {
 	//pinMode(GPIO39_MEMS_EN_DRV, OUTPUT);
 	//pinMode(GPIO12_MEMS_EN_CLK, OUTPUT);
 	//pinMode(GPIO4_MEMS_FILT_X, GPIO_CLOCK); // it is starting here!
 	//pinMode(GPIO21_MEMS_FILT_Y, GPIO_CLOCK);
 	//pinMode(GPIO7_MEMS_CS, OUTPUT);
 
-	cs.write(HIGH);
+	//cs.write(HIGH);
 
 	init_DAC();
 	// Vref should be at 1.25V!
@@ -47,7 +47,7 @@ Mems::Mems() :
 	send_voltage_diff_y(0);
 	//digitalWrite(GPIO12_MEMS_EN_CLK, HIGH);
 	//gpioClockSet(GPIO4_MEMS_FILT_X, 60000);
-	clock.set_clock(60000);
+	//clock.set_clock(60000);
 	//gpioClockSet(GPIO21_MEMS_FILT_Y, 60000);
 	//digitalWrite(GPIO39_MEMS_EN_DRV, HIGH); // TODO: Test when always high
 	enable.write(HIGH); // TODO: Test when always high
@@ -69,11 +69,11 @@ void Mems::send_data(unsigned int data) {
 	send_buffer[1] = data >> 8 & 0xFF;
 	send_buffer[2] = data & 0xFF;
 
-	cs.write(LOW); //temp
+	//cs.write(LOW); //temp
 	//digitalWrite(GPIO7_MEMS_CS, LOW); //temp
 	spi.send(send_buffer, 3);
 	//digitalWrite(GPIO7_MEMS_CS, HIGH); //temp
-	cs.write(HIGH);
+	//cs.write(HIGH);
 }
 
 

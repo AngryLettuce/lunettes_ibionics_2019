@@ -37,10 +37,10 @@ using namespace std;
 Laser_pos_control::Laser_pos_control() :
     laser(),
     mems(),
-    button1(GPIO5_BUTTON1),
+    button1(GPIO7_BUTTON1),
     button2(GPIO6_BUTTON2),
-    button3(GPIO13_BUTTON3),
-    button4(GPIO19_BUTTON4) {
+    button3(GPIO5_BUTTON3),
+    button4(GPIO4_BUTTON4) {
     maxAngles = {-3.7, 3.7, -3.5, 4.5};
 	VLM = {X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS};
 }

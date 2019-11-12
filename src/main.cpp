@@ -22,6 +22,7 @@ int main() {
     Laser_pos_control laser_pos_control;
     std::cout<< "Initialized" << endl;
     //laser_pos_control.mems.stop();
+    laser_pos_control.manual_mode();
     //laser_pos_control.draw_rectangle(400);
     //laser_pos_control.set_max_angles();
     std::cout<< "Max angles set" << endl;

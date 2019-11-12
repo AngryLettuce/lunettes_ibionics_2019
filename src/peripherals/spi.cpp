@@ -40,21 +40,21 @@ void Spi::send(unsigned char* data, int len) {
         wiringPiSPIDataRW(channel, data, len);
     } else if(channel == 2) {
         digitalWrite(GPIO44_SPI2_CS, LOW);
-        delayMicroseconds(2);
+        delayMicroseconds(8);
         for(int byte=0; byte < len; byte++) {
             //std::cout << (int)data[byte] << std::endl;
             for(int bit=0; bit < 8; bit++) {
                 digitalWrite(GPIO_SPI2_SCK, HIGH);
                 digitalWrite(GPIO41_SPI2_MOSI, (data[byte] & 0x80) >> 7);
                 data[byte] <<= 1;
-                delayMicroseconds(2);
+                delayMicroseconds(8);
                 digitalWrite(GPIO_SPI2_SCK, LOW);
                 //in = (in << 1) | digitalRead(GPIO40_SPI2_MISO);
-                delayMicroseconds(2);
+                delayMicroseconds(8);
             }
 
         }
-        delayMicroseconds(2);
+        delayMicroseconds(8);
         digitalWrite(GPIO44_SPI2_CS, HIGH);
     }
 }
