@@ -8,7 +8,8 @@ using namespace std;
 using namespace arma;
 int main()
 {
-	
+	arma_version ver;
+	cout << ver.as_string() << endl;
 	initAngleMat(angleMat);
 
 	/*
