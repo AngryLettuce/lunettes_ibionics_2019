@@ -4,9 +4,10 @@ clc
 addpath("../");
 
 resolution = 200;
-nbOfPoint  = 5;
+nbOfPointX  = 5;
+nbOfPointY  = 5;
 angleMat = zeros(resolution, resolution, 2);
-[X,Y] = meshgrid(0:resolution/(nbOfPoint-1):resolution, 0:resolution/(nbOfPoint-1):resolution);
+[X,Y] = meshgrid(0:resolution/(nbOfPointX-1):resolution, 0:resolution/(nbOfPointY-1):resolution);
 [Xq,Yq] = meshgrid(0:resolution-1, 0:resolution-1);
 
 anglesX = [1.48, 1.46, 1.42, 1.42, 1.44; ...
@@ -24,8 +25,8 @@ anglesY = [-0.94, -0.32, 0.38, 1.06, 1.82; ...
 Vx = interp2(X,Y,anglesX,Xq,Yq);
 Vy = interp2(X,Y,anglesY,Xq,Yq);
 
-angleMat(:,:,1) = Vx * 1000;
-angleMat(:,:,2) = Vy * 1000;
+angleMat(:,:,1) = round(Vx * 1000);
+angleMat(:,:,2) = round(Vy * 1000);
 
 mat2LookUp(angleMat)
 
