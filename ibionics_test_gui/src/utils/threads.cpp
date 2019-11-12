@@ -127,7 +127,7 @@ void EyeThread(int id)
     cv::VideoCapture eyeVid("/home/pi/Desktop/video_eye/eyeDemo2.mp4");//for demo mode on pi
     //cv::VideoCapture eyeVid("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/video_eye/eyeDemo2.mp4"); //demo mode michel 
     //cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");// for demoMode marc
-
+    double timeSpend,fps;
 
     while (1)
     {
@@ -178,14 +178,20 @@ void EyeThread(int id)
 
         //debug print found position
         mx.lock();
-        std::cout<< "info video : " << eyeCam.get(cv::CAP_PROP_POS_MSEC) << std::endl;
+        //std::cout<< "info video : " << eyeCam.get(cv::CAP_PROP_POS_MSEC) << std::endl;
         //std::cout << "position trouvee : ("<< posX <<", "<<posY<<" )"<< std::endl;
         mx.unlock();
 
         auto t2 = std::chrono::high_resolution_clock::now();
 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
-        std::cout <<"Temps ecouler en micro secondes"<< duration << std::endl;
+        //std::cout <<"Temps ecouler en micro secondes"<< duration << std::endl;
+
+        //calcul fps
+        timeSpend = duration / 1e6;
+        fps = 1/timeSpend;
+        std::cout << "fps approximatif : "<< fps << std::endl;
+
         //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         //std::cout << posX << endl;
         std::this_thread::yield();
