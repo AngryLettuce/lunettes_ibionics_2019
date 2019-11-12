@@ -1,4 +1,5 @@
 #include "threads.h"
+#include "modes.h"
 
 //Mutex object for lcoking oin threads
 bool WORLDLOOP = true;
@@ -9,7 +10,7 @@ int posX = 10;
 int posY = 10;
 
 //for eye detection
-int version = 0; //0- hough circle 1- ellispe fitting
+//int version = 0; //0- hough circle 1- ellispe fitting
 
 std::thread startEyeThread()
 {
@@ -123,7 +124,8 @@ void EyeThread(int id)
     cv::Mat image;
     cv::Mat image2 ;
     cv::VideoCapture eyeCam(0); //changer index pour 2ieme camera
-    cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");// for demoMode
+    cv::VideoCapture eyeVid("/home/ibionics-michel/Documents/view/devS8/devs8_ibionics/ibionics_test_gui/video_eye/eyeDemo2.mp4");
+    //cv::VideoCapture eyeVid("C:/Users/houma/Desktop/eyeDemo2.mp4");// for demoMode
 
     while (1)
     {
@@ -142,13 +144,13 @@ void EyeThread(int id)
 
         cv::cvtColor(image,image2,cv::COLOR_RGB2GRAY);
 
-        if (version == 0)
+        if (VERSION == 0)
         {
             mx.lock();
             applyHoughMethod(image2, posX,posY);
             mx.unlock();
         }
-        if (version == 1)
+        if (VERSION == 1)
         {
             mx.lock();
             applyEllipseMethod(image2,posX,posY); //voir pour mx lock dans la fonction

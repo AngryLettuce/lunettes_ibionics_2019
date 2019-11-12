@@ -4,11 +4,12 @@ bool debug = true;
 
 void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 {
-    double thresh = 0.0;
+    double thresh = 127;
     double maxval = 255;
     int operation;
-    int morph_elem = 2 ;//ellipse
-    int morph_size = 3; //kernal size
+    int kernel_size = 8;
+
+    cv::imshow("start image",image);
 
     std::vector<std::vector<cv::Point> > contours;
     std::vector<cv::Vec4i> hierarchy;
@@ -18,23 +19,26 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 
     cv::equalizeHist(image,image);
 
-
-
     cv::threshold(image,image,thresh,maxval,cv::THRESH_BINARY_INV);
+
+    cv::imshow("after threshold",image);
 
     //closing
     operation = 3; //for closing
-    cv::Mat element = cv::getStructuringElement( morph_elem, cv::Size( 2*morph_size + 1, 2*morph_size+1 ), cv::Point( morph_size, morph_size ) );
+    cv::Mat element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
 
     cv::morphologyEx(image,image,operation,element);
+
+    cv::imshow("after closing",image);
 
 
     //opening
     operation = 0;
-    element = cv::getStructuringElement( morph_elem, cv::Size( 2*morph_size + 1, 2*morph_size+1 ), cv::Point( morph_size, morph_size ) );
+    element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
 
     cv::morphologyEx(image,image,operation,element);
 
+    cv::imshow("after opening",image);
 
     //find contours
     cv::findContours(image,contours,hierarchy,cv::RETR_TREE,cv::CHAIN_APPROX_SIMPLE ,cv::Point(0, 0) );
@@ -45,11 +49,24 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 
     std::cout << "nbr contours : "<< contourSize << std::endl;
 
+    //find fitting
+    /*
+    double area0 = cv::contourArea(contours[0],false);
+
+    if( contours[0].size() > 5 )
+     {
+       minEllipse[0] = cv::fitEllipse( cv::Mat(contours[0]) );
+      std::cout << "fitEllipse "<< minEllipse[0].center << std::endl;
+     }*/
+
     //find center
+
     for( int i = 0; i < (int) contours.size(); i++ )
     {
-       minRect[i] = cv::minAreaRect( cv::Mat(contours[i]) );
-       std::cout << "minAreaRect "<< minRect[i].center << std::endl;
+       //Rect[i] = cv::minAreaRect( cv::Mat(contours[i]) );
+       //std::cout << "minAreaRect "<< minRect[i].center << std::endl;
+
+       cv::contourArea(contours[i],false);
 
 
         if( contours[i].size() > 5 )
