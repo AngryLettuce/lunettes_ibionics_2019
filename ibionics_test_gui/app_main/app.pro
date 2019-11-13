@@ -63,7 +63,8 @@ SOURCES     +=  main.cpp \
                 #$${BASE_FOLDER}/src/utils/dev_tool.cpp \
                 $${BASE_FOLDER}/src/utils/edgeDetection.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp \
-                $${BASE_FOLDER}/src/utils/ellipsefit.cpp
+                $${BASE_FOLDER}/src/utils/ellipsefit.cpp \
+                $${BASE_FOLDER}/src/utils/testvideo.cpp
 
 
 
@@ -82,7 +83,8 @@ HEADERS     +=  mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/grayLevelsTable.h \
                 $${BASE_FOLDER}/includes/utils/threads.h \
                 $${BASE_FOLDER}/includes/utils/ellipsefit.h \
-                $${BASE_FOLDER}/includes/utils/modes.h
+                $${BASE_FOLDER}/includes/utils/modes.h \
+                $${BASE_FOLDER}/includes/utils/testvideo.h
 
 FORMS           +=  mainwindow.ui
 

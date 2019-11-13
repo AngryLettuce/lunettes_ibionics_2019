@@ -3,12 +3,18 @@
 #include <QApplication>
 #include "houghCircle.h"
 #include "modes.h"
-
+#include "testvideo.h"
 std::mutex mx;
 
 
 int main(int argc, char *argv[])
 {
+
+    //record video
+    writeCamVideo("videoFromCamera.avi");
+
+
+
     /*
     Init wiringPi
     Init laserPos object (maybe local to thread?)
@@ -22,7 +28,7 @@ int main(int argc, char *argv[])
     */
 
 
-    std::thread eyeThread = startEyeThread();
+    //std::thread eyeThread = startEyeThread();
 
     //cv::Mat3b img = cv::imread("C:/Users/houma/Documents/ibionics2/ibionics_test_gui/app_main/test.png",1);
 
