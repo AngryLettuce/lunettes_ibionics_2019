@@ -19,9 +19,11 @@
 extern std::mutex mx;
 
 std::thread startEyeThread();
+std::thread startWorldThread2();
 std::thread startWorldThread(cv::Mat3b *img);
 void stopEyeThread();
 void stopWorldThread();
+void WorldThread2(int id);
 void WorldThread(int id, cv::Mat3b *img);
 void EyeThread(int id);
 

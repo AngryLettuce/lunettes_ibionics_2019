@@ -20,6 +20,12 @@ std::thread startEyeThread()
     return th;
 }
 
+std::thread startWorldThread2()
+{
+    std::thread th(WorldThread2, 2);
+    return th;
+}
+
 std::thread startWorldThread(cv::Mat3b *img)
 {
     //WORLDLOOP = true;
@@ -27,11 +33,8 @@ std::thread startWorldThread(cv::Mat3b *img)
     //img = cv::imread("C:/Users/houma/Documents/ibionics2/ibionics_test_gui/app_main/lenna.png",1);
     //cv::imshow("test4", img);
     std::thread th(WorldThread, 2, img);
-
-
     return th;
 }
-
 
 void stopEyeThread()
 {
@@ -43,6 +46,68 @@ void stopEyeThread()
 void stopWorldThread()
 {
     WORLDLOOP = false;
+}
+
+
+void WorldThread2(int id)
+{
+    /*
+    In a loop
+        Get Image from worldCam
+            <- read position from EyeThread
+        Crop/Resize...
+        "Sobel"
+            -> write new image to buffer
+    */
+    //bool WORLDLOOP = true;
+    cv::Mat3b img;
+    cv::VideoCapture worldCam(0);
+    cv::Mat imgZoom;
+
+
+    //Grayscale convert
+    Mat gray_LUT(1, 256, CV_8U);
+    uchar*p = gray_LUT.ptr();
+    for (int i = 0; i < 256; i++) {
+        p[i] = grayLevelsTable[i];
+    }
+
+    //cv::namedWindow("test1",1);
+    //cv::namedWindow("test",1);
+
+    while (1)
+    {
+        if(worldCam.grab())
+        {
+            mx.lock();
+            worldCam.retrieve(img);
+            mx.unlock();
+
+            if(!img.empty())
+            {
+                //Crop current frame according to pupil position
+
+                mx.lock();
+                cropRegion(img, &imgZoom, posX, posY, 160, 180);
+                mx.unlock();
+
+                //cv::imshow("test", imgZoom);
+                //cv::imshow("From Thread Loop", *img);
+
+                //edge detection
+                //sobel_sequence(imgZoom,imgZoom,gray_LUT);
+
+                if (VERBOSE)
+                {
+                    mx.lock();
+                    cv::imshow("in world thread",img);
+                    //std::cout <<(int) img->at<Vec3b> (45,45)[0] <<std::endl; //afficher valeur pixel
+                    mx.unlock();
+                }
+            }
+        }
+        std::this_thread::yield();
+    }
 }
 
 
@@ -58,8 +123,8 @@ void WorldThread(int id, cv::Mat3b *img)
     */
     //bool WORLDLOOP = true;
     //cv::Mat3b img;
-    cv::VideoCapture worldCam(1);
-    //cv::Mat imgZoom;
+    cv::VideoCapture worldCam(0);
+    cv::Mat imgZoom;
 
     //Grayscale convert
     Mat gray_LUT(1, 256, CV_8U);
@@ -77,30 +142,29 @@ void WorldThread(int id, cv::Mat3b *img)
         {
             mx.lock();
             worldCam.retrieve(*img);
-            //std::cout<<"In thread"<<endl;
             mx.unlock();
 
             if(!img->empty())
             {
                 //Crop current frame according to pupil position
-                /*
+
                 mx.lock();
-                cropRegion(img, &imgZoom, posX, posY, 160, 180);
+                cropRegion(*img, &imgZoom, posX, posY, 160, 180);
                 mx.unlock();
-                */
 
                 //cv::imshow("test", imgZoom);
                 //cv::imshow("From Thread Loop", *img);
+
                 //edge detection
                 //sobel_sequence(imgZoom,imgZoom,gray_LUT);
-                mx.lock();
-                cv::imshow("in world thread",*img);
-                //std::cout <<(int) img->at<Vec3b> (45,45)[0] <<std::endl; //afficher valeur pixel
-                mx.unlock();
 
-                //cv::imshow("test1 ", imgZoom);
-
-                //cv::waitKey(0);
+                if (VERBOSE)
+                {
+                    mx.lock();
+                    cv::imshow("in world thread",*img);
+                    //std::cout <<(int) img->at<Vec3b> (45,45)[0] <<std::endl; //afficher valeur pixel
+                    mx.unlock();
+                }
             }
         }
         std::this_thread::yield();

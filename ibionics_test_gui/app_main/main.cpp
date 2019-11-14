@@ -9,9 +9,49 @@ std::mutex mx;
 
 int main(int argc, char *argv[])
 {
+    /*
+    //==============================================
+    //======== Test Main with switch case ==========
+    //==============================================
+    switch(MAINMODES) {
+        case 0: // Debug mode
+        {
+            std::cout<<"Currently in debug mode"<<endl;
+            break;
+        }
+        case 1: // Eye Thread + World Thread
+        {
+            std::cout<<"Currently in eye and world mode"<<endl;
+            cv::Mat3b *img = new cv::Mat3b;
+            std::thread WorldThread = startWorldThread(img);
+            std::thread eyeThread = startEyeThread();
+            break;
+        }
+
+        case 2: // Eye Thread
+        {
+            std::cout<<"Currently in eye mode"<<endl;
+            std::thread eyeThread = startEyeThread();
+            break;
+        }
+
+        case 3: // World Thread
+        {
+            std::cout<<"Currently in world mode"<<endl;
+            cv::Mat3b *img = new cv::Mat3b;
+            std::thread WorldThread = startWorldThread(img);
+            break;
+        }
+        default : //Optional
+        {
+            std::cout<<"Defaulted to no mode"<<endl;
+            break;
+        }
+    }
+    */
 
     //record video
-    writeCamVideo("videoFromCamera.avi");
+    //writeCamVideo("videoFromCamera.avi");
 
 
 
@@ -55,6 +95,14 @@ int main(int argc, char *argv[])
         }
     }
 */
+    //==============================================
+    //====== Main Eye thread and World Thread ======
+    //==============================================
+
+    cv::Mat3b *img = new cv::Mat3b;
+    *img = cv::imread("C:/Users/houma/Documents/ibionics2/ibionics_test_gui/app_main/test.png",1);
+    std::thread worldThread = startWorldThread(img);
+    //std::thread eyeThread = startEyeThread();
 /*
 
     //==============================================
@@ -110,5 +158,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
+    //worldThread.join();
+    //eyeThread.join();
     return a.exec();
 }
