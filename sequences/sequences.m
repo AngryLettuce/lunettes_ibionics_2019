@@ -46,8 +46,8 @@ phi = linspace(0, nturns*2*pi, spiralRes) ;
 r = linspace(0, R, numel(phi)) ;
 x = round(pos(1,1) + r .* cos(phi + phi0)) ;
 y = round(pos(1,2) + r  .* sin(phi + phi0)) ;
-x(x==resolution) = resolution-1;
-y(y==resolution) = resolution-1;
+x(x>=resolution) = resolution-1;
+y(y>=resolution) = resolution-1;
 
 spiralSequence = (zeros(length(x), 2));
 for i = [1:spiralRes] 
@@ -88,8 +88,8 @@ y = (a .* sqrt(2) .*  cos(t) .* sin(t)) ./  (sin(t).^2 + 1);
 
 x = x / (max(x) /(resolution/2 -12.5)) + resolution/2;
 y = y / (max(y) /(resolution/2 -25)) + resolution/2;
-x(x==resolution) = resolution-1;
-y(y==resolution) = resolution-1;
+x(x>=resolution) = resolution-1;
+y(y>=resolution) = resolution-1;
 
 x = round(x);
 y = round(y);
@@ -115,8 +115,8 @@ x = round(x);
 y = round(y);
 
 circularLoopSequence = (zeros(length(x), 2));
-x(x==resolution) = resolution-1;
-y(y==resolution) = resolution-1;
+x(x>=resolution) = resolution-1;
+y(y>=resolution) = resolution-1;
 for i = [1:length(x)] 
 %     circularLoopSequence(i,1)  = double(angleMat(x(1,i), y(1,i), 1)) / 1000;
 %     circularLoopSequence(i,2)  = double(angleMat(x(1,i), y(1,i), 2)) / 1000;
@@ -133,8 +133,8 @@ x = ((a+b)*cos(t) - b*cos((a/b +1) * t));
 y = ((a+b)*sin(t) - b*sin((a/b +1) * t));
 x = round(mat2gray(x) * resolution);
 y = round(mat2gray(y) * resolution);
-x(x==resolution) = resolution-1;
-y(y==resolution) = resolution-1;
+x(x>=resolution) = resolution-1;
+y(y>=resolution) = resolution-1;
 flowerSequence = (zeros(length(x), 2));
 % x(x==0) = 1;
 % y(y==0) = 1;
