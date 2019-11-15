@@ -1,27 +1,27 @@
 #ifndef EYETAB_H
 #define EYETAB_H
 
-#include <iostream> //
+#include <iostream>
 #include <Qt>
 #include <QTabWidget>
 #include <QLayout>
-#include <QTimer> //
-#include <QLabel> //
+#include <QTimer>
+#include <QLabel>
 #include <QCamera>
 #include <QCameraInfo>
 #include <QCameraViewfinder>
-
-
 #include <opencv2/core.hpp>
-//#include <opencv2/imgcodecs.hpp>
-//#include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+
+#include "mainwindow.h"
+
+class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 
 class EyeTab : public QWidget
 {
     Q_OBJECT
 public:
-    explicit EyeTab(QWidget *parent = nullptr);
+    explicit EyeTab(QWidget *parent = nullptr, QWidget *mW = nullptr);
     QCamera *camera;
     QCameraViewfinder *viewfinder;
 
@@ -34,8 +34,8 @@ public:
     QTimer *tmrTimer;
 
     QLabel *imgLbl;
-    int posX = 0;
-    int posY = 0;
+
+    MainWindow *mainPtr;
 
 signals:
 

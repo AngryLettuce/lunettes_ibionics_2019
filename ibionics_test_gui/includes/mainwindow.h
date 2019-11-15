@@ -13,6 +13,9 @@
 #include "worldtab.h"
 #include "gpiotab.h"
 
+class WorldTab; //foward declaration to avoid circular dependencies with worldtab.h
+class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -27,6 +30,15 @@ public:
     GPIOTab *gpioTab;
 
     bool *hasCamera;
+
+    int posX;
+    int posY;
+
+    int getPosX();
+    int getPosY();
+    void setPosX(int x);
+    void setPosY(int y);
+
 private:
     int memsIndex;
     int laserIndex;

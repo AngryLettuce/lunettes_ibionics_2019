@@ -8,22 +8,19 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    std::cout<<"debut const mainWindow"<<std::endl;
+    posX = 0;
+    posY = 0;
 
     QWidget *centralWidget = new QWidget(this);
     QGridLayout *layout = new QGridLayout(centralWidget);
     QTabWidget *tabs = new QTabWidget(centralWidget);
 
-    std::cout<<"before tabs"<<std::endl;
-
+    QWidget *mW = this;
     memsTab = new MemsTab(tabs);
     laserTab = new LaserTab(tabs);
-    std::cout<<"after laser tab"<<std::endl;
-    eyeCamTab = new EyeTab(tabs);
-    worldCamTab = new WorldTab(tabs);
+    eyeCamTab = new EyeTab(tabs, mW);
+    worldCamTab = new WorldTab(tabs, mW);
     gpioTab = new GPIOTab();
-
-    std::cout<<"after tabs"<<std::endl;
 
     //Tabs added to layout with GPIOs
     layout->addWidget(tabs,0,0);
@@ -110,5 +107,23 @@ void MainWindow::tabChange(int currentIndex)
         worldCamTab->camera->stop();
         */
     }
+}
+
+int MainWindow::getPosX()
+{
+    return posX;
+}
+
+int MainWindow::getPosY()
+{
+    return posY;
+}
+void MainWindow::setPosX(int x)
+{
+    posX = x;
+}
+void MainWindow::setPosY(int y)
+{
+    posY = y;
 }
 
