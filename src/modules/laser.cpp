@@ -9,7 +9,7 @@
 
 #define GPIO32_LASER_EN_DRV     32
 #define GPIO30_LASER_ENCAL      30
-#define GPIO38_LASER_EN_CH_LOW  38
+#define GPIO36_LASER_EN_CH_LOW  36
 #define GPIO37_LASER_EN_CH_MID  37
 #define GPIO33_LASER_EN_CH_HIGH 33
 #define GPIO31_LASER_REGEN      31
@@ -22,36 +22,22 @@ Laser::Laser() :
 	enable(GPIO32_LASER_EN_DRV),
 	encal(GPIO30_LASER_ENCAL),
 	regen(GPIO31_LASER_REGEN),
-	low(GPIO38_LASER_EN_CH_LOW),
+	low(GPIO36_LASER_EN_CH_LOW),
 	mid(GPIO37_LASER_EN_CH_MID),
 	high(GPIO33_LASER_EN_CH_HIGH)  {
 	// Configure LASER GPIOs
-	/*pinMode(GPIO32_LASER_EN_DRV, OUTPUT);
-	pinMode(GPIO30_LASER_ENCAL, OUTPUT);
-	pinMode(GPIO31_LASER_REGEN, OUTPUT);
-	pinMode(GPIO38_LASER_EN_CH_LOW, OUTPUT);
-	pinMode(GPIO37_LASER_EN_CH_MID, OUTPUT);
-	pinMode(GPIO33_LASER_EN_CH_HIGH, OUTPUT);
-
-	digitalWrite(GPIO31_LASER_REGEN, HIGH);
-	digitalWrite(GPIO32_LASER_EN_DRV, LOW);
-	digitalWrite(GPIO38_LASER_EN_CH_LOW, LOW);
-	digitalWrite(GPIO37_LASER_EN_CH_MID, LOW);
-	digitalWrite(GPIO33_LASER_EN_CH_HIGH, LOW);*/
 	regen.write(HIGH);
 	enable.write(LOW);
 	low.write(LOW);
 	mid.write(LOW);
 	high.write(LOW);
 
-	//digitalWrite(GPIO30_LASER_ENCAL, HIGH);
 	encal.write(HIGH);
 	delay(1000);
-	//digitalWrite(GPIO32_LASER_EN_DRV, HIGH);
+
 	enable.write(HIGH);
 	delay(1000);
 	// Set intensity here
-	//digitalWrite(GPIO38_LASER_EN_CH_LOW, HIGH);
 	low.write(HIGH);
 
 	// Set laser power
@@ -63,7 +49,6 @@ Laser::Laser() :
 
 void Laser::off() {
 	enable.write(LOW);
-	//digitalWrite(GPIO32_LASER_EN_DRV, LOW);
 }
 
 void Laser::on() {

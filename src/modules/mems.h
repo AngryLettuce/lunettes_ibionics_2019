@@ -8,8 +8,6 @@
 #ifndef SRC_MODULES_MEMS_H_
 #define SRC_MODULES_MEMS_H_
 
-
-
 #include "../peripherals/spi.h"
 #include "../peripherals/digital_out.h"
 //#include "../peripherals/clock.h"
@@ -24,13 +22,15 @@ public:
 	/**
 	 * @brief Send an angle command for the x axis.
 	 * @param angle x angle (deg).
+	 * @return the saturated angle sent.
 	 */
-	void send_angle_x(float angle);
+	float send_angle_x(float angle);
 	/**
 	 * @brief Send an angle command for the y axis.
 	 * @param angle y angle (deg).
+	 * @return the saturated angle sent.
 	 */
-	void send_angle_y(float angle);
+	float send_angle_y(float angle);
 	/**
 	 * @brief Send both angles.
 	 * @param angle_x x angle (deg).
@@ -42,15 +42,18 @@ public:
 	 */
 	void stop();
 	/**
-	 * @brief Saturate the angle inside the safe range.
-	 * @param angle angle (deg).
-	 * @return the saturated angle.
+	 * @brief Disable the mems mirror and put it back at zero in x and y.
 	 */
-	float saturate_angle(float angle);
+	void print_angles();
+	
+	
+	float get_angle_x();
+	float get_angle_y();
 private:
 	Spi spi;
 	Digital_out enable;
-	//Digital_out cs;
+	float angle_x;
+	float angle_y;
 	//Clock clock;
 
 	/**
@@ -90,6 +93,12 @@ private:
 	 * @brief Itinialize the DAC.
 	 */
 	void init_DAC();
+	/**
+	 * @brief Saturate the angle inside the safe range.
+	 * @param angle angle (deg).
+	 * @return the saturated angle.
+	 */
+	float saturate_angle(float angle);
 };
 
 

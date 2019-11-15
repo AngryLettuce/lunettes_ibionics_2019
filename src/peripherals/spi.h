@@ -8,6 +8,8 @@
 #ifndef SRC_PERIPHERALS_SPI_H_
 #define SRC_PERIPHERALS_SPI_H_
 
+#include "digital_out.h"
+#include "digital_in.h"
 
 class Spi {
 public:
@@ -25,6 +27,10 @@ public:
 	 */
 	void send(unsigned char* data, int len);
 private:
+	Digital_out cs;
+	//Digital_out sck;
+	//Digital_out mosi;
+	//Digital_in miso;
 	int channel;
 };
 
