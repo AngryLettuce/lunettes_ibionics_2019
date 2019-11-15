@@ -11,7 +11,7 @@ bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Poin
 }
 
 
-void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
+void applyEllipseMethod(cv::Mat image, int& posX, int& posY)
 {
     double thresh = 127;
     double maxval = 255;
@@ -27,18 +27,17 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 
     cv::equalizeHist(image,image);
 
-    cv::threshold(image,image,thresh,maxval,cv::THRESH_BINARY_INV);
+    cv::threshold(image, image, thresh, maxval, cv::THRESH_BINARY_INV);
 
-    cv::imshow("after threshold",image);
+    //cv::imshow("after threshold",image);
 
     //closing
 
     cv::Mat element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
 
-    cv::morphologyEx(image,image,cv::MORPH_CLOSE,element);
+    cv::morphologyEx(image, image, cv::MORPH_CLOSE,element);
 
     //cv::imshow("after closing",image);
-
 
     //opening
     //element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
@@ -74,11 +73,11 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
           //std::cout << "i = "<< i << std::endl;
          }
      }
-
-    cv::RotatedRect ellipse; //fitting ellipse
-    ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
     
-    //draw point
+    if(area_max >= 5) {
+        cv::RotatedRect ellipse; //fitting ellipse
+        ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
+            //draw point
     int cX = (int) ellipse.center.x;
     int cY = (int) ellipse.center.y;
 
@@ -95,7 +94,11 @@ void applyEllipseMethod(cv::Mat image,int &posX, int &posY)
 
     posX = cX;
     posY = cY;
-
+    }
+    else {
+        posX = -1;
+        posY = -1;
+    }
 }
 
 /*

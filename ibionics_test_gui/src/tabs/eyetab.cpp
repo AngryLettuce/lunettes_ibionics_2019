@@ -12,7 +12,7 @@ EyeTab::EyeTab(QWidget *parent, QWidget *mW) : QWidget(parent)
     //Placement in Layout
     layout->addWidget(imgLbl,0,0,1,1);
 
-    cam.open(1);
+    cam.open(2);
 
     if(!cam.isOpened())
     {
@@ -44,7 +44,7 @@ void EyeTab::processFrame()
     //std::cout<<"X: "<<posX<<" Y: "<<posY<<std::endl;
     cv::circle(img, centre,7, (255, 255, 255), -1);
     //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_Grayscale8);
-
+    cv::cvtColor(img,img,cv::COLOR_BGR2RGB);
     QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_RGB888);
 
 
