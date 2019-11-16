@@ -32,6 +32,11 @@
 #define xAngles_grid_points 5
 #define yAngles_grid_points 5
 
+#define KB_UP 72
+#define KB_DOWN 80
+#define KB_LEFT 75
+#define KB_RIGHT 77
+
 using namespace std;
 
 Laser_pos_control::Laser_pos_control() :
@@ -271,9 +276,6 @@ void Laser_pos_control::manual_mode() {
     float angle_x = mems.get_angle_x();
     float angle_y = mems.get_angle_y();
 
-	mems.send_angle_x(angle_x);
-	mems.send_angle_y(angle_y);
-
     while(button4.scan_button() != PRESSED) {
         if(button3.scan_button() == PRESSED) { // Change of axis
             axis ^= 1;
@@ -294,7 +296,7 @@ void Laser_pos_control::manual_mode() {
             } else { // reset momentum
                 momentum = delta_angle;
             }
-	    
+
         } else {
             if(button1.scan_button() == HELD_DOWN || button1.scan_button() == PRESSED) {
 				// Increase y angle
@@ -311,7 +313,7 @@ void Laser_pos_control::manual_mode() {
             } else { // reset momentum
                 momentum = delta_angle;
             }
-	    
+
         }
         delay(wait_delay);
     }
@@ -338,4 +340,68 @@ void Laser_pos_control::send_pos(int x, int y){
 	float *XYAngles;
 	XYAngles = getAngles(x,y);
 	mems.send_angles(XYAngles[0], XYAngles[1]);
+}
+
+
+void Laser_pos_control::keyboard_manual_mode() {
+    const float delta_angle = 0.02;
+    const int wait_delay = 100;
+    float momentum = delta_angle;
+    float angle_x = mems.get_angle_x();
+    float angle_y = mems.get_angle_y();
+	char key = "";
+	char last_key = "";
+    while(key != 'q') {
+		cin >> key; //TODO: replace by getchar()
+
+		switch(key) {//TODO: add print on enter
+			case KB_UP :
+				if(last_key != key) {
+					momentum = delta_angle;
+				}
+				last_key = key;
+				// Increase x angle
+				angle_x += momentum;
+				angle_x = mems.send_angle_x(angle_x);
+				//cout << "X : " << angle_x << endl;
+				momentum += delta_angle;
+				break;
+			case KB_DOWN :
+				if(last_key != key) {
+					momentum = delta_angle;
+				}
+				last_key = key;
+				// Decrease x angle
+				angle_x -= momentum;
+				angle_x = mems.send_angle_x(angle_x);
+				//cout << "X : " << angle_x << endl;
+				momentum += delta_angle;
+				break;
+			case KB_LEFT :
+				if(last_key != key) {
+					momentum = delta_angle;
+				}
+				last_key = key;
+				// Increase y angle
+				angle_y += momentum;
+				angle_y = mems.send_angle_y(angle_y);
+				//cout << "Y : "  << angle_y << endl;
+				momentum += delta_angle;
+				break;
+			case KB_RIGHT :
+				if(last_key != key) {
+					momentum = delta_angle;
+				}
+				last_key = key;
+				// Decrease y angle
+				angle_y -= momentum;
+				angle_y = mems.send_angle_y(angle_y);
+				//cout << "Y : "  << angle_y << endl;
+				momentum += delta_angle;
+				break;
+			default :
+				break;
+		}
+        delay(wait_delay);
+    }
 }
