@@ -21,6 +21,10 @@ int main() {
     wiringPiSetupGpio(); // TODO : Should be done once in gpio.h
     //piHiPri(20);
     Laser_pos_control laser_pos_control;
+    
+
+    laser_pos_control.calibrateGrid();
+    //laser_pos_control.export2Header("modules/testing.h");
     //laser_pos_control.manual_mode();
     //laser_pos_control.mems.print_angles() ;
     //laser_pos_control.mems.stop();
@@ -30,20 +34,38 @@ int main() {
     //laser_pos_control.set_max_angles();
 	//laser_pos_control.recalculateAnglesMat();
         
-    for(int i=0; i<25; i++) {
+    //for(int i=0; i<25; i++) {
+    //while(1){
+        //laser_pos_control.keyboard_manual_mode();
+        //laser_pos_control.mems.print_angles() ;
         //angles = laser_pos_control.manual_mode();
         //cout << angles[0] << endl;
         //cout << angles[1] << endl;
            // laser_pos_control.mems.send_angle_x(0);
-          // laser_pos_control.draw_rectangle(100);
-           //laser_pos_control.draw_circluarLoop(10);
-        //delay(1);
+           /*
+           for(int i=0; i<5; i++){
+               laser_pos_control.draw_rectangle(10);
+           }
+           for(int i=0; i<5; i++){
+               laser_pos_control.draw_circluarLoop(10);
+           }
+           for(int i=0; i<5; i++){
+               laser_pos_control.draw_infinity(10);
+           }
+           for(int i=0; i<5; i++){
+               laser_pos_control.draw_spiral(10);
+           }
+           for(int i=0; i<5; i++){
+               laser_pos_control.draw_Closingrectangle(10);
+           }
+           */
+        //delay(10);
         //laser_pos_control.send_pos(100,100);
        // delay(1000);
         //delay(2000);
-        laser_pos_control.manual_mode();
-    laser_pos_control.mems.print_angles() ;
-    }
+        //laser_pos_control.manual_mode();
+    //laser_pos_control.mems.print_angles() ;
+    //}
     
     //laser_pos_control.set_max_angles();
     //short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];

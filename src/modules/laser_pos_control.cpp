@@ -5,12 +5,14 @@
  */
 #define _USE_MATH_DEFINES
 #include <iostream>
+#include <fstream>
 #include <math.h>
 
 #include <wiringPi.h>
 
 #include "laser_pos_control.h"
 #include "anglesPoints.h"
+#include "getch.h"
 #include "../../mathMems/interpolationBilineaire/lookUpTable.h"
 #include "../../sequences/infinity_LUT.h"
 #include "../../sequences/closingRect_LUT.h"
@@ -18,24 +20,31 @@
 #include "../../sequences/spiral_LUT.h"
 #include "../../sequences/circularLoop_LUT.h"
 
-#define MEMS_TILT_ANGLE 21
-#define X_LASER_TO_MEMS 0
-#define Y_LASER_TO_MEMS 0
-#define Z_LASER_TO_MEMS -1
-#define Z_MEMS_TO_WALL 1000
-#define XYZ_MATRIX_PRECISION 0.1
+//#define MEMS_TILT_ANGLE 21
+//#define X_LASER_TO_MEMS 0
+//#define Y_LASER_TO_MEMS 0
+//#define Z_LASER_TO_MEMS -1
+//#define Z_MEMS_TO_WALL 1000
+//#define XYZ_MATRIX_PRECISION 0.1
 #define RECTANGLE_SEQUENCE_LENGTH 80
 #define SPIRAL_RESOLUTION 100
 #define CLOSING_RECTANGLE_LENGTH 240
 #define INFINITY_SEQUENCE_LENGTH 101
 #define CIRCULAR_LOOP_SEQUENCE_LENGTH 201
-#define xAngles_grid_points 5
-#define yAngles_grid_points 5
+
+
 
 #define KB_UP 72
 #define KB_DOWN 80
 #define KB_LEFT 75
 #define KB_RIGHT 77
+#define KB_SPACE 32
+#define KB_ENTER 13
+#define KB_Q 113
+#define KB_W 119
+#define KB_A 97
+#define KB_S 115
+#define KB_D 100
 
 using namespace std;
 
@@ -46,14 +55,14 @@ Laser_pos_control::Laser_pos_control() :
     button2(GPIO6_BUTTON2),
     button3(GPIO5_BUTTON3),
     button4(GPIO4_BUTTON4) {
-    maxAngles = {-3.7, 3.7, -3.5, 4.5};
-	VLM = {X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS};
+    //maxAngles = {-3.7, 3.7, -3.5, 4.5};
+    //VLM = {X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS};
 }
 
 
 void Laser_pos_control::initAngleMat() {
-	vec X = linspace(0, CAMERA_RESOLUTION - 1, xAngles_grid_points);
-	vec Y = linspace(0, CAMERA_RESOLUTION - 1, yAngles_grid_points);
+	vec X = linspace(0, CAMERA_RESOLUTION - 1, X_ANGLES_GRID_POINTS);
+	vec Y = linspace(0, CAMERA_RESOLUTION - 1, Y_ANGLES_GRID_POINTS);
 	vec Xi = linspace(0, CAMERA_RESOLUTION - 1, CAMERA_RESOLUTION);
 	vec Yi = linspace(0, CAMERA_RESOLUTION - 1, CAMERA_RESOLUTION);
 	mat ZiX;
@@ -71,7 +80,7 @@ void Laser_pos_control::initAngleMat() {
 	}
 }
 
-
+/*
 void Laser_pos_control::recalculateAnglesMat() {
 	mat wallCorners(4, 3);
 	findWallCorners(wallCorners);
@@ -128,6 +137,7 @@ void Laser_pos_control::genPixMat(mat wallCorners, mat &pixMat) {
 	pixMat.row(0) = width;
 	pixMat.row(1) = height;
 }
+*/
 
 float* Laser_pos_control::getAngles(int xCoord, int yCoord) {
 	static float XYAngles[2];
@@ -138,7 +148,7 @@ float* Laser_pos_control::getAngles(int xCoord, int yCoord) {
 	return XYAngles;
 }
 
-
+/*
 int Laser_pos_control::calcArraySize() {
 	int arraySize = ((abs(maxAngles[0]) + abs(maxAngles[1]))/ XYZ_MATRIX_PRECISION + 1) * ((abs(maxAngles[2]) + abs(maxAngles[3])) / XYZ_MATRIX_PRECISION + 1);
 	return ceil(arraySize);
@@ -169,6 +179,7 @@ void Laser_pos_control::genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMa
 		};
 	}
 }
+*/
 
 /*
 void Laser_pos_control::findAngles(double x, double y, mat XYZ_Matrix, double *angles) {
@@ -192,7 +203,7 @@ void Laser_pos_control::findAngles(double x, double y, mat XYZ_Matrix, double *a
 
 }
 */
-
+/*
 void Laser_pos_control::angle2XY(float aX, float aY, float &x, float &y) {
 	float theta_x = deg2rad(aX);
 	float theta_y = deg2rad(aY);
@@ -215,6 +226,7 @@ void Laser_pos_control::angle2XY(float aX, float aY, float &x, float &y) {
 double Laser_pos_control::deg2rad(float angle) {
 	return (angle * M_PI / 180);
 }
+*/
 
 void Laser_pos_control::draw_rectangle(int time_delay) {
 	float *angles;
@@ -344,18 +356,20 @@ void Laser_pos_control::send_pos(int x, int y){
 
 
 void Laser_pos_control::keyboard_manual_mode() {
-    const float delta_angle = 0.02;
-    const int wait_delay = 100;
-    float momentum = delta_angle;
+    const float delta_angle = 0.01;
+    const int wait_delay = 25;
+    float momentum = 0;//delta_angle;
     float angle_x = mems.get_angle_x();
     float angle_y = mems.get_angle_y();
-	char key = "";
-	char last_key = "";
-    while(key != 'q') {
-		cin >> key; //TODO: replace by getchar()
+    char key = 0;
+    char last_key = 0;
 
+    while(key != KB_Q && key != KB_SPACE) {
+		//cin >> key; //TODO: replace by getchar()
+		key = getch();
+		//cout << "key entered : "  << key << endl;
 		switch(key) {//TODO: add print on enter
-			case KB_UP :
+			case KB_W : //KB_UP :
 				if(last_key != key) {
 					momentum = delta_angle;
 				}
@@ -366,7 +380,7 @@ void Laser_pos_control::keyboard_manual_mode() {
 				//cout << "X : " << angle_x << endl;
 				momentum += delta_angle;
 				break;
-			case KB_DOWN :
+			case KB_S :  //KB_DOWN :
 				if(last_key != key) {
 					momentum = delta_angle;
 				}
@@ -377,7 +391,7 @@ void Laser_pos_control::keyboard_manual_mode() {
 				//cout << "X : " << angle_x << endl;
 				momentum += delta_angle;
 				break;
-			case KB_LEFT :
+			case KB_D : //KB_RIGHT:
 				if(last_key != key) {
 					momentum = delta_angle;
 				}
@@ -388,7 +402,7 @@ void Laser_pos_control::keyboard_manual_mode() {
 				//cout << "Y : "  << angle_y << endl;
 				momentum += delta_angle;
 				break;
-			case KB_RIGHT :
+			case KB_A : // KB_LEFT :
 				if(last_key != key) {
 					momentum = delta_angle;
 				}
@@ -399,9 +413,36 @@ void Laser_pos_control::keyboard_manual_mode() {
 				//cout << "Y : "  << angle_y << endl;
 				momentum += delta_angle;
 				break;
+				
 			default :
 				break;
 		}
         delay(wait_delay);
     }
+}
+
+void Laser_pos_control::export2Header(char *fileName){ //TODO : Complete the generation of the header
+	ofstream myfile;
+	myfile.open(fileName);
+	myfile << "#pragma once";
+	myfile.close();
+	
+}
+
+void Laser_pos_control::calibrateGrid(){
+    float angle_x;
+    float angle_y;
+    for (int xIndex = 0; xIndex < X_ANGLES_GRID_POINTS; xIndex ++){
+	for (int yIndex = 0; yIndex < Y_ANGLES_GRID_POINTS; yIndex++){
+		keyboard_manual_mode();
+		mems.print_angles() ;
+		angle_x = mems.get_angle_x();
+		angle_y = mems.get_angle_y();
+		gridPointsX(xIndex, yIndex) = angle_x;
+		gridPointsY(xIndex, yIndex) = angle_y;			
+	}
+    }
+    gridPointsX.print();
+    gridPointsY.print();
+	
 }
