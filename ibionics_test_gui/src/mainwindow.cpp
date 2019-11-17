@@ -4,6 +4,7 @@
 #include "eyetab.h"
 #include "worldtab.h"
 #include "gpiotab.h"
+#include "eyeworldtab.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,19 +19,21 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *mW = this;
     memsTab = new MemsTab(tabs);
     laserTab = new LaserTab(tabs);
-    eyeCamTab = new EyeTab(tabs, mW);
-    worldCamTab = new WorldTab(tabs, mW);
-    gpioTab = new GPIOTab();
+    //eyeCamTab = new EyeTab(tabs, mW);
+    //worldCamTab = new WorldTab(tabs, mW);
+    eyeWorldTab = new EyeWorldTab(tabs);
+    //gpioTab = new GPIOTab();
 
     //Tabs added to layout with GPIOs
     layout->addWidget(tabs,0,0);
-    layout->addWidget(gpioTab,0,1);
+    //layout->addWidget(gpioTab,0,1);
 
     //Add Qwidgets as tabs
     memsIndex = tabs->addTab(memsTab,"MEMS");
     laserIndex = tabs->addTab(laserTab,"Laser");
-    eyeCamIndex = tabs->addTab(eyeCamTab,"Eye Cam");
-    worldCamIndex = tabs->addTab(worldCamTab,"World Cam");
+    //eyeCamIndex = tabs->addTab(eyeCamTab,"Eye Cam");
+    //worldCamIndex = tabs->addTab(worldCamTab,"World Cam");
+    eyeWorldIndex = tabs->addTab(eyeWorldTab,"Eye & World Cam");
     setCentralWidget(centralWidget);
 
     //Link signals to slots

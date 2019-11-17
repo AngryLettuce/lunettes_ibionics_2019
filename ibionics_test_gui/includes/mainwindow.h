@@ -12,9 +12,11 @@
 #include "eyetab.h"
 #include "worldtab.h"
 #include "gpiotab.h"
+#include "eyeworldtab.h"
 
 class WorldTab; //foward declaration to avoid circular dependencies with worldtab.h
 class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
+class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 
 class MainWindow : public QMainWindow
 {
@@ -28,6 +30,7 @@ public:
     EyeTab *eyeCamTab;
     WorldTab *worldCamTab;
     GPIOTab *gpioTab;
+    EyeWorldTab *eyeWorldTab;
 
     bool *hasCamera;
 
@@ -44,6 +47,7 @@ private:
     int laserIndex;
     int eyeCamIndex;
     int worldCamIndex;
+    int eyeWorldIndex;
 
     QPixmap *qPixMapImage;
 
