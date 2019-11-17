@@ -15,5 +15,6 @@ using namespace cv;
 
 void cropRegion(cv::Mat imgOr,cv::Mat *imgZoom, int x,int y,int DIM_L,int DIM_C);
 
+void cropRegionShow(cv::Mat imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C);
 
 #endif //TRAITEMENT_CXX_CROP_H

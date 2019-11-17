@@ -36,12 +36,27 @@ void WorldTab::processFrame()
     cv::Mat img2 = img;
     //cv::cvtColor(img,img2,cv::COLOR_RGB2GRAY);
 
-    cropRegion(img, &img2, mainPtr->posX, mainPtr->posX, 160, 180);
+    if(RECTSHOW)
+    {
+        //show only crop
+        cropRegion(img, &img2, mainPtr->posX, mainPtr->posX, 160, 180);
 
-    //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_Grayscale8);
+    }
+    else
+    {
+        //std::cout << "still on showing" << std::endl;
+        //show all with rectancle
+        cropRegionShow(img, &img2, mainPtr->posX, mainPtr->posX, 160, 180);
+
+        cv::cvtColor(img,img,cv::COLOR_BGR2RGB);
+        //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_RGB888);
+        img2 = img.clone();
+
+    }
 
     QImage qimg(reinterpret_cast<uchar*>(img2.data), img2.cols, img2.rows, img2.step, QImage::Format_RGB888);
 
+    //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_RGB888);
 
     imgLbl->setPixmap(QPixmap::fromImage(qimg));
 }

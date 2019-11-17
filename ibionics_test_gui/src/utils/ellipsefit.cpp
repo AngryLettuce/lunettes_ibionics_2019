@@ -5,8 +5,8 @@ bool debug = true;
 //testing for ellipse
 bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 )
 {
-    double i = fabs( contourArea(cv::Mat(contour1)) );
-    double j = fabs( contourArea(cv::Mat(contour2)) );
+    double i = fabs( cv::contourArea(cv::Mat(contour1)) );
+    double j = fabs( cv::contourArea(cv::Mat(contour2)) );
     return ( i < j );
 }
 
@@ -50,7 +50,7 @@ void applyEllipseMethod(cv::Mat image, int& posX, int& posY)
     cv::findContours(image,contours,hierarchy,cv::RETR_TREE,cv::CHAIN_APPROX_SIMPLE ,cv::Point(0, 0) );
 
 
-    int contourSize = contours.size();
+    //int contourSize = contours.size();
 
     //std::sort(contours.begin(),contours.end(),compareContourAreas);
     //std::cout << "nbr contours : "<< contourSize << std::endl;
@@ -74,7 +74,7 @@ void applyEllipseMethod(cv::Mat image, int& posX, int& posY)
          }
      }
     
-    if(area_max >= 5) {
+    if(area_max > 5) {
         cv::RotatedRect ellipse; //fitting ellipse
         ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
             //draw point

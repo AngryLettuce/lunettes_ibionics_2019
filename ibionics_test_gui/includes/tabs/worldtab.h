@@ -14,6 +14,7 @@
 #include <opencv2/highgui.hpp>
 #include <QMainWindow>
 
+#include "modes.h"
 #include "mainwindow.h"
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h

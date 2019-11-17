@@ -12,7 +12,7 @@ EyeTab::EyeTab(QWidget *parent, QWidget *mW) : QWidget(parent)
     //Placement in Layout
     layout->addWidget(imgLbl,0,0,1,1);
 
-    cam.open(2);
+    cam.open(2);//2
 
     if(!cam.isOpened())
     {

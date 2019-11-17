@@ -133,6 +133,11 @@ void WorldThread(int id, cv::Mat3b *img)
         p[i] = grayLevelsTable[i];
     }
 
+
+    //for debug
+    std::cout << "in world thread" << std::endl;
+
+
     //cv::namedWindow("test1",1);
     //cv::namedWindow("test",1);
 
@@ -151,6 +156,7 @@ void WorldThread(int id, cv::Mat3b *img)
                 mx.lock();
                 cropRegion(*img, &imgZoom, posX, posY, 160, 180);
                 mx.unlock();
+
 
                 //cv::imshow("test", imgZoom);
                 //cv::imshow("From Thread Loop", *img);
@@ -254,7 +260,7 @@ void EyeThread(int id)
         //calcul fps
         timeSpend = duration / 1e6;
         fps = 1/timeSpend;
-        std::cout << "fps approximatif : "<< fps << std::endl;
+        //std::cout << "fps approximatif : "<< fps << std::endl;
 
         //std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         //std::cout << posX << endl;
