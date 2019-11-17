@@ -47,11 +47,8 @@ Mems::Mems() :
 
 void Mems::init_DAC() {
 	send_data(FULL_RESET);
-	delay(1);
 	send_data(ENABLE_INTERNAL_REF);
-	delay(1);
 	send_data(ENABLE_DAC_CHAN);
-	delay(1);
 	send_data(ENABLE_SOFT_LDAC);
 }
 
@@ -76,7 +73,7 @@ void Mems::send_voltage_diff_x(float voltage_diff) {
   unsigned int data = command | address | bin_neg;
   
   send_data(bin_pos);
-  delayMicroseconds(4);
+  delayMicroseconds(2);
   send_data(data);
 }
 
@@ -92,7 +89,7 @@ void Mems::send_voltage_diff_y(float voltage_diff) {
   unsigned int data2 = command | address | bin_neg;
   
   send_data(data1);
-  delayMicroseconds(4);
+  delayMicroseconds(2);
   send_data(data2);
 }
 
@@ -146,10 +143,7 @@ float Mems::send_angle_y(float angle) {
 
 void Mems::send_angles(float angle_x, float angle_y) {
 	send_angle_x(angle_x);
-	delay(1);
 	send_angle_y(angle_y);
-	delay(1);
-	print_angles();
 }
 
 void Mems::print_angles() {
