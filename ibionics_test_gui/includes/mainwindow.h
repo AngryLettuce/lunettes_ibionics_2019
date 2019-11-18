@@ -16,7 +16,7 @@
 
 class WorldTab; //foward declaration to avoid circular dependencies with worldtab.h
 class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
-class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
+//class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 
 class MainWindow : public QMainWindow
 {

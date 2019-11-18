@@ -70,30 +70,31 @@ void applyEllipseMethod(cv::Mat image, int& posX, int& posY)
            area_max = area;
            //minEllipse[i] = cv::fitEllipse( cv::Mat(contours[i]) );
           //std::cout << "fitEllipse "<< minEllipse[i].center << std::endl;
-          //std::cout << "i = "<< i << std::endl;
          }
      }
     
-    if(area_max > 5) {
+    if(area_max > 5) 
+    {
         cv::RotatedRect ellipse; //fitting ellipse
         ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
-            //draw point
-    int cX = (int) ellipse.center.x;
-    int cY = (int) ellipse.center.y;
+        
+        //Centre of ellipse
+        int cX = (int) ellipse.center.x;
+        int cY = (int) ellipse.center.y;
 
-    cv::Point centre;
-    centre.x = cX;
-    centre.y = cY;
+        cv::Point centre;
+        centre.x = cX;
+        centre.y = cY;
 
-    //std::cout<<"centre en int ("<< cX << ", "<<cY<<") "<<std::endl;
+        //std::cout<<"centre en int ("<< cX << ", "<<cY<<") "<<std::endl;
 
-    //cv::circle(eyeShow, centre,7, (255, 255, 255), -1);
+        //cv::circle(eyeShow, centre,7, (255, 255, 255), -1);
 
-    //cv::namedWindow("eye",1);
-    //cv::imshow("eye", eyeShow);
+        //cv::namedWindow("eye",1);
+        //cv::imshow("eye", eyeShow);
 
-    posX = cX;
-    posY = cY;
+        posX = cX;
+        posY = cY;
     }
     else {
         posX = -1;

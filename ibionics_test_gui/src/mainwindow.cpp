@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(centralWidget);
 
     //Link signals to slots
-    connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
+    //connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
 }
 
 MainWindow::~MainWindow()

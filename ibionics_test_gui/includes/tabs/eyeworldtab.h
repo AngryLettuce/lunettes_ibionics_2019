@@ -7,16 +7,18 @@
 #include <QLayout>
 #include <QTimer>
 #include <QLabel>
+ #include <QPushButton>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 
-#include "mainwindow.h"
+//#include "mainwindow.h"
 #include "crop.h"
 #include "edgeDetection.h"
 #include "ellipsefit.h"
 #include "houghCircle.h"
+#include "modes.h"
 
-class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
+//class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 
 class EyeWorldTab : public QWidget
 {
@@ -33,18 +35,24 @@ public:
     QImage qimgEye;
     QImage qimgWorld;
 
-    QTimer *tmrTimer;
+    QTimer *tmrTimerEye;
+    QTimer *tmrTimerWorld;
 
     QLabel *imgLblEye;
     QLabel *imgLblWorld;
+    
+    QPushButton *button;
 
     int posX;
     int posY;
+    bool pupilMethod = true;
 
 signals:
 
 public slots:
-    void processFrame();
+    void processFrameEye();
+    void processFrameWorld();
+    void handleButton();
 
 };
 
