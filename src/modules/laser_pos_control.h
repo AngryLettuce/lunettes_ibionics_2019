@@ -83,7 +83,8 @@ public:
     	/**
 	 * @brief write the grid points in X and Y to a header file
 	 */
-	void export2Header(const char *fileName);
+	void export2Header(const char *fileName, mat gridPointsX, mat gridPointsY);
+
 	/**
 	 * @brief fille gridPointX and gridPointY with the keyboard manual mode
 	 */
@@ -97,9 +98,6 @@ private:
     //rowvec VLM;
     short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
 
-    mat::fixed<X_ANGLES_GRID_POINTS, Y_ANGLES_GRID_POINTS> gridPointsX;
-    mat::fixed<X_ANGLES_GRID_POINTS, Y_ANGLES_GRID_POINTS> gridPointsY;
-    
     //void findWallCorners(mat &wallCorners);
 
     //void genPixMat(mat wallCorners, mat &pixMat);
