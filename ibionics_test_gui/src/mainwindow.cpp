@@ -5,10 +5,13 @@
 #include "worldtab.h"
 #include "gpiotab.h"
 #include "eyeworldtab.h"
+#include "config.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    config* asdf = new config("C:/views/s8ibionics/ibionics_test_gui/gui_main/config.txt");
+
     posX = 0;
     posY = 0;
 

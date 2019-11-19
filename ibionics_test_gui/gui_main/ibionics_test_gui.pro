@@ -65,6 +65,7 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp \
                 $${BASE_FOLDER}/src/utils/ellipsefit.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
+                $${BASE_FOLDER}/src/utils/config.cpp \
                 $${BASE_FOLDER}/src/tabs/eyeworldtab.cpp
 
 
@@ -86,7 +87,10 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/ellipsefit.h \
                 $${BASE_FOLDER}/includes/utils/modes.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
+                $${BASE_FOLDER}/includes/utils/config.h \
                 $${BASE_FOLDER}/includes/tabs/eyeworldtab.h
+
+OTHER_FILES +=  config.txt
 
 
 INCLUDEPATH +=  $${BASE_FOLDER}/src/ \
