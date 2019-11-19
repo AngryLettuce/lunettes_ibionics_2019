@@ -42,9 +42,10 @@ public:
     QLabel *imgLblWorld;
     
     QPushButton *button;
+    QGridLayout *layout;
 
-    int posX;
-    int posY;
+    int posX = 0;
+    int posY = 0;
     bool pupilMethod = true;
 
 signals:
@@ -52,7 +53,7 @@ signals:
 public slots:
     void processFrameEye();
     void processFrameWorld();
-    void handleButton();
+    void switchPupilMethodButton();
 
 };
 
