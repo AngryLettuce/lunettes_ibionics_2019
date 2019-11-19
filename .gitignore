@@ -1,22 +1,16 @@
-<<<<<<< HEAD
-
 *.asv
-
 *.mat
-=======
-build-ibionics_test_gui-Desktop_Qt_5_12_3_MinGW_32_bit-Debug/
->>>>>>> UI
-<<<<<<< HEAD
 
-*.o
-=======
+build-ibionics_test_gui-Desktop_Qt_5_12_3_MinGW_32_bit-Release/
+build-ibionics_test_gui-Desktop_Qt_5_12_3_MinGW_32_bit-Debug/
+build-ibionics_test_gui-Desktop_Qt_5_12_3_MinGW_64_bit-Release/
+build-ibionics_test_gui-Desktop_Qt_5_12_3_MinGW_64_bit-Debug/
+
 ibionics_test_gui/lib/
 ibionics_test_gui/lib.zip
 ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_64_bit-Release/
 ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_64_bit-Debug/
 ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_32_bit-Release/
 ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_32_bit-Debug/
-
 *.o
 
->>>>>>> main_app
