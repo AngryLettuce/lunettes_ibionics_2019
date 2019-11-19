@@ -22,25 +22,57 @@
 #define V_DIFF_MAX 120
 #define V_DIFF_TO_ANGLE_FACTOR 0.046
 
+<<<<<<< HEAD
 #define SPI_CHANNEL 0
 #define GPIO45_MEMS_EN_DRV 45
 //#define GPIO4_MEMS_FILT_X 4 //this should be a 60kHz clock
+=======
+#define SPI_CHANNEL 2
+#define GPIO39_MEMS_EN_DRV 39
+//#define GPIO4_MEMS_FILT_X 4 //this should be a 60kHz clock
+//#define GPIO21_MEMS_FILT_Y 21  //this should be a 60kHz clock
+//#define GPIO7_MEMS_CS 7 // Temporary
+>>>>>>> main_app
 //-----------------------------------------
 
 using namespace std;
 
 Mems::Mems() :
 	spi(SPI_CHANNEL, 250000, 1),
+<<<<<<< HEAD
 	enable(GPIO45_MEMS_EN_DRV) {
 	//clock(GPIO4_MEMS_FILT_X),
 	angle_x = 0;
 	angle_y = 0;
 	
+=======
+	enable(GPIO39_MEMS_EN_DRV),
+	//clock(GPIO4_MEMS_FILT_X), // clock is not necessary on the glasses 
+	//cs(GPIO7_MEMS_CS) {
+	//pinMode(GPIO39_MEMS_EN_DRV, OUTPUT);
+	//pinMode(GPIO12_MEMS_EN_CLK, OUTPUT);
+	//pinMode(GPIO4_MEMS_FILT_X, GPIO_CLOCK); // it is starting here!
+	//pinMode(GPIO21_MEMS_FILT_Y, GPIO_CLOCK);
+	//pinMode(GPIO7_MEMS_CS, OUTPUT);
+
+	//cs.write(HIGH);
+
+>>>>>>> main_app
 	init_DAC();
 	// Vref should be at 1.25V!
 	send_voltage_diff_x(0);
 	send_voltage_diff_y(0);
+<<<<<<< HEAD
 	//clock.set_clock(60000);
+=======
+	//digitalWrite(GPIO12_MEMS_EN_CLK, HIGH);
+	//gpioClockSet(GPIO4_MEMS_FILT_X, 60000);
+
+	//clock.set_clock(60000); // clock is not necessary on the glasses 
+
+	//gpioClockSet(GPIO21_MEMS_FILT_Y, 60000);
+	//digitalWrite(GPIO39_MEMS_EN_DRV, HIGH); // TODO: Test when always high
+>>>>>>> main_app
 	enable.write(HIGH); // TODO: Test when always high
 }
 
@@ -60,7 +92,15 @@ void Mems::send_data(unsigned int data) {
 	send_buffer[1] = data >> 8 & 0xFF;
 	send_buffer[2] = data & 0xFF;
 
+<<<<<<< HEAD
 	spi.send(send_buffer, 3);
+=======
+	//cs.write(LOW); //temp
+	//digitalWrite(GPIO7_MEMS_CS, LOW); //temp
+	spi.send(send_buffer, 3);
+	//digitalWrite(GPIO7_MEMS_CS, HIGH); //temp
+	//cs.write(HIGH);
+>>>>>>> main_app
 }
 
 void Mems::send_voltage_diff_x(float voltage_diff) {

@@ -1,9 +1,20 @@
 #include "mainwindow.h"
+#include "threads.h"
+#include <QApplication>
+#include "houghCircle.h"
+#include "modes.h"
+#include "testvideo.h"
+
+std::mutex mx;
+
+/*
+#include "mainwindow.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <QApplication>
+*/
 
 int main(int argc, char *argv[])
 {

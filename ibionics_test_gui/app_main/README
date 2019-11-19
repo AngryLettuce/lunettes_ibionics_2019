@@ -1,0 +1,26 @@
+This is the make of the main application working on the RPi
+
+The architecture of folders is the same as the architecture of the Test-GUI application. If you want to modify something, I highly suggest that you 
+
+To setup the raspberry pi and install OpenCV, follow the instructions at : 
+	https://learnopencv.com/install-opencv-4-on-raspberry-pi/
+	
+To setup a QT/OpenCV project follow the instructions at : 
+	https://wiki.qt.io/How_to_setup_Qt_and_openCV_on_Windows
+	
+	
+	if you want to compile OpenCV 4.X.X on the pi, there is a compilation problem with the eigen library. The signature changed and you need to add the following symlink in order to make the compilation work
+		sudo ln -s /usr/include/eigen3/Eigen /usr/include/Eigen
+	
+In order to avoid recompilation of opencv on every computer, 
+the essential libraries are statically linked in the projet.
+If you need other configurations (or a different architecture), 
+the complete make output for Windows 10 32/64 bit and Armv7 are all in the sharepoint iBionics.
+DO NOT INCLUDE UNNECESSARY LIBRARIES. 
+
+It is ressource consuming and normally we should have a library repo to stock them all.
+ 
+THEY ARE NOT SUPPOSED TO BE INSERTED IN A GIT REPO
+ 
+WITH GREAT POWER COMES GREAT RESPONSABILITIES
+
