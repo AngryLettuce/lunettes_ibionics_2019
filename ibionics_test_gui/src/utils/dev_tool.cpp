@@ -1,14 +1,9 @@
 //
 // Created by ibionics-michel on 10/1/19.
 //
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/opencv.hpp>
+
 #include <iostream>
 #include "dev_tool.h"
-#include "../Crop/crop.h"
-#include "../edge_detection/edgeDetection.h"
-#include "../edge_detection/grayLevelsTable.h"
 
 using namespace std;
 using namespace cv;

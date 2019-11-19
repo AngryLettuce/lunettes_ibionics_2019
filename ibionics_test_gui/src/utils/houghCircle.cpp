@@ -11,46 +11,79 @@
 using namespace std;
 using namespace cv;
 
-void HOUGHCIRCLE::HoughCircle(double param1,double param2,int minRadius,int maxRadius,double minDist)
+HoughParams::HoughParams(int p1, int p2, int minRad, int maxRad, int minDis)
 {
-    //assigner variable du constructeur
-
+    param1 = p1;
+    param2 = p2;
+    minRadius = minRad;
+    maxRadius = maxRad;
+    minDist = minDis;
 }
 
 //ajouter slider pour modifier parametre et afficher le point detecter
-Point HOUGHCIRCLE::applyHoughMethod(Mat image,Mat output,int method, double dp, double minDist, double param1,double param2, int minRadius, int maxRadius)
+//mettre coordoner en 2 int
+void applyHoughMethodDyn(Mat image,HoughParams param,vector<Vec3f> &circles,int posX, int posY)
 {
-    Point cord;
+    Mat temps = image;
 
     // Convert it to gray
-    cvtColor( image, tmps, COLOR_BGR2GRAY );
+    cvtColor( image, image, COLOR_BGR2GRAY );
 
     /// Reduce the noise so we avoid false circle detection
-    GaussianBlur( tmps, tmps, Size(9, 9), 2, 2 );
+    cv::GaussianBlur( image, image, Size(9, 9), 2, 2 );
 
     //apply histogram
-    equalizeHist(tmps,image);
+    cv::equalizeHist(image,image);
 
-    vector<Vec3f> circles;
+    //vector<Vec3f> circles;
     //apply HoughCircles
-    HoughCircles(image, circles, HOUGH_GRADIENT,2, image.rows/4, 200, 100 );
+    //HoughCircles(image, circles, HOUGH_GRADIENT,2, image.rows/4, 200, 100 );
+
+
+    //for dynamic param
+    HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, image.rows/param.minRadius, image.rows/param.maxRadius);
 
     for( size_t i = 0; i < circles.size(); i++ )
     {
         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
         int radius = cvRound(circles[i][2]);
         // draw the circle center
-        circle(image, center, 3, Scalar(255,255,255), -1, 8, 0 );
-        cord = center;
+        //circle(temps, center, 3, Scalar(255,255,255), -1, 8, 0 );
+        posX = center.x;
+        posY = center.y;
         // draw the circle outline
-        circle( image, center, radius, Scalar(255,255,0), 3, 8, 0 );
+        //circle( temps, center, radius, Scalar(255,255,0), 3, 8, 0 );
     }
 
-    resize(image, image, Size(image.cols/2, image.rows/2));
-    namedWindow( "circles", WINDOW_AUTOSIZE);
-    imshow( "circles", image );
-    waitKey(0);
+    //resize(image, image, Size(image.cols/2, image.rows/2));
+    //namedWindow( "circles", WINDOW_AUTOSIZE);
+    //imshow( "circles", temps );
+    //waitKey(0);
+}
 
-    return cord;
+
+void applyHoughMethod(cv::Mat image,int &posX,int &posY)
+{
+    vector<Vec3f> circles;
+
+    /// Reduce the noise so we avoid false circle detection
+    //cv::GaussianBlur( image, image, Size(5, 5), 2, 2 );
+    cv::medianBlur(image, image, 5);
+
+    //apply histogram
+    //cv::equalizeHist(image,image);
+
+    //for fixe param
+    parametre param;
+    //HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, image.rows/param.minRadius, image.rows/param.maxRadius);
+    HoughCircles(image, circles, HOUGH_GRADIENT, 1, image.rows / param.minDist, param.param1, param.param2, param.minRadius, param.maxRadius);
+
+    //find circle center
+    for( size_t i = 0; i < circles.size(); i++ )
+    {
+        Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+        posX = center.x;
+        posY = center.y;
+    }
 
 }

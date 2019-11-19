@@ -1,0 +1,50 @@
+runOnRpi				=false
+verboseMode				=false
+eyeCamIndex             =0
+worldCamIndex           =2
+appModeSelection        =0
+edgeDetectionMode       =0
+
+/** Define gpios **/
+// MEMS
+memsEnable              =39
+
+// LASER
+laserEnable             =32
+laserCalibrationEnable  =30
+laserLowEnable          =38
+laserMidEnable          =37
+laserHighEnable         =33
+laserRegulatorEnable    =31
+
+// CAMERA
+cameraPort_0            =0
+cameraSda_0             =28
+cameraSdl_0             =29
+cameraLed_0             =30
+cameraShutdown_0        =31
+cameraI2CAddress_0      =0x60
+
+cameraPort_1            =0
+cameraSda_1             =28
+cameraSdl_1             =29
+cameraLed_1             =30
+cameraShutdown_1        =31
+cameraI2CAddress_1      =0x60
+
+// Digital Potentiometer
+potAddressU13           =47
+potAddressU14           =46
+potAddressU15           =44
+
+// SPI2
+spiCs                   =44
+spiMiso                 =40
+spiMosi                 =41
+spiSck                  =42
+
+// Buttons
+button1                 =5
+button2                 =6
+button3                 =13
+button4                 =19

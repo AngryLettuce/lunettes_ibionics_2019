@@ -16,9 +16,15 @@
 
 
 Laser::Laser() :
+<<<<<<< HEAD
 	//digital_pot_U13("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U13),
 	//digital_pot_U14("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U14),
 	//digital_pot_U15("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U15),
+=======
+	//digital_pot_U13("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U13),// i2c is not necessary on the glasses 
+	//digital_pot_U14("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U14),// i2c is not necessary on the glasses 
+	//digital_pot_U15("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U15),// i2c is not necessary on the glasses 
+>>>>>>> main_app
 	enable(GPIO32_LASER_EN_DRV),
 	encal(GPIO30_LASER_ENCAL),
 	regen(GPIO31_LASER_REGEN),
@@ -41,9 +47,15 @@ Laser::Laser() :
 	low.write(HIGH);
 
 	// Set laser power
+<<<<<<< HEAD
 	//digital_pot_U13.set_resistance_0_50k(50);
 	//digital_pot_U14.set_resistance_0_50k(20);
 	//digital_pot_U15.set_resistance_0_50k(10);
+=======
+	//digital_pot_U13.set_resistance_0_50k(50);// i2c is not necessary on the glasses 
+	//digital_pot_U14.set_resistance_0_50k(20);// i2c is not necessary on the glasses 
+	//digital_pot_U15.set_resistance_0_50k(10);// i2c is not necessary on the glasses 
+>>>>>>> main_app
 }
 
 
