@@ -32,7 +32,7 @@
 #define INFINITY_SEQUENCE_LENGTH 101
 #define CIRCULAR_LOOP_SEQUENCE_LENGTH 201
 
-
+#define ANGLE_POINTS_FILENAME "modules/anglesPoints2.h"
 
 #define KB_UP 72
 #define KB_DOWN 80
@@ -413,7 +413,7 @@ void Laser_pos_control::keyboard_manual_mode() {
 				//cout << "Y : "  << angle_y << endl;
 				momentum += delta_angle;
 				break;
-				
+
 			default :
 				break;
 		}
@@ -421,28 +421,60 @@ void Laser_pos_control::keyboard_manual_mode() {
     }
 }
 
-void Laser_pos_control::export2Header(char *fileName){ //TODO : Complete the generation of the header
+void Laser_pos_control::export2Header(const char *fileName, mat gridPointsX, mat gridPointsY) {
 	ofstream myfile;
 	myfile.open(fileName);
-	myfile << "#pragma once";
+	myfile << "#pragma once" << endl;
+	myfile << "#include <armadillo>" << endl;
+	myfile << "arma::mat anglePointsX= {" << endl;
+
+	for (int xIndex = 0; xIndex < X_ANGLES_GRID_POINTS; xIndex ++) {
+		myfile << "\t{";
+		for (int yIndex = 0; yIndex < Y_ANGLES_GRID_POINTS; yIndex++) {
+			myfile << gridPointsX(xIndex, yIndex) << ",";
+		}
+		if (xIndex == X_ANGLES_GRID_POINTS-1) {
+			myfile << "}";
+		}
+		else {
+			myfile << "},";
+		}
+    }
+	myfile << "}" << endl << endl;
+	myfile << "arma::mat anglePointsY= {" << endl;
+	for (int xIndex = 0; xIndex < X_ANGLES_GRID_POINTS; xIndex ++) {
+		myfile << "\t{";
+		for (int yIndex = 0; yIndex < Y_ANGLES_GRID_POINTS; yIndex++) {
+			myfile << gridPointsY(xIndex, yIndex) << ",";
+		}
+		if (xIndex == X_ANGLES_GRID_POINTS-1) {
+			myfile << "}";
+		}
+		else {
+			myfile << "},";
+		}
+
+    }
+	myfile << "}" << endl;
 	myfile.close();
-	
+
 }
 
-void Laser_pos_control::calibrateGrid(){
-    float angle_x;
-    float angle_y;
-    for (int xIndex = 0; xIndex < X_ANGLES_GRID_POINTS; xIndex ++){
-	for (int yIndex = 0; yIndex < Y_ANGLES_GRID_POINTS; yIndex++){
-		keyboard_manual_mode();
-		mems.print_angles() ;
-		angle_x = mems.get_angle_x();
-		angle_y = mems.get_angle_y();
-		gridPointsX(xIndex, yIndex) = angle_x;
-		gridPointsY(xIndex, yIndex) = angle_y;			
-	}
+void Laser_pos_control::calibrateGrid() {
+	mat::fixed<X_ANGLES_GRID_POINTS, Y_ANGLES_GRID_POINTS> gridPointsX;
+    mat::fixed<X_ANGLES_GRID_POINTS, Y_ANGLES_GRID_POINTS> gridPointsY;
+
+    for (int xIndex = 0; xIndex < X_ANGLES_GRID_POINTS; xIndex ++) {
+		for (int yIndex = 0; yIndex < Y_ANGLES_GRID_POINTS; yIndex++) {
+			keyboard_manual_mode();
+			mems.print_angles() ;
+
+			gridPointsX(xIndex, yIndex) = mems.get_angle_x();
+			gridPointsY(xIndex, yIndex) = mems.get_angle_y();
+		}
     }
     gridPointsX.print();
     gridPointsY.print();
-	
+
+	export2Header(ANGLE_POINTS_FILENAME, gridPointsX, gridPointsY);
 }
