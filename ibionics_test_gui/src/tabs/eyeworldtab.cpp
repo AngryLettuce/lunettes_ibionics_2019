@@ -1,50 +1,31 @@
 #include "eyeworldtab.h"
- #include <QCoreApplication>
+#include <QCoreApplication>
+#include "mainwindow.h"
 
-EyeWorldTab::EyeWorldTab(QWidget *parent) : QWidget(parent)
+
+EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
     //Layout
     layout = new QGridLayout(this);
     imgLblEye = new QLabel("EYE",this);
     imgLblWorld = new QLabel("WORLD",this);
-    
     button = new QPushButton("using Ellipse, click to switch to hough circle", this);
 
     //Placement in Layout
     layout->addWidget(imgLblEye,1,0,1,1);
     layout->addWidget(imgLblWorld,1,1,1,1);
-    
     layout->addWidget(button,0,0,1,2);
+
     connect(button, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
-
-    camEye.open(0);//2 for webcam
-    camWorld.open(1);
-
-    if(camEye.isOpened())
-    {
-        tmrTimerEye = new QTimer(this);
-        connect(tmrTimerEye, SIGNAL(timeout()), this, SLOT(processFrameEye()));
-        tmrTimerEye->start(33);
-    }
-    else
-        std::cout<<"Error EyeCam not accessible"<<std::endl;
-
-    if(camWorld.isOpened())
-    {
-        tmrTimerWorld = new QTimer(this);
-        connect(tmrTimerWorld, SIGNAL(timeout()), this, SLOT(processFrameWorld()));
-        tmrTimerWorld->start(33);//33 ms default
-    }
-    else
-        std::cout<<"Error WorldCam not accessible"<<std::endl;
+    mainWindowPtr = mW;
 }
 
 void EyeWorldTab::processFrameEye()
 {
-    camEye.read(imgEye);
+    (mainWindowPtr->camEye).read(imgEye);
     if(imgEye.empty()) return;
 
-    cv::Mat img2Eye = imgEye;
+    cv::Mat img2Eye;
     cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
 
     if(pupilMethod)
@@ -53,9 +34,7 @@ void EyeWorldTab::processFrameEye()
         applyHoughMethod(img2Eye,posX,posY);
 
     //Add point to EyeCam
-    cv::Point centre;
-    centre.x = posX;
-    centre.y = posY;
+    cv::Point centre = cv::Point(posX,posY);
     cv::circle(imgEye, centre,7, cv::Scalar(255, 0, 0), -1);
 
     cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
@@ -65,7 +44,7 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
-    camWorld.read(imgWorld);
+    (mainWindowPtr->camWorld).read(imgWorld);
     if(imgWorld.empty()) return;
 
     cv::Mat img2World = imgWorld;

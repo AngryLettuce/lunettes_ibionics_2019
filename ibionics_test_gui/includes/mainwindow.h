@@ -16,7 +16,7 @@
 
 class WorldTab; //foward declaration to avoid circular dependencies with worldtab.h
 class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
-//class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
+class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 
 class MainWindow : public QMainWindow
 {
@@ -32,15 +32,19 @@ public:
     GPIOTab *gpioTab;
     EyeWorldTab *eyeWorldTab;
 
-    bool *hasCamera;
-
-    int posX;
-    int posY;
+    int posX = 0;
+    int posY = 0;
 
     int getPosX();
     int getPosY();
     void setPosX(int x);
     void setPosY(int y);
+
+    QTimer *tmrTimerEye;
+    QTimer *tmrTimerWorld;
+
+    cv::VideoCapture camEye;
+    cv::VideoCapture camWorld;
 
 private:
     int memsIndex;

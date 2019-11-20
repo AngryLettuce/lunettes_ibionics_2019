@@ -12,20 +12,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     config* asdf = new config("C:/views/s8ibionics/ibionics_test_gui/gui_main/config.txt");
 
-    posX = 0;
-    posY = 0;
-
     QWidget *centralWidget = new QWidget(this);
     QGridLayout *layout = new QGridLayout(centralWidget);
     QTabWidget *tabs = new QTabWidget(centralWidget);
 
-    QWidget *mW = this;
     memsTab = new MemsTab(tabs);
     laserTab = new LaserTab(tabs);
-    //eyeCamTab = new EyeTab(tabs, mW);
-    //worldCamTab = new WorldTab(tabs, mW);
-    eyeWorldTab = new EyeWorldTab(tabs);
-    //gpioTab = new GPIOTab();
+    eyeWorldTab = new EyeWorldTab(tabs, this);
+    gpioTab = new GPIOTab();
 
     //Tabs added to layout with GPIOs
     layout->addWidget(tabs,0,0);
@@ -34,13 +28,18 @@ MainWindow::MainWindow(QWidget *parent)
     //Add Qwidgets as tabs
     memsIndex = tabs->addTab(memsTab,"MEMS");
     laserIndex = tabs->addTab(laserTab,"Laser");
-    //eyeCamIndex = tabs->addTab(eyeCamTab,"Eye Cam");
-    //worldCamIndex = tabs->addTab(worldCamTab,"World Cam");
     eyeWorldIndex = tabs->addTab(eyeWorldTab,"Eye & World Cam");
     setCentralWidget(centralWidget);
 
+    tmrTimerEye = new QTimer(this);
+    tmrTimerWorld = new QTimer(this);
+    tmrTimerEye->start(33);
+    tmrTimerWorld->start(33);//33 ms default
+    camEye.open(0);//2 for webcam
+    camWorld.open(1);
+
     //Link signals to slots
-    //connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
+    connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
 }
 
 MainWindow::~MainWindow()
@@ -50,68 +49,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::tabChange(int currentIndex)
 {
-    gpioTab->changeAllLabelsToRed();
+    if(currentIndex == 2){
+        if(camEye.isOpened())
+            connect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
+        else
+            std::cout<<"Error EyeCam not accessible"<<std::endl;
 
-    if (currentIndex == memsIndex)
-    {
-        gpioTab->spi2->inUse(true);
-        gpioTab->memsEnable->inUse(true);
-        /*
-        worldCamTab->viewfinder->close();
-        eyeCamTab->viewfinder->close();
-        eyeCamTab->camera->stop();
-        worldCamTab->camera->stop();
-        */
-    }
-
-    else if (currentIndex == laserIndex)
-    {
-        gpioTab->laserEnable->inUse(true);
-        gpioTab->laserEnCal->inUse(true);
-        gpioTab->laserEnChannelLow->inUse(true);
-        gpioTab->laserEnChannelMid->inUse(true);
-        gpioTab->laserEnChannelHigh->inUse(true);
-        gpioTab->laserRegen->inUse(true);
-        gpioTab->i2c0->inUse(true);
-        /*
-        worldCamTab->viewfinder->close();
-        eyeCamTab->viewfinder->close();
-        eyeCamTab->camera->stop();
-        worldCamTab->camera->stop();
-        */
-    }
-
-    else if(currentIndex == eyeCamIndex)
-    {
-
-        gpioTab->i2c1->inUse(true);
-        /*
-        worldCamTab->camera->stop();
-        worldCamTab->viewfinder->close();
-        eyeCamTab->viewfinder->show();
-        eyeCamTab->camera->start();
-        */
-    }
-
-    else if(currentIndex == worldCamIndex)
-    {
-        gpioTab->i2c1->inUse(true);
-        /*
-        eyeCamTab->camera->stop();
-        worldCamTab->viewfinder->show();
-        eyeCamTab->viewfinder->close();
-        worldCamTab->camera->start();
-        */
-    }
-
-    else //If somehow no tab is selected
-    {
-        /*
-        worldCamTab->viewfinder->close();
-        eyeCamTab->viewfinder->close();
-        eyeCamTab->camera->stop();
-        worldCamTab->camera->stop();
-        */
+        if(camWorld.isOpened())
+            connect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
+        else
+            std::cout<<"Error WorldCam not accessible"<<std::endl;
     }
 }
 
