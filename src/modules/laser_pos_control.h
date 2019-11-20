@@ -94,6 +94,12 @@ private:
     Button button2;
     Button button3;
     Button button4;
+   // mat gridPointsX;
+   // mat gridPointsY;
+    
+    mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
+    mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
+    
     //rowvec maxAngles; // {minX, maxX, minY, maxY}
     //rowvec VLM;
     short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];

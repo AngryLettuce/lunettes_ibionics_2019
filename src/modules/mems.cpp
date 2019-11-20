@@ -35,7 +35,6 @@ Mems::Mems() :
 	//clock(GPIO4_MEMS_FILT_X),
 	angle_x = 0;
 	angle_y = 0;
-	
 	init_DAC();
 	// Vref should be at 1.25V!
 	send_voltage_diff_x(0);
