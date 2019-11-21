@@ -38,8 +38,11 @@ Spi::Spi(int chan, int speed, int mode) :
 void Spi::send(unsigned char* data, int len) {
     if(channel == 0) {
         cs.write(LOW);
+        delayMicroseconds(5);
         wiringPiSPIDataRW(channel, data, len);
+        delayMicroseconds(5);
         cs.write(HIGH);
+        delayMicroseconds(5);
         
     } /*else {
         cs.write(LOW);

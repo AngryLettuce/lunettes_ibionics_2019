@@ -19,7 +19,8 @@
 #define ENABLE_DAC_CHAN 0x20000F
 #define ENABLE_SOFT_LDAC 0x300000
 #define VBIAS 80
-#define V_DIFF_MAX 120
+//#define V_DIFF_MAX 120
+#define V_DIFF_MAX 75
 #define V_DIFF_TO_ANGLE_FACTOR 0.046
 
 #define SPI_CHANNEL 0
@@ -53,7 +54,7 @@ void Mems::init_DAC() {
 
 
 void Mems::send_data(unsigned int data) {
-	unsigned char send_buffer[3];
+	unsigned char send_buffer[3] = {0,0,0};
 
 	send_buffer[0] = data >> 16 & 0xFF;
 	send_buffer[1] = data >> 8 & 0xFF;
@@ -78,7 +79,7 @@ void Mems::send_voltage_diff_x(float voltage_diff) {
 
 void Mems::send_voltage_diff_y(float voltage_diff) {
   voltage_diff = saturate_voltage_diff(voltage_diff);
-  
+  //cout << voltage_diff << endl;
   unsigned short bin_pos = VBIAS*65536/200 - (voltage_diff*65536/200)/2;
   unsigned short bin_neg = VBIAS*65536/200 + (voltage_diff*65536/200)/2;
   unsigned int address = (unsigned int)2 << 16;
@@ -135,6 +136,7 @@ float Mems::send_angle_x(float angle) {
 
 float Mems::send_angle_y(float angle) {
 	angle_y = saturate_angle(angle);
+	//cout << angle_y << endl;
 	float voltage_diff = angle_to_voltage_diff(angle);
 	send_voltage_diff_y(voltage_diff);
 	return angle_y;
