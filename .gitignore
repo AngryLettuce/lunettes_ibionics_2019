@@ -14,3 +14,4 @@ ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_32_bit-Release/
 ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_32_bit-Debug/
 *.o
 
+ibionics_test_gui/gui_main/ibionics_test_gui.pro.user

@@ -1,7 +1,11 @@
 #include "eyeworldtab.h"
 #include <QCoreApplication>
 #include "mainwindow.h"
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
 
+#define VCOS_ALIGN_DOWN(p,n) (((ptrdiff_t)(p)) & ~((n)-1))
+#define VCOS_ALIGN_UP(p,n) VCOS_ALIGN_DOWN((ptrdiff_t)(p)+(n)-1,(n))
 
 EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
@@ -22,11 +26,22 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
 void EyeWorldTab::processFrameEye()
 {
+    int width = 640;
+    int height = 480;
+#ifdef __arm__
+    cv::Mat *img = getImage(0, width, height);
+    imgEye = *img;
+#endif
+#ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
+#endif
     if(imgEye.empty()) return;
 
     cv::Mat img2Eye;
-    cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
+    if(imgEye.channels() > 1)
+        cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
+    else
+        img2Eye = imgEye;
 
     if(pupilMethod)
         applyEllipseMethod(img2Eye, posX, posY);
@@ -81,5 +96,31 @@ void EyeWorldTab::switchPupilMethodButton()
         button->setText("using Ellipse, click to switch to hough circle");
     else
         button->setText("using Hough cricle, click to switch to Ellipse");
+}
+
+cv::Mat* EyeWorldTab::getImage(int camNumber, int width, int height)
+{
+
+    IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 50};
+    BUFFER *buffer = nullptr;
+#ifdef __arm__
+    if(camNumber == 0)
+        buffer = arducam_capture(mainWindowPtr->arducamInstance0, &fmt, 3000);
+    else
+        buffer = arducam_capture(mainWindowPtr->arducamInstance1, &fmt, 3000);
+#endif
+    if (!buffer)
+        return nullptr;
+#ifdef __arm__
+    // The actual width and height of the IMAGE_ENCODING_RAW_BAYER format and the IMAGE_ENCODING_I420 format are aligned,
+    // width 32 bytes aligned, and height 16 byte aligned.
+    width = VCOS_ALIGN_UP(width, 32);
+    height = VCOS_ALIGN_UP(height, 16);
+    cv::Mat *image = new cv::Mat(cv::Size(width,(int)(height * 1.5)), CV_8UC1, buffer->data);
+    cv::cvtColor(*image, *image, cv::COLOR_YUV2BGR_I420);
+    arducam_release_buffer(buffer);
+    return image;
+#endif
+    return nullptr;
 }
 

@@ -25,6 +25,7 @@ class EyeWorldTab : public QWidget
     Q_OBJECT
 public:
     explicit EyeWorldTab(QWidget *parent = nullptr, MainWindow* mW = nullptr);
+    cv::Mat* getImage(int camera_instance, int width, int height);
 
     cv::Mat imgEye;
     cv::Mat imgWorld;
@@ -45,6 +46,7 @@ public:
     int posY = 0;
     bool pupilMethod = true;
     MainWindow* mainWindowPtr;
+
 
 signals:
 

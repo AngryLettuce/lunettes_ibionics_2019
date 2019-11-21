@@ -31,6 +31,7 @@ PATH_TO_MINGW_64 = C:/Qt/5.13.1/mingw73_64/mkspecs/win32-g++
 PATH_TO_MINGW_32 = C:/Qt/5.12.3/mingw73_32/mkspecs/win32-g++
 
 BASE_FOLDER = ./..
+MEMS_LASER_BASE_FOLDER = ./../../src
 
 
 #------------Messages for debugging purpose-----------#
@@ -42,6 +43,8 @@ BASE_FOLDER = ./..
 #CONFIG(release, debug|release):message(Release build!)
 #CONFIG(debug, debug|release):message(Debug build!)
 
+
+
 win32:contains(QMAKESPEC, $$PATH_TO_MINGW_64){
     OPENCV_LIBS_FOLDER = ./../lib/x86_x64
 }
@@ -49,6 +52,7 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
     OPENCV_LIBS_FOLDER = ./../lib/x86
 }
 unix:{OPENCV_LIBS_FOLDER = /usr/local/lib}
+
 SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/threads.cpp \
                 $${BASE_FOLDER}/src/mainwindow.cpp \
@@ -67,6 +71,18 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
                 $${BASE_FOLDER}/src/utils/config.cpp \
                 $${BASE_FOLDER}/src/tabs/eyeworldtab.cpp
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/button.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/digital_pot.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/getch.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/ir_led.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/laser.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/laser_pos_control.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/mems.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/clock.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/digital_in.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/digital_out.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/i2c.cpp \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/spi.cpp
 
 
 
@@ -88,7 +104,22 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/modes.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
                 $${BASE_FOLDER}/includes/utils/config.h \
-                $${BASE_FOLDER}/includes/tabs/eyeworldtab.h
+                $${BASE_FOLDER}/includes/tabs/eyeworldtab.h \
+                $${BASE_FOLDER}/includes/modules/arducam_mipicamera.h
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/anglesPoints.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/button.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/digital_pot.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/getch.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/ir_led.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/laser.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/laser_pos_control.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/modules/mems.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/clock.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/digital_in.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/digital_out.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/i2c.h \
+                ##$${MEMS_LASER_BASE_FOLDER}/peripherals/spi.h
+
 
 OTHER_FILES +=  config.txt
 
@@ -99,7 +130,10 @@ INCLUDEPATH +=  $${BASE_FOLDER}/src/ \
                 $${BASE_FOLDER}/includes/ \
                 $${BASE_FOLDER}/includes/tabs/ \
                 $${BASE_FOLDER}/includes/utils/ \
-                $${BASE_FOLDER}/lib/
+                $${BASE_FOLDER}/includes/modules/ \
+                $${BASE_FOLDER}/lib/ \
+                $${MEMS_LASER_BASE_FOLDER}/modules/ \
+                $${MEMS_LASER_BASE_FOLDER}/peripherals/
 
 win32:LIBS +=   $${OPENCV_LIBS_FOLDER}/libopencv_calib3d411.dll \
                 $${OPENCV_LIBS_FOLDER}/libopencv_core411.dll \
@@ -131,7 +165,8 @@ unix:LIBS +=    $${OPENCV_LIBS_FOLDER}/libopencv_calib3d.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_photo.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_stitching.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_video.so \
-                $${OPENCV_LIBS_FOLDER}/libopencv_videoio.so
+                $${OPENCV_LIBS_FOLDER}/libopencv_videoio.so \
+                $${OPENCV_LIBS_FOLDER}/libarducam_mipicamera.so
 
 # more correct variant, how set includepath and libs for mingw
 # add system variable: OPENCV_SDK_DIR=D:/opencv/opencv-build/install

@@ -13,6 +13,11 @@
 #include "worldtab.h"
 #include "gpiotab.h"
 #include "eyeworldtab.h"
+#include "config.h"
+
+//#ifdef __arm__
+#include "arducam_mipicamera.h"
+//#endif
 
 class WorldTab; //foward declaration to avoid circular dependencies with worldtab.h
 class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
@@ -25,12 +30,18 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void initHw();
+
     MemsTab *memsTab;
     LaserTab *laserTab;
     EyeTab *eyeCamTab;
     WorldTab *worldCamTab;
     GPIOTab *gpioTab;
     EyeWorldTab *eyeWorldTab;
+
+    QWidget *centralWidget;
+    QGridLayout *layout;
+    QTabWidget *tabs;
 
     int posX = 0;
     int posY = 0;
@@ -45,6 +56,11 @@ public:
 
     cv::VideoCapture camEye;
     cv::VideoCapture camWorld;
+
+    config* systemConfigs;
+    camera_interface camInterface;
+    CAMERA_INSTANCE* arducamInstance0;
+    CAMERA_INSTANCE* arducamInstance1;
 
 private:
     int memsIndex;
