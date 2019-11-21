@@ -1,9 +1,10 @@
 #define _USE_MATH_DEFINES
 
 #include "vectorManipulation.h"
-#include "anglesPoints.h"
 #include <iostream>
 #include <math.h>
+#include <fstream>
+#include "anglesPoints.h"
 
 
 
@@ -14,6 +15,9 @@
 #define Z_MEMS_TO_WALL 1000
 //#define ZN 47.65947
 #define XYZ_MATRIX_PRECISION 0.1
+
+#define GRID_POINTS_X 5
+#define GRID_POINTS_Y 4
 //#define XYZ_MATRIX_LENGTH 23989
 // Laser's position relative to MEMS (in mm)
 rowvec VLM = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS };
@@ -37,6 +41,54 @@ void initAngleMat(short angleMat[][CAMERA_RESOLUTION][2]) {
 		}
 	}
 }
+
+void saveAnglePoints(mat gridX, mat gridY, const char* fileName) {
+	std::ofstream myfile;
+	myfile.open(fileName);
+
+	for (int i = 0; i < gridX.n_rows; i++) {
+		for (int j = 0; j < gridX.n_cols; j++) {
+			myfile << gridX.at(i, j);
+			if (j == gridX.n_cols - 1) {
+				myfile << endl;
+			}
+			else {
+				myfile << " ";
+			}
+		}
+	}
+	for (int i = 0; i < gridY.n_rows; i++) {
+		for (int j = 0; j < gridY.n_cols; j++) {
+			myfile << gridY.at(i, j);
+			if (j == gridY.n_cols - 1) {
+				myfile << endl;
+			}
+			else {
+				myfile << " ";
+			}
+		}
+	}
+	myfile.close();	
+}
+
+void loadAnglePoints(mat& gridX, mat& gridY, const char* fileName) {
+	std::ifstream myfile;
+	myfile.open(fileName);
+
+	for (int i = 0; i < GRID_POINTS_Y; i++) {
+		for (int j = 0; j < GRID_POINTS_X; j++) {
+			myfile >> gridX.at(i, j);
+		}
+	}
+
+	for (int i = 0; i < GRID_POINTS_Y; i++) {
+		for (int j = 0; j < GRID_POINTS_X; j++) {
+			myfile >> gridY.at(i, j);
+		}
+	}
+	myfile.close();
+}
+
 
 void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][2]) {
 	mat wallCorners(4, 3);

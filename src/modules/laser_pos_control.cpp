@@ -32,7 +32,8 @@
 #define INFINITY_SEQUENCE_LENGTH 101
 #define CIRCULAR_LOOP_SEQUENCE_LENGTH 201
 
-#define ANGLE_POINTS_FILENAME "modules/anglesPoints2.h"
+//#define ANGLE_POINTS_FILENAME_H "modules/anglesPoints2.h"
+#define ANGLE_POINTS_FILENAME_TXT "modules/anglesPoints2.txt"
 
 #define KB_UP 72
 #define KB_DOWN 80
@@ -55,8 +56,9 @@ Laser_pos_control::Laser_pos_control() :
     button2(GPIO6_BUTTON2),
     button3(GPIO5_BUTTON3),
     button4(GPIO4_BUTTON4) {
-    gridPointsX = anglePointsX;
-    gridPointsY = anglePointsY;
+	loadAnglePoints();
+    //gridPointsX = anglePointsX;
+    //gridPointsY = anglePointsY;
     //maxAngles = {-3.7, 3.7, -3.5, 4.5};
     //VLM = {X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS};
 }
@@ -422,7 +424,7 @@ void Laser_pos_control::keyboard_manual_mode() {
         delay(wait_delay);
     }
 }
-
+/*
 void Laser_pos_control::export2Header(const char *fileName, mat gridPointsX, mat gridPointsY) {
 	ofstream myfile;
 	myfile.open(fileName);
@@ -466,6 +468,7 @@ void Laser_pos_control::export2Header(const char *fileName, mat gridPointsX, mat
 	myfile.close();
 
 }
+*/
 
 void Laser_pos_control::calibrateGrid() {
 
@@ -483,5 +486,54 @@ void Laser_pos_control::calibrateGrid() {
     cout << "Grid points Y" << endl;
     gridPointsY.print();
 
-    export2Header(ANGLE_POINTS_FILENAME, gridPointsX, gridPointsY);
+	saveAnglePoints();
+   // export2Header(ANGLE_POINTS_FILENAME_H, gridPointsX, gridPointsY);
+}
+
+void Laser_pos_control::saveAnglePoints() {
+	std::ofstream myfile;
+	myfile.open(ANGLE_POINTS_FILENAME_TXT);
+
+	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
+		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
+			myfile << gridPointsX.at(i, j);
+			if (j == X_ANGLES_GRID_POINTS - 1) {
+				myfile << endl;
+			}
+			else {
+				myfile << " ";
+			}
+		}
+	}
+
+	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
+		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
+			myfile << gridPointsY.at(i, j);
+			if (j == X_ANGLES_GRID_POINTS - 1) {
+				myfile << endl;
+			}
+			else {
+				myfile << " ";
+			}
+		}
+	}
+	myfile.close();
+}
+
+void Laser_pos_control::loadAnglePoints() {
+	std::ifstream myfile;
+	myfile.open(ANGLE_POINTS_FILENAME_TXT);
+
+	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
+		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
+			myfile >> gridPointsX.at(i, j);
+		}
+	}
+
+	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
+		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
+			myfile >> gridPointsY.at(i, j);
+		}
+	}
+	myfile.close();
 }

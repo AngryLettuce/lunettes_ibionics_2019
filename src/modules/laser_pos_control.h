@@ -25,6 +25,9 @@ class Laser_pos_control {
 public:
     Laser laser;
     Mems mems;
+
+	mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
+	mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
 	/**
 	 * @brief Laser_pos_control constructor.
 	 */
@@ -89,6 +92,14 @@ public:
 	 * @brief fille gridPointX and gridPointY with the keyboard manual mode
 	 */
 	void calibrateGrid();
+	/**
+	* @brief save the gridPoints of the calibration sequence to a txt file
+	*/
+	void saveAnglePoints();
+	/**
+	* @brief load and populate the gridPoints from a txt file
+	*/
+	void loadAnglePoints();
 private:
     Button button1;
     Button button2;
@@ -96,10 +107,7 @@ private:
     Button button4;
    // mat gridPointsX;
    // mat gridPointsY;
-    
-    mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
-    mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
-    
+       
     //rowvec maxAngles; // {minX, maxX, minY, maxY}
     //rowvec VLM;
     short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];

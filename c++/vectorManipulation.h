@@ -4,11 +4,16 @@
 #include <armadillo>
 #include <vector>
 
+
 #define CAMERA_RESOLUTION 400
 
 using namespace arma;
 
 void initAngleMat(short angleMat[][CAMERA_RESOLUTION][2]);
+
+void saveAnglePoints(mat gridX, mat gridY, const char *fileName);
+
+void loadAnglePoints(mat &gridX, mat &gridY, const char* fileName);
 
 void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][2]);
 

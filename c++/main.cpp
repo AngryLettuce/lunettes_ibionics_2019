@@ -8,9 +8,13 @@ using namespace std;
 using namespace arma;
 int main()
 {
-	arma_version ver;
-	cout << ver.as_string() << endl;
+	mat gridX(4, 5, fill::ones);
+	mat gridY(4, 5, fill::zeros);
 	initAngleMat(angleMat);
+
+	saveAnglePoints(gridX, gridY, "exportData.txt");
+	loadAnglePoints(gridY, gridX, "exportData.txt");
+
 
 	/*
 	rowvec maxAngles = { -3.7, 3.7, -3.5, 4.5 };
