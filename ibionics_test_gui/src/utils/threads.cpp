@@ -231,7 +231,7 @@ void EyeThread(int id)
         if (VERSION == 1)
         {
             mx.lock();
-            applyEllipseMethod(image2,posX,posY); //voir pour mx lock dans la fonction
+            applyEllipseMethod(&image2,posX,posY); //voir pour mx lock dans la fonction
             mx.unlock();
         }
 

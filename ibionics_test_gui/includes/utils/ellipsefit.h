@@ -8,6 +8,6 @@
 #define ELLIPSEFIT_H
 
 
-void applyEllipseMethod(cv::Mat image,int &posX, int &posY);
+void applyEllipseMethod(cv::Mat *image,int &posX, int &posY);
 
 #endif // ELLIPSEFIT_H

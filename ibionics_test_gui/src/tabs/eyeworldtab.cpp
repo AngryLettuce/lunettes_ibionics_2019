@@ -29,7 +29,7 @@ void EyeWorldTab::processFrameEye()
     cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
 
     if(pupilMethod)
-        applyEllipseMethod(img2Eye, posX, posY);
+        applyEllipseMethod(&img2Eye, posX, posY);
     else
         applyHoughMethod(img2Eye,posX,posY);
 

@@ -35,7 +35,7 @@ void EyeTab::processFrame()
     int posY = 0;
     cv::Mat img2 = img;
     cv::cvtColor(img,img2,cv::COLOR_RGB2GRAY);
-    applyEllipseMethod(img2, posX, posY);
+    applyEllipseMethod(&img2, posX, posY);
     mainPtr->posX = posX;
     mainPtr->posY = posY;
 
