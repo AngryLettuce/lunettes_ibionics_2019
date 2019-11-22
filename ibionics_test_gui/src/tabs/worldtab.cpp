@@ -46,7 +46,7 @@ void WorldTab::processFrame()
     {
         //std::cout << "still on showing" << std::endl;
         //show all with rectancle
-        cropRegionShow(img, &img2, mainPtr->posX, mainPtr->posX, 160, 180);
+        cropRegionShow(&img, &img2, mainPtr->posX, mainPtr->posX, 160, 180);
 
         cv::cvtColor(img,img,cv::COLOR_BGR2RGB);
         //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_RGB888);

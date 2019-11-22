@@ -54,7 +54,7 @@ void EyeWorldTab::processFrameWorld()
         cropRegion(imgWorld, &img2World, posX, posY, 160, 180); //show only crop
     else
     {
-        cropRegionShow(imgWorld, &img2World, posX, posY, 160, 180); //show all with rectancle
+        cropRegionShow(&imgWorld, &img2World, posX, posY, 160, 180); //show all with rectancle
         //cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
         //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_RGB888);
         //img2World = imgWorld.clone();

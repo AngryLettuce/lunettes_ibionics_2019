@@ -81,61 +81,69 @@ void cropRegion(cv::Mat imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C)
     //return imgZoom;
 }
 
-void cropRegionShow(cv::Mat imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C)
+void cropRegionShow(cv::Mat *imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C)
 {
+    //pointeur pour imgOr
+    //dans condition mettre variable et faire operation a la fin
+    //variable pour condition?
+    int posXStart;
+    int posYStart;
 
     //croping
     if ((x <= DIM_C) && (y <= DIM_L))
     {
-        *imgZoom = imgOr(Rect(0,0,DIM_C,DIM_L));
-        cv::rectangle(imgOr, Rect(0,0,DIM_C,DIM_L), cv::Scalar(0,255,0), 3, 8,0 );
+        posXStart = 0;
+        posYStart = 0;
 
     }
-    else if  ((x <= DIM_C) && (y > imgOr.rows - DIM_L))
+    else if  ((x <= DIM_C) && (y > (imgOr->rows - DIM_L)))
     {
-        *imgZoom = imgOr(Rect(0,imgOr.rows - DIM_L,DIM_C,DIM_L));
-        cv::rectangle(imgOr, Rect(0,imgOr.rows - DIM_L,DIM_C,DIM_L), cv::Scalar(0,255,0), 3, 8,0 );
-    }
-    else if ((x >= imgOr.cols - DIM_C) && (y <= DIM_L))
-    {
-        *imgZoom = imgOr(Rect(imgOr.cols - DIM_C,0,DIM_C,DIM_L));
-        cv::rectangle(imgOr,Rect(imgOr.cols - DIM_C,0,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
+        posXStart = 0;
+        posYStart = imgOr->rows - DIM_L;
 
     }
-    else if ((x >= imgOr.cols - DIM_C) && (y > imgOr.rows - DIM_L))
+    else if ((x >= imgOr->cols - DIM_C) && (y <= DIM_L))
     {
-        *imgZoom = imgOr(Rect(imgOr.cols - DIM_C,imgOr.rows - DIM_L,DIM_C,DIM_L));
-        cv::rectangle(imgOr,Rect(imgOr.cols - DIM_C,imgOr.rows - DIM_L,DIM_C,DIM_L), cv::Scalar(0,255,0), 3, 8,0 );
+        posXStart = imgOr->cols - DIM_C;
+        posYStart = 0;
     }
-    else if((x >= imgOr.cols - DIM_C) && ((y >= DIM_L) && (y <= imgOr.rows - DIM_L)))
+    else if ((x >= imgOr->cols - DIM_C) && (y > imgOr->rows - DIM_L))
     {
-        int posYStart = (int) (y - DIM_L/2);
-        *imgZoom = imgOr(Rect(imgOr.cols - DIM_C,posYStart,DIM_C,DIM_L));
-        cv::rectangle(imgOr,Rect(imgOr.cols - DIM_C,posYStart,DIM_C,DIM_L), cv::Scalar(0,255,0), 3, 8,0 );
+        posXStart = imgOr->cols - DIM_C;
+        posYStart = imgOr->rows - DIM_L;
+
     }
-    else if((x <= DIM_C) && ((y >= DIM_L) && (y <= imgOr.rows - DIM_L)))
+    else if((x >= imgOr->cols - DIM_C) && ((y >= DIM_L) && (y <= imgOr->rows - DIM_L)))
     {
-        int posYStart = (int) (y - DIM_L/2);
-        *imgZoom = imgOr(Rect(0,posYStart,DIM_C,DIM_L));
-        cv::rectangle(imgOr,Rect(0,posYStart,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
+        posXStart = imgOr->cols - DIM_C;
+        posYStart = (int) (y - DIM_L/2);
+
     }
-    else if( ((x >= DIM_C) && (x <=imgOr.cols - DIM_C)) && (y < DIM_L))
+    else if((x <= DIM_C) && ((y >= DIM_L) && (y <= imgOr->rows - DIM_L)))
     {
-        int posXStart = (int) (x - DIM_C/2);
-        *imgZoom = imgOr(Rect(posXStart,0,DIM_C,DIM_L));
-        cv::rectangle(imgOr,Rect(posXStart,0,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
+        posXStart = 0;
+        posYStart = (int) (y - DIM_L/2);
+
     }
-    else if( ((x >= DIM_C) && (x <=imgOr.cols - DIM_C)) &&  (y >= imgOr.rows - DIM_L)  )
+    else if( ((x >= DIM_C) && (x <= imgOr->cols - DIM_C)) && (y < DIM_L))
     {
-        int posXStart = (int) (x - DIM_C/2);
-        *imgZoom = imgOr(Rect(posXStart,imgOr.rows-DIM_L,DIM_C,DIM_L));
-        cv::rectangle(imgOr,Rect(posXStart,imgOr.rows-DIM_L,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
+        posXStart = (int) (x - DIM_C/2);
+        posYStart = 0;
+
+    }
+    else if( ((x >= DIM_C) && (x <= imgOr->cols - DIM_C)) &&  (y >= imgOr->rows - DIM_L)  )
+    {
+        posXStart = (int) (x - DIM_C/2);
+        posYStart = imgOr->rows - DIM_L;
     }
     else
     {
-        int posYStart = (int) (y - DIM_L/2);
-        int posXStart = (int) (x - DIM_C/2);
-        *imgZoom = imgOr(Rect(posXStart,posYStart,DIM_C,DIM_L));
-        cv::rectangle(imgOr,Rect(posXStart,posYStart,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
+        posYStart = (int) (y - DIM_L/2);
+        posXStart = (int) (x - DIM_C/2);
+
     }
+
+    *imgZoom = cv::Mat (*imgOr,Rect(posXStart,posYStart,DIM_C,DIM_L));//imgOr(Rect(posXStart,posYStart,DIM_C,DIM_L));
+    cv::rectangle(*imgOr,Rect(posXStart,posYStart,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
+
 }

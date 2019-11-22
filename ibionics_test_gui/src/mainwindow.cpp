@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
     camEye.open(0);//2 for webcam
-    camWorld.open(1);
+    camWorld.open(2);
 
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
