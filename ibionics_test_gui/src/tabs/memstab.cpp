@@ -1,11 +1,13 @@
 #include "memstab.h"
 
 
-MemsTab::MemsTab(QWidget *parent) : QWidget(parent)
+MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
     //Layout
     QGridLayout *layout = new QGridLayout(this);
 
+    mainWindowPtr = mW;
+        
     //PixMap
     QString filename = "images\\eye.jpg";
     lbl = new MediaLabel(this, filename);
@@ -33,5 +35,6 @@ MemsTab::MemsTab(QWidget *parent) : QWidget(parent)
 
 void MemsTab::comboboxItemChanged(QString sequence)
 {
-    qDebug() << sequence;
+    //std::cout<<"In Sequence event"<<std::endl;
+    mainWindowPtr->laser_pos_control->draw_rectangle(10);
 }

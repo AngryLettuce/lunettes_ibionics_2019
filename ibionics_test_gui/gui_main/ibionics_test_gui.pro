@@ -114,7 +114,13 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
 		$${LASER_FOLDER}/src/peripherals/digital_in.h \
 		$${LASER_FOLDER}/src/peripherals/digital_out.h \
 		$${LASER_FOLDER}/src/peripherals/i2c.h \
-		$${LASER_FOLDER}/src/peripherals/spi.h
+		$${LASER_FOLDER}/src/peripherals/spi.h \
+		$${LASER_FOLDER}/sequences/rectangle_LUT.h \
+		$${LASER_FOLDER}/sequences/circularLoop_LUT.h \
+		$${LASER_FOLDER}/sequences/closingRect_LUT.h \
+		$${LASER_FOLDER}/sequences/infinity_LUT.h \
+		$${LASER_FOLDER}/sequences/spiral_LUT.h
+
 
 OTHER_FILES +=  config.txt
 

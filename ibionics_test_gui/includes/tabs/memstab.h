@@ -8,17 +8,21 @@
 #include <QLabel>
 #include <QPixmap>
 #include "medialabel.h"
+#include "mainwindow.h"
 
 class MediaLabel; //foward declaration to avoid circular dependencies with medialabel.h
+class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 
 class MemsTab : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MemsTab(QWidget *parent = nullptr);
+    explicit MemsTab(QWidget *parent = nullptr, MainWindow* mW = nullptr);
     MediaLabel *lbl;
     QPixmap *pix;
     QLabel *posMouseLabel;
+
+    MainWindow* mainWindowPtr;
 
 signals:
 

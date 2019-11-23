@@ -54,7 +54,7 @@ void applyEllipseMethod(cv::Mat *image, int& posX, int& posY)
          }
      }
     
-    if(area_max > 5) 
+    if(area_max > 6) 
     {
         ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
         

@@ -33,7 +33,8 @@
 #define CIRCULAR_LOOP_SEQUENCE_LENGTH 201
 
 //#define ANGLE_POINTS_FILENAME_H "modules/anglesPoints2.h"
-#define ANGLE_POINTS_FILENAME_TXT "modules/anglesPoints.txt"
+//#define ANGLE_POINTS_FILENAME_TXT "modules/anglesPoints.txt"
+#define ANGLE_POINTS_FILENAME_TXT "/home/pi/Desktop/s8ibionics/src/modules/anglesPoints.txt"
 
 #define KB_UP 72
 #define KB_DOWN 80
@@ -239,6 +240,7 @@ void Laser_pos_control::draw_rectangle(int time_delay) {
 		angles = getAngles(rectangle_LUT[i][0], rectangle_LUT[i][1]);
 		mems.send_angles(angles[0], angles[1]);
 		delay(time_delay);
+		//std::cout<<angles[0]<<angles[1]<<std::endl;
 	}
 }
 

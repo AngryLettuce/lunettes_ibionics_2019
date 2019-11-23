@@ -13,10 +13,13 @@
 #include "worldtab.h"
 #include "gpiotab.h"
 #include "eyeworldtab.h"
+#include "laser_pos_control.h"
 
+class MemsTab; //foward declaration to avoid circular dependencies with memstab.h
 class WorldTab; //foward declaration to avoid circular dependencies with worldtab.h
 class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
 class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
+class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 
 class MainWindow : public QMainWindow
 {
@@ -45,6 +48,10 @@ public:
 
     cv::VideoCapture camEye;
     cv::VideoCapture camWorld;
+    
+    Laser_pos_control* laser_pos_control;
+    
+    
 
 private:
     int memsIndex;

@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     config* asdf = new config("C:/views/s8ibionics/ibionics_test_gui/gui_main/config.txt");
+    
+    laser_pos_control = new Laser_pos_control();
 
     QWidget *centralWidget = new QWidget(this);
     QGridLayout *layout = new QGridLayout(centralWidget);
@@ -35,11 +37,14 @@ MainWindow::MainWindow(QWidget *parent)
     tmrTimerWorld = new QTimer(this);
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
-    camEye.open(1);//2 for webcam
-    camWorld.open(0);
+    camEye.open(0);//2 for webcam
+    camWorld.open(2);
 
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
+    
+    
+    laser_pos_control->draw_rectangle(10);
 }
 
 MainWindow::~MainWindow()
