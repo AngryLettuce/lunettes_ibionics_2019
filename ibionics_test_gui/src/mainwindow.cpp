@@ -35,8 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     tmrTimerWorld = new QTimer(this);
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
-    camEye.open(0);//2 for webcam
-    camWorld.open(2);
+    camEye.open(1);//2 for webcam
+    camWorld.open(0);
 
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
@@ -49,6 +49,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::tabChange(int currentIndex)
 {
+        disconnect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
+        disconnect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
+    
     if(currentIndex == 2){
         if(camEye.isOpened())
             connect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));

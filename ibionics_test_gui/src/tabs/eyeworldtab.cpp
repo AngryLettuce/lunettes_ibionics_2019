@@ -5,6 +5,7 @@
 
 EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
+    
     //Layout
     layout = new QGridLayout(this);
     imgLblEye = new QLabel("EYE",this);
@@ -18,6 +19,8 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
     connect(button, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
     mainWindowPtr = mW;
+    
+    //laser_pos_control = nlaser_pos_control();
 }
 
 void EyeWorldTab::processFrameEye()
@@ -33,6 +36,11 @@ void EyeWorldTab::processFrameEye()
     else
         applyHoughMethod(img2Eye,posX,posY);
 
+    //Adjust laser position 
+    posX = posX*199/640;
+    posY = posY*199/480;
+    laser_pos_control.send_pos(posX, posY);
+    
     //Add point to EyeCam
     cv::Point centre = cv::Point(posX,posY);
     cv::circle(imgEye, centre,7, cv::Scalar(255, 0, 0), -1);

@@ -3,14 +3,14 @@
 using namespace cv;
 using namespace std;
 
-void edge_sobel(Mat img, Mat &img_out) {
+void edge_sobel(cv::Mat img, cv::Mat &img_out) {
 	int ddepth  = CV_64F;
 	int delta   = 0;
 	int scale   = 1;
 	int kernel  = 3;
 
-	Mat grad, grad_x, grad_y;
-	Mat abs_grad_x, abs_grad_y;
+	cv::Mat grad, grad_x, grad_y;
+	cv::Mat abs_grad_x, abs_grad_y;
 
 	Sobel(img, grad_x, ddepth, 1, 0, kernel, scale, delta, BORDER_DEFAULT);
 	Sobel(img, grad_y, ddepth, 0, 1, kernel, scale, delta, BORDER_DEFAULT);
@@ -22,9 +22,9 @@ void edge_sobel(Mat img, Mat &img_out) {
 }
 
 
-void sobel_sequence(Mat img, Mat &img_out, Mat gray_LUT) {
-	Mat img_blurred, img_sobel;
-	Mat img_gray;
+void sobel_sequence(cv::Mat img, cv::Mat &img_out, cv::Mat gray_LUT) {
+	cv::Mat img_blurred, img_sobel;
+	cv::Mat img_gray;
 
 	cvtColor(img, img_gray, COLOR_BGR2GRAY);
 
@@ -43,7 +43,7 @@ void sobel_sequence(Mat img, Mat &img_out, Mat gray_LUT) {
 
 }
 
-//void convert2XLevelsOfGray(Mat img, int x) {
+//void convert2XLevelsOfGray(cv::Mat img, int x) {
 //	double intervalValue = 256.0 / x;
 //	int pixelValue;
 //	for (int j = 0; j < img.rows; j++){

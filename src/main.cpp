@@ -22,9 +22,8 @@ int main() {
     //piHiPri(20);
     Laser_pos_control laser_pos_control;
     
-    
+    laser_pos_control.send_pos(100,100);
     laser_pos_control.calibrateGrid();
-    laser_pos_control.initAngleMat();
     //laser_pos_control.export2Header("modules/testing.h");
     //laser_pos_control.manual_mode();
     //laser_pos_control.mems.print_angles() ;

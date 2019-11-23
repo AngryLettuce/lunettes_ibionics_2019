@@ -11,7 +11,7 @@
 #include <wiringPi.h>
 
 #include "laser_pos_control.h"
-#include "anglesPoints2.h"
+//#include "anglesPoints2.h"
 #include "getch.h"
 //#include "../../mathMems/interpolationBilineaire/lookUpTable.h"
 #include "../../sequences/infinity_LUT.h"
@@ -33,7 +33,7 @@
 #define CIRCULAR_LOOP_SEQUENCE_LENGTH 201
 
 //#define ANGLE_POINTS_FILENAME_H "modules/anglesPoints2.h"
-#define ANGLE_POINTS_FILENAME_TXT "modules/anglesPoints2.txt"
+#define ANGLE_POINTS_FILENAME_TXT "modules/anglesPoints.txt"
 
 #define KB_UP 72
 #define KB_DOWN 80
@@ -57,6 +57,7 @@ Laser_pos_control::Laser_pos_control() :
     button3(GPIO5_BUTTON3),
     button4(GPIO4_BUTTON4) {
 	loadAnglePoints();
+	initAngleMat();
     //gridPointsX = anglePointsX;
     //gridPointsY = anglePointsY;
     //maxAngles = {-3.7, 3.7, -3.5, 4.5};

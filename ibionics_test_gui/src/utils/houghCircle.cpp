@@ -22,9 +22,9 @@ HoughParams::HoughParams(int p1, int p2, int minRad, int maxRad, int minDis)
 
 //ajouter slider pour modifier parametre et afficher le point detecter
 //mettre coordoner en 2 int
-void applyHoughMethodDyn(Mat image,HoughParams param,vector<Vec3f> &circles,int posX, int posY)
+void applyHoughMethodDyn(cv::Mat image,HoughParams param,vector<Vec3f> &circles,int posX, int posY)
 {
-    Mat temps = image;
+    cv::Mat temps = image;
 
     // Convert it to gray
     cvtColor( image, image, COLOR_BGR2GRAY );

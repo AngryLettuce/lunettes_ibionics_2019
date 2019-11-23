@@ -15,7 +15,7 @@ using namespace cv;
 class HoughParams
 {
 
-    Mat tmps;
+    cv::Mat tmps;
 
     public:
 
@@ -50,8 +50,8 @@ struct parametre
 };
 
 
-void applyHoughMethodDyn(Mat image,HoughParams param,vector<Vec3f> &circles, int posX,int posY);
+void applyHoughMethodDyn(cv::Mat image,HoughParams param,vector<Vec3f> &circles, int posX,int posY);
 
-void applyHoughMethod(Mat image,int &posX,int &posY);
+void applyHoughMethod(cv::Mat image,int &posX,int &posY);
 
 #endif //PUPILDETECTION_HOUGHCIRCLE_H

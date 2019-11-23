@@ -11,12 +11,18 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 
+
+#include "laser_pos_control.h"
 #include "mainwindow.h"
 #include "crop.h"
 #include "edgeDetection.h"
 #include "ellipsefit.h"
 #include "houghCircle.h"
 #include "modes.h"
+
+
+
+
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 
@@ -45,6 +51,8 @@ public:
     int posY = 0;
     bool pupilMethod = true;
     MainWindow* mainWindowPtr;
+    
+    Laser_pos_control laser_pos_control;
 
 signals:
 

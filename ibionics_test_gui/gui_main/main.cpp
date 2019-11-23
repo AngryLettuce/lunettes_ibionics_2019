@@ -4,6 +4,7 @@
 #include "houghCircle.h"
 #include "modes.h"
 #include "testvideo.h"
+#include <wiringPi.h>
 
 std::mutex mx;
 
@@ -25,7 +26,7 @@ int main(int argc, char *argv[])
     camera1 >> frame1;
     cv::imshow("Video1", frame1);
     */
-
+    wiringPiSetupGpio();
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

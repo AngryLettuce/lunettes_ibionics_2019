@@ -9,6 +9,6 @@
 
 using namespace cv;
 
-void edge_sobel(Mat img, Mat &img_sobel);
-void sobel_sequence(Mat img, Mat &img_out, Mat gray_LUT);
+void edge_sobel(cv::Mat img, cv::Mat &img_sobel);
+void sobel_sequence(cv::Mat img, cv::Mat &img_out, cv::Mat gray_LUT);
 
