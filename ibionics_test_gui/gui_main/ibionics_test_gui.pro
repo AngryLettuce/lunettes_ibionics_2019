@@ -31,7 +31,7 @@ PATH_TO_MINGW_64 = C:/Qt/5.13.1/mingw73_64/mkspecs/win32-g++
 PATH_TO_MINGW_32 = C:/Qt/5.12.3/mingw73_32/mkspecs/win32-g++
 
 BASE_FOLDER = ./..
-LASER_FOLDER = ./../..
+MEMS_LASER_FOLDER = ./../..
 
 
 #------------Messages for debugging purpose-----------#
@@ -43,6 +43,8 @@ LASER_FOLDER = ./../..
 #CONFIG(release, debug|release):message(Release build!)
 #CONFIG(debug, debug|release):message(Debug build!)
 
+
+
 win32:contains(QMAKESPEC, $$PATH_TO_MINGW_64){
     OPENCV_LIBS_FOLDER = ./../lib/x86_x64
 }
@@ -50,6 +52,7 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
     OPENCV_LIBS_FOLDER = ./../lib/x86
 }
 unix:{OPENCV_LIBS_FOLDER = /usr/local/lib}
+
 SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/threads.cpp \
                 $${BASE_FOLDER}/src/mainwindow.cpp \
@@ -61,28 +64,24 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/gpioview.cpp \
                 $${BASE_FOLDER}/src/utils/medialabel.cpp \
                 $${BASE_FOLDER}/src/utils/crop.cpp \
-                #$${BASE_FOLDER}/src/utils/dev_tool.cpp \
                 $${BASE_FOLDER}/src/utils/edgeDetection.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp \
                 $${BASE_FOLDER}/src/utils/ellipsefit.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
                 $${BASE_FOLDER}/src/utils/config.cpp \
                 $${BASE_FOLDER}/src/tabs/eyeworldtab.cpp \
-		$${LASER_FOLDER}/src/modules/button.cpp \
-		$${LASER_FOLDER}/src/modules/digital_pot.cpp \
-		$${LASER_FOLDER}/src/modules/getch.cpp \
-		$${LASER_FOLDER}/src/modules/ir_led.cpp \
-		$${LASER_FOLDER}/src/modules/laser.cpp \
-		$${LASER_FOLDER}/src/modules/laser_pos_control.cpp \
-		$${LASER_FOLDER}/src/modules/mems.cpp \
-		$${LASER_FOLDER}/src/peripherals/clock.cpp \
-		$${LASER_FOLDER}/src/peripherals/digital_in.cpp \
-		$${LASER_FOLDER}/src/peripherals/digital_out.cpp \
-		$${LASER_FOLDER}/src/peripherals/i2c.cpp \
-		$${LASER_FOLDER}/src/peripherals/spi.cpp
-
-
-
+                $${MEMS_LASER_FOLDER}/src/modules/button.cpp \
+                $${MEMS_LASER_FOLDER}/src/modules/digital_pot.cpp \
+                $${MEMS_LASER_FOLDER}/src/modules/getch.cpp \
+                $${MEMS_LASER_FOLDER}/src/modules/ir_led.cpp \
+                $${MEMS_LASER_FOLDER}/src/modules/laser.cpp \
+                $${MEMS_LASER_FOLDER}/src/modules/laser_pos_control.cpp \
+                $${MEMS_LASER_FOLDER}/src/modules/mems.cpp \
+                $${MEMS_LASER_FOLDER}/src/peripherals/clock.cpp \
+                $${MEMS_LASER_FOLDER}/src/peripherals/digital_in.cpp \
+                $${MEMS_LASER_FOLDER}/src/peripherals/digital_out.cpp \
+                $${MEMS_LASER_FOLDER}/src/peripherals/i2c.cpp \
+                $${MEMS_LASER_FOLDER}/src/peripherals/spi.cpp
 
 HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/tabs/eyetab.h \
@@ -103,24 +102,24 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
                 $${BASE_FOLDER}/includes/utils/config.h \
                 $${BASE_FOLDER}/includes/tabs/eyeworldtab.h \
-		$${LASER_FOLDER}/src/modules/button.h \
-		$${LASER_FOLDER}/src/modules/digital_pot.h \
-		$${LASER_FOLDER}/src/modules/getch.h \
-		$${LASER_FOLDER}/src/modules/ir_led.h \
-		$${LASER_FOLDER}/src/modules/laser.h \
-		$${LASER_FOLDER}/src/modules/laser_pos_control.h \
-		$${LASER_FOLDER}/src/modules/mems.h \
-		$${LASER_FOLDER}/src/peripherals/clock.h \
-		$${LASER_FOLDER}/src/peripherals/digital_in.h \
-		$${LASER_FOLDER}/src/peripherals/digital_out.h \
-		$${LASER_FOLDER}/src/peripherals/i2c.h \
-		$${LASER_FOLDER}/src/peripherals/spi.h \
-		$${LASER_FOLDER}/sequences/rectangle_LUT.h \
-		$${LASER_FOLDER}/sequences/circularLoop_LUT.h \
-		$${LASER_FOLDER}/sequences/closingRect_LUT.h \
-		$${LASER_FOLDER}/sequences/infinity_LUT.h \
-		$${LASER_FOLDER}/sequences/spiral_LUT.h
-
+                $${BASE_FOLDER}/includes/modules/arducam_mipicamera.h \
+                $${MEMS_LASER_FOLDER}/src/modules/button.h \
+                $${MEMS_LASER_FOLDER}/src/modules/digital_pot.h \
+                $${MEMS_LASER_FOLDER}/src/modules/getch.h \
+                $${MEMS_LASER_FOLDER}/src/modules/ir_led.h \
+                $${MEMS_LASER_FOLDER}/src/modules/laser.h \
+                $${MEMS_LASER_FOLDER}/src/modules/laser_pos_control.h \
+                $${MEMS_LASER_FOLDER}/src/modules/mems.h \
+                $${MEMS_LASER_FOLDER}/src/peripherals/clock.h \
+                $${MEMS_LASER_FOLDER}/src/peripherals/digital_in.h \
+                $${MEMS_LASER_FOLDER}/src/peripherals/digital_out.h \
+                $${MEMS_LASER_FOLDER}/src/peripherals/i2c.h \
+                $${MEMS_LASER_FOLDER}/src/peripherals/spi.h \
+                $${MEMS_LASER_FOLDER}/sequences/rectangle_LUT.h \
+                $${MEMS_LASER_FOLDER}/sequences/circularLoop_LUT.h \
+                $${MEMS_LASER_FOLDER}/sequences/closingRect_LUT.h \
+                $${MEMS_LASER_FOLDER}/sequences/infinity_LUT.h \
+                $${MEMS_LASER_FOLDER}/sequences/spiral_LUT.h
 
 OTHER_FILES +=  config.txt
 
@@ -131,9 +130,10 @@ INCLUDEPATH +=  $${BASE_FOLDER}/src/ \
                 $${BASE_FOLDER}/includes/ \
                 $${BASE_FOLDER}/includes/tabs/ \
                 $${BASE_FOLDER}/includes/utils/ \
+                $${BASE_FOLDER}/includes/modules/ \
                 $${BASE_FOLDER}/lib/ \
-		$${LASER_FOLDER}/src/modules/ \
-		$${LASER_FOLDER}/src/peripherals/ \
+                $${MEMS_LASER_BASE_FOLDER}/src/modules/ \
+                $${MEMS_LASER_BASE_FOLDER}/src/peripherals/ \
 
 win32:LIBS +=   $${OPENCV_LIBS_FOLDER}/libopencv_calib3d411.dll \
                 $${OPENCV_LIBS_FOLDER}/libopencv_core411.dll \
@@ -166,9 +166,7 @@ unix:LIBS +=    $${OPENCV_LIBS_FOLDER}/libopencv_calib3d.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_stitching.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_video.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_videoio.so \
-		#./../lib/raspbian/libwiringPi.so
-
-		
+                $${OPENCV_LIBS_FOLDER}/../lib/libarducam_mipicamera.so
 
 # more correct variant, how set includepath and libs for mingw
 # add system variable: OPENCV_SDK_DIR=D:/opencv/opencv-build/install

@@ -1,11 +1,14 @@
 #include "eyeworldtab.h"
 #include <QCoreApplication>
 #include "mainwindow.h"
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
 
+#define VCOS_ALIGN_DOWN(p,n) (((ptrdiff_t)(p)) & ~((n)-1))
+#define VCOS_ALIGN_UP(p,n) VCOS_ALIGN_DOWN((ptrdiff_t)(p)+(n)-1,(n))
 
 EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
-    
     //Layout
     layout = new QGridLayout(this);
     imgLblEye = new QLabel("EYE",this);
@@ -19,38 +22,39 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
     connect(button, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
     mainWindowPtr = mW;
-    
-    
 }
 
 void EyeWorldTab::processFrameEye()
 {
+#ifdef __arm__
+    imgEye = *getImage(0, 640, 480);
+#endif
+#ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
-    if(imgEye.empty()) return;
-
-    cv::Mat img2Eye;
-    cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
-
-    if(pupilMethod)
-        applyEllipseMethod(&img2Eye, posX, posY);
-    else
-        applyHoughMethod(img2Eye,posX,posY);
-
-    
-    //Add point to EyeCam
-    cv::Point centre = cv::Point(posX,posY);
-    cv::circle(imgEye, centre,7, cv::Scalar(255, 0, 0), -1);
-
-    cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
+#endif
+    if(imgEye.channels() <= 1){
+        if(imgEye.empty()) return;
+        // if the signature of the functions changes and return a cv::Point, we could make it in one line
+        (pupilMethod) ? applyEllipseMethod(imgEye, posX,posY) : applyHoughMethod(imgEye,posX,posY) ;
+        cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
+    }
+    else{
+        cv::Mat img2Eye;
+        cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
+        (pupilMethod) ? applyEllipseMethod(img2Eye, posX,posY) : applyHoughMethod(img2Eye,posX,posY) ;
+        cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
+        cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
+    }
+	
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
     
-    //Adjust laser position
+    //Adjust laser position 
+	//TODO Hot Fix
     if (posX < 0 || posY < 0)
     {
         posX = 0;
         posY = 0;
-    
     }
     else
     {
@@ -69,23 +73,23 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
+#ifdef __arm__
+    imgWorld = *getImage(1, 640, 480);
+#endif
+#ifdef WIN32
     (mainWindowPtr->camWorld).read(imgWorld);
-    if(imgWorld.empty()) return;
-
+#endif
     cv::Mat img2World = imgWorld;
-    cv::cvtColor(imgWorld,img2World,cv::COLOR_RGB2GRAY);
-
-    if(RECTSHOW)
-        cropRegion(imgWorld, &img2World, posX, posY, 160, 180); //show only crop
-    else
-    {
-        cropRegionShow(&imgWorld, &img2World, posX, posY, 160, 180); //show all with rectancle
-        //cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
-        //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_RGB888);
-        //img2World = imgWorld.clone();
+	if(imgWorld.empty()) return;
+    if(imgWorld.channels() <= 1){
+        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(imgWorld, &img2World, posX, posY, 160, 180);
+    }
+    else{
+        cv::cvtColor(imgWorld,img2World,cv::COLOR_RGB2GRAY);
+        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(imgWorld, &img2World, posX, posY, 160, 180);
+        cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
     }
 
-    cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
     QImage qimgWorld(reinterpret_cast<uchar*>(imgWorld.data), imgWorld.cols, imgWorld.rows, imgWorld.step, QImage::Format_RGB888);
     imgLblWorld->setPixmap(QPixmap::fromImage(qimgWorld));
 }
@@ -95,16 +99,33 @@ void EyeWorldTab::switchPupilMethodButton()
 {   
     pupilMethod = !pupilMethod; //change stage of pupil detection
     if(VERBOSE)
-    {
-        if(pupilMethod)
-            std::cout << "Change pupil detection method to Ellipse" << std::endl;
-        else
-            std::cout << "Change pupil detection method to hough circle" << std::endl;
-    }
+        std::cout << ((pupilMethod) ? "Change pupil detection method to Ellipse" : "Change pupil detection method to hough circle")<< endl;
+    button->setText((pupilMethod)?"using Ellipse, click to switch to hough circle":"using Hough cricle, click to switch to Ellipse");
+}
 
-    if(pupilMethod) //change text on button
-        button->setText("using Ellipse, click to switch to hough circle");
+cv::Mat* EyeWorldTab::getImage(int camNumber, int width, int height)
+{
+
+    IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 100};
+    BUFFER *buffer = nullptr;
+#ifdef __arm__
+    if(camNumber == 0)
+        buffer = arducam_capture(mainWindowPtr->arducamInstance0, &fmt, 3000);
     else
-        button->setText("using Hough cricle, click to switch to Ellipse");
+        buffer = arducam_capture(mainWindowPtr->arducamInstance1, &fmt, 3000);
+#endif
+    if (!buffer)
+        return nullptr;
+#ifdef __arm__
+    // The actual width and height of the IMAGE_ENCODING_RAW_BAYER format and the IMAGE_ENCODING_I420 format are aligned,
+    // width 32 bytes aligned, and height 16 byte aligned.
+    width = VCOS_ALIGN_UP(width, 32);
+    height = VCOS_ALIGN_UP(height, 16);
+    processedImg = cv::Mat(cv::Size(width,(int)(height * 1.5)), CV_8UC1, buffer->data);
+    cv::cvtColor(processedImg, processedImg, cv::COLOR_YUV2BGR_I420);
+    arducam_release_buffer(buffer);
+    return &processedImg;
+#endif
+    return nullptr;
 }
 
