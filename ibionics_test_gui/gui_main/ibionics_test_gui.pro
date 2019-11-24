@@ -132,8 +132,8 @@ INCLUDEPATH +=  $${BASE_FOLDER}/src/ \
                 $${BASE_FOLDER}/includes/utils/ \
                 $${BASE_FOLDER}/includes/modules/ \
                 $${BASE_FOLDER}/lib/ \
-                $${MEMS_LASER_BASE_FOLDER}/src/modules/ \
-                $${MEMS_LASER_BASE_FOLDER}/src/peripherals/ \
+                $${MEMS_LASER_FOLDER}/src/modules/ \
+                $${MEMS_LASER_FOLDER}/src/peripherals/
 
 win32:LIBS +=   $${OPENCV_LIBS_FOLDER}/libopencv_calib3d411.dll \
                 $${OPENCV_LIBS_FOLDER}/libopencv_core411.dll \
@@ -166,19 +166,6 @@ unix:LIBS +=    $${OPENCV_LIBS_FOLDER}/libopencv_calib3d.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_stitching.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_video.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_videoio.so \
-                $${OPENCV_LIBS_FOLDER}/../lib/libarducam_mipicamera.so
-
-# more correct variant, how set includepath and libs for mingw
-# add system variable: OPENCV_SDK_DIR=D:/opencv/opencv-build/install
-# read http://doc.qt.io/qt-5/qmake-variable-reference.html#libs
-
-#INCLUDEPATH += $$(OPENCV_SDK_DIR)/include
-LIBS += -lwiringPi 
-#LIBS += -L$$(OPENCV_SDK_DIR)/x86/mingw/lib \
-#        -lopencv_core320        \
-#        -lopencv_highgui320     \
-#        -lopencv_imgcodecs320   \
-#        -lopencv_imgproc320     \/
-#        -lopencv_features2d320  \
-#        -lopencv_calib3d320
+                $${OPENCV_LIBS_FOLDER}/../lib/libarducam_mipicamera.so \
+                -lwiringPi
 
