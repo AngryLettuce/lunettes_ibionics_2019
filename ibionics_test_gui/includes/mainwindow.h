@@ -59,8 +59,10 @@ public:
 
     config* systemConfigs;
     camera_interface camInterface;
-    CAMERA_INSTANCE* arducamInstance0;
-    CAMERA_INSTANCE* arducamInstance1;
+    CAMERA_INSTANCE arducamInstance0;
+    CAMERA_INSTANCE arducamInstance1;
+    int camState0 = 0;
+    int camState1 = 0;
 
 private:
     int memsIndex;

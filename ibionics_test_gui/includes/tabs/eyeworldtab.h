@@ -46,6 +46,9 @@ public:
     int posY = 0;
     bool pupilMethod = true;
     MainWindow* mainWindowPtr;
+    cv::Mat *imgCamEye;
+    cv::Mat *imgCamWorld;
+    cv::Mat processedImg;
 
 
 signals:

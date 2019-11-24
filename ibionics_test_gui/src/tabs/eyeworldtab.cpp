@@ -29,8 +29,8 @@ void EyeWorldTab::processFrameEye()
     int width = 640;
     int height = 480;
 #ifdef __arm__
-    cv::Mat *img = getImage(0, width, height);
-    imgEye = *img;
+    imgEye = *getImage(0, width, height);
+    //imgEye = *imgCamEye;
 #endif
 #ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
@@ -59,7 +59,16 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
+    
+    int width = 640;
+    int height = 480;
+#ifdef __arm__
+    imgWorld = *getImage(1, width, height);
+    //imgWorld = *imgCamWorld;
+#endif
+#ifdef WIN32
     (mainWindowPtr->camWorld).read(imgWorld);
+#endif
     if(imgWorld.empty()) return;
 
     cv::Mat img2World = imgWorld;
@@ -70,9 +79,6 @@ void EyeWorldTab::processFrameWorld()
     else
     {
         cropRegionShow(imgWorld, &img2World, posX, posY, 160, 180); //show all with rectancle
-        //cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
-        //QImage qimg(reinterpret_cast<uchar*>(img.data), img.cols, img.rows, img.step, QImage::Format_RGB888);
-        //img2World = imgWorld.clone();
     }
 
     cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
@@ -101,7 +107,7 @@ void EyeWorldTab::switchPupilMethodButton()
 cv::Mat* EyeWorldTab::getImage(int camNumber, int width, int height)
 {
 
-    IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 50};
+    IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 100};
     BUFFER *buffer = nullptr;
 #ifdef __arm__
     if(camNumber == 0)
@@ -116,10 +122,10 @@ cv::Mat* EyeWorldTab::getImage(int camNumber, int width, int height)
     // width 32 bytes aligned, and height 16 byte aligned.
     width = VCOS_ALIGN_UP(width, 32);
     height = VCOS_ALIGN_UP(height, 16);
-    cv::Mat *image = new cv::Mat(cv::Size(width,(int)(height * 1.5)), CV_8UC1, buffer->data);
-    cv::cvtColor(*image, *image, cv::COLOR_YUV2BGR_I420);
+    processedImg = cv::Mat(cv::Size(width,(int)(height * 1.5)), CV_8UC1, buffer->data);
+    cv::cvtColor(processedImg, processedImg, cv::COLOR_YUV2BGR_I420);
     arducam_release_buffer(buffer);
-    return image;
+    return &processedImg;
 #endif
     return nullptr;
 }

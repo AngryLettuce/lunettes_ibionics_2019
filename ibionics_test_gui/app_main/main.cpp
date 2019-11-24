@@ -9,6 +9,7 @@ std::mutex mx;
 
 int main(int argc, char *argv[])
 {
+    std::cout<<"Currently in debug mode"<<endl;
     /*
     //==============================================
     //======== Test Main with switch case ==========

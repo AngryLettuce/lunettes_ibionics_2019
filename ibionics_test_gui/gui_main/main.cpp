@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
     camera1 >> frame1;
     cv::imshow("Video1", frame1);
     */
-
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
