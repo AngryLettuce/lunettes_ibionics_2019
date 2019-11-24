@@ -6,6 +6,7 @@
 #include "gpiotab.h"
 #include "eyeworldtab.h"
 #include "config.h"
+#include "calibrationtab.h"
 
 #include "arducam_mipicamera.h"
 
@@ -21,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     memsTab = new MemsTab(tabs);
     laserTab = new LaserTab(tabs);
+    calibrationTab = new CalibrationTab(tabs, this);
     eyeWorldTab = new EyeWorldTab(tabs, this);
     gpioTab = new GPIOTab();
 
@@ -31,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     //Add Qwidgets as tabs
     memsIndex = tabs->addTab(memsTab,"MEMS");
     laserIndex = tabs->addTab(laserTab,"Laser");
+    calibrationIndex = tabs->addTab(calibrationTab,"Laser Calibration");
     eyeWorldIndex = tabs->addTab(eyeWorldTab,"Eye & World Cam");
     setCentralWidget(centralWidget);
 	
@@ -49,10 +52,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::tabChange(int currentIndex)
 {
-        disconnect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
-        disconnect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
-    
-    if(currentIndex == 2){
+    disconnect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
+    disconnect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
+    disconnect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
+        
+    if(currentIndex == eyeWorldIndex){
         if((camEye.isOpened()) || (!camState0))
             connect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
         else
@@ -63,9 +67,12 @@ void MainWindow::tabChange(int currentIndex)
         else
             std::cout<<"Error WorldCam not accessible"<<std::endl;
     }
-    else{
-        disconnect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
-        disconnect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
+    else if(currentIndex == calibrationIndex)
+    {
+        if(camEye.isOpened() || (!camState0))
+            connect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
+        else
+            std::cout<<"Error EyeCam not accessible"<<std::endl;
     }
 }
 

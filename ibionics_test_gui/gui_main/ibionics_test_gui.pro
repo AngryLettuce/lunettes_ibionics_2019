@@ -70,6 +70,7 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
                 $${BASE_FOLDER}/src/utils/config.cpp \
                 $${BASE_FOLDER}/src/tabs/eyeworldtab.cpp \
+		$${BASE_FOLDER}/src/tabs/calibrationtab.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/button.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/getch.cpp \
@@ -102,6 +103,7 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
                 $${BASE_FOLDER}/includes/utils/config.h \
                 $${BASE_FOLDER}/includes/tabs/eyeworldtab.h \
+                $${BASE_FOLDER}/includes/tabs/calibrationtab.h \
                 $${BASE_FOLDER}/includes/modules/arducam_mipicamera.h \
                 $${MEMS_LASER_FOLDER}/src/modules/button.h \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.h \

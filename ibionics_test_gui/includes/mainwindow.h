@@ -15,6 +15,7 @@
 #include "eyeworldtab.h"
 #include "config.h"
 #include "arducam_mipicamera.h"
+#include "calibrationtab.h"
 
 #include "laser_pos_control.h"
 
@@ -24,6 +25,7 @@ class WorldTab; //foward declaration to avoid circular dependencies with worldta
 class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
 class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h
+class CalibrationTab; //foward declaration to avoid circular dependencies with calibrationtab.h
 
 class MainWindow : public QMainWindow
 {
@@ -40,6 +42,7 @@ public:
     WorldTab *worldCamTab;
     GPIOTab *gpioTab;
     EyeWorldTab *eyeWorldTab;
+    CalibrationTab *calibrationTab;
 
     QWidget *centralWidget;
     QGridLayout *layout;
@@ -74,6 +77,7 @@ private:
     int eyeCamIndex;
     int worldCamIndex;
     int eyeWorldIndex;
+    int calibrationIndex;
 
     QPixmap *qPixMapImage;
 

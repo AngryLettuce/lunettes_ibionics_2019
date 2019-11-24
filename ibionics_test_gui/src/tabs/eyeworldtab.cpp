@@ -35,13 +35,13 @@ void EyeWorldTab::processFrameEye()
     if(imgEye.channels() <= 1){
         if(imgEye.empty()) return;
         // if the signature of the functions changes and return a cv::Point, we could make it in one line
-        (pupilMethod) ? applyEllipseMethod(imgEye, posX,posY) : applyHoughMethod(imgEye,posX,posY) ;
+        (pupilMethod) ? applyEllipseMethod(&imgEye, posX,posY) : applyHoughMethod(imgEye,posX,posY) ;
         cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
     }
     else{
         cv::Mat img2Eye;
         cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
-        (pupilMethod) ? applyEllipseMethod(img2Eye, posX,posY) : applyHoughMethod(img2Eye,posX,posY) ;
+        (pupilMethod) ? applyEllipseMethod(&img2Eye, posX,posY) : applyHoughMethod(img2Eye,posX,posY) ;
         cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
         cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
     }
@@ -82,11 +82,11 @@ void EyeWorldTab::processFrameWorld()
     cv::Mat img2World = imgWorld;
 	if(imgWorld.empty()) return;
     if(imgWorld.channels() <= 1){
-        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(imgWorld, &img2World, posX, posY, 160, 180);
+        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(&imgWorld, &img2World, posX, posY, 160, 180);
     }
     else{
         cv::cvtColor(imgWorld,img2World,cv::COLOR_RGB2GRAY);
-        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(imgWorld, &img2World, posX, posY, 160, 180);
+        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(&imgWorld, &img2World, posX, posY, 160, 180);
         cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
     }
 

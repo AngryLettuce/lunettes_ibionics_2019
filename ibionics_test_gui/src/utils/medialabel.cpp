@@ -22,22 +22,26 @@ void MediaLabel::mousePressEvent(QMouseEvent *event)
 
 void MediaLabel::pressManager(QMouseEvent *event){
     QPoint pos = event->pos();
-    int x = pos.rx();
-    int y = pos.ry();
+    //int posX = pos.rx();
+    //int posY = pos.ry();
+    posX = pos.rx();
+    posY = pos.ry();
 
     //Cap position values to 400x400
-    if(x<0)
-        x = 0;
-    else if(x>400)
-        x = 400;
-    if(y<0)
-        y = 0;
-    else if(y>400)
-        y = 400;
-
-    QString currPos = QStringLiteral("X:%1, Y:%2").arg(x).arg(y);
+    if(posX<0)
+        posX = 0;
+    else if(posX>400)
+        posX = 400;
+    if(posY<0)
+        posY = 0;
+    else if(posY>400)
+        posY = 400;
+    
+    std::cout<<"X: "<<posX<< "Y: "<<posY<<std::endl;
+    /*
+    QString currPos = QStringLiteral("X:%1, Y:%2").arg(posX).arg(posY);
     memsTab->posMouseLabel->setText(currPos);
-
+    */
 }
 
 

@@ -19,6 +19,8 @@ public:
     explicit MediaLabel(QWidget *parent = nullptr, QString filename = "");
     QPixmap* pix;
     MemsTab* memsTab;
+    int posX = 0;
+    int posY = 0;
 signals:
 
 
