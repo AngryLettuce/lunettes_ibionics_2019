@@ -60,15 +60,20 @@ Laser_pos_control::Laser_pos_control() :
     button2(GPIO6_BUTTON2),
     button3(GPIO5_BUTTON3),
     button4(GPIO4_BUTTON4) {
+#ifdef __arm__
+	gridPointsX.create(GRID_POINTS_Y, GRID_POINTS_X, CV_32FC1);
+	gridPointsY.create(GRID_POINTS_Y, GRID_POINTS_X, CV_32FC1);
+#endif
 	loadAnglePoints();
-	initAngleMat();
+	initAngleMat_CV2();
+	//initAngleMat();
     //gridPointsX = anglePointsX;
     //gridPointsY = anglePointsY;
     //maxAngles = {-3.7, 3.7, -3.5, 4.5};
     //VLM = {X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS};
 }
 
-
+/*
 void Laser_pos_control::initAngleMat() {
 #ifdef __arm__
 	vec X = linspace(0, CAMERA_RESOLUTION - 1, X_ANGLES_GRID_POINTS);
@@ -89,6 +94,28 @@ void Laser_pos_control::initAngleMat() {
 		}
 	}
 #endif
+}
+*/
+
+void initAngleMat_CV2(short angleMat[][CAMERA_RESOLUTION][2]) {
+#ifdef _arm_
+
+	cv::Mat dstX, dstY;
+	//cv::Mat map_x, map_y;
+
+	dstX.create(CAMERA_RESOLUTION, CAMERA_RESOLUTION, CV_32FC1);
+	dstY.create(CAMERA_RESOLUTION, CAMERA_RESOLUTION, CV_32FC1);
+
+	resize(srcX, dstX, dstX.size(), 0, 0, cv::INTER_LINEAR);
+	resize(srcY, dstY, dstY.size(), 0, 0, cv::INTER_LINEAR);
+
+	for (int i = 0; i < CAMERA_RESOLUTION; i++) {
+		for (int j = 0; j < CAMERA_RESOLUTION; j++) {
+			angleMat[i][j][0] = (short)(dstX.at<float>(i, j) * 1000);
+			angleMat[i][j][1] = (short)(dstY.at<float>(i, j) * 1000);
+		}
+	}
+#endif // _arm_
 }
 
 /*
@@ -502,14 +529,16 @@ void Laser_pos_control::calibrateGrid() {
 			keyboard_manual_mode();
 			mems.print_angles() ;
 
-			gridPointsX(yIndex, xIndex) = double(mems.get_angle_x());
-			gridPointsY(yIndex, xIndex) = double(mems.get_angle_y());
+			gridPointsX.at<float>(yIndex, xIndex) = double(mems.get_angle_x());
+			gridPointsY.at<float>(yIndex, xIndex) = double(mems.get_angle_y());
 		}
     }
     cout << "Grid points X" << endl;
-    gridPointsX.print();
+    //gridPointsX.print();
+	cout << gridPointsX << endl;
     cout << "Grid points Y" << endl;
-    gridPointsY.print();
+    //gridPointsY.print();
+	cout << gridPointsY << endl;
 
 	saveAnglePoints();
    // export2Header(ANGLE_POINTS_FILENAME_H, gridPointsX, gridPointsY);
@@ -523,7 +552,7 @@ void Laser_pos_control::saveAnglePoints() {
 
 	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
 		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
-			myfile << gridPointsX.at(i, j);
+			myfile << gridPointsX.at<float>(i, j);
 			if (j == X_ANGLES_GRID_POINTS - 1) {
 				myfile << endl;
 			}
@@ -536,7 +565,7 @@ void Laser_pos_control::saveAnglePoints() {
 	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
 		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
 			myfile << gridPointsY.at(i, j);
-			if (j == X_ANGLES_GRID_POINTS - 1) {
+			if (j == X_ANGLES_GRID_POINTS<float> - 1) {
 				myfile << endl;
 			}
 			else {
@@ -555,13 +584,13 @@ void Laser_pos_control::loadAnglePoints() {
 
 	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
 		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
-			myfile >> gridPointsX.at(i, j);
+			myfile >> gridPointsX.at<float>(i, j);
 		}
 	}
 
 	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
 		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
-			myfile >> gridPointsY.at(i, j);
+			myfile >> gridPointsY.at<float>(i, j);
 		}
 	}
 	myfile.close();

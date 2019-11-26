@@ -9,7 +9,9 @@
 #define SRC_MODULES_LASER_POS_CONTROL_H_
 
 #ifdef __arm__
-#include <armadillo>
+//#include <armadillo>
+#include <opencv2/core/mat.hpp>
+#include <opencv2/imgproc.hpp>
 #endif
 
 #include "mems.h"
@@ -22,7 +24,7 @@
 #define Y_ANGLES_GRID_POINTS 4
 
 #ifdef __arm__
-using namespace arma;
+//using namespace arma;
 #endif
 
 class Laser_pos_control {
@@ -31,17 +33,22 @@ public:
     Laser laser;
     Mems mems;
 #ifdef __arm__
-	mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
-	mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
+	//mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
+	//mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
+	cv::Mat gridPointsX, gridPointsY;
 #endif
 	/**
 	 * @brief Laser_pos_control constructor.
 	 */
 	Laser_pos_control();
 	/**
-	 * @brief Generate the angleMat with a bilinear interpolation
+	 * @brief Generate the angleMat with a bilinear interpolation with armadillo
 	 */
 	void initAngleMat();
+	/**
+	 * @brief Generate the angleMat with a bilinear interpolation with opencv
+	*/
+	void initAngleMat_CV2();
 	/**
 	 * @brief Recalculate the angleMat with the mathematic model.
 	 */
@@ -93,8 +100,8 @@ public:
 	 * @brief write the grid points in X and Y to a header file
 	 */
     #ifdef __arm__
-	void export2Header(const char *fileName, mat gridPointsX, mat gridPointsY);
-#endif
+	//void export2Header(const char *fileName, mat gridPointsX, mat gridPointsY);
+	#endif
 	/**
 	 * @brief fille gridPointX and gridPointY with the keyboard manual mode
 	 */

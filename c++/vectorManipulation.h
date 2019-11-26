@@ -5,9 +5,11 @@
 #include <vector>
 
 
-#define CAMERA_RESOLUTION 400
+#define CAMERA_RESOLUTION 200
 
 using namespace arma;
+
+void initAngleMat_CV2(short angleMat[][CAMERA_RESOLUTION][2]);
 
 void initAngleMat(short angleMat[][CAMERA_RESOLUTION][2]);
 

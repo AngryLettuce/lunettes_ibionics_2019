@@ -1,11 +1,17 @@
 #define _USE_MATH_DEFINES
 
-#include "vectorManipulation.h"
+
 #include <iostream>
 #include <math.h>
 #include <fstream>
-#include "anglesPoints.h"
+#include <opencv2/core/mat.hpp>
+//#include <opencv2/core.hpp>
+//#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+//#include <opencv2/highgui.hpp>
 
+#include "vectorManipulation.h"
+#include "anglesPoints.h"
 
 
 #define MEMS_TILT_ANGLE 21
@@ -21,6 +27,40 @@
 //#define XYZ_MATRIX_LENGTH 23989
 // Laser's position relative to MEMS (in mm)
 rowvec VLM = { X_LASER_TO_MEMS, Y_LASER_TO_MEMS, Z_LASER_TO_MEMS };
+
+void initAngleMat_CV2(short angleMat[][CAMERA_RESOLUTION][2]) {
+	cv::Mat srcX, dstX;
+	cv::Mat srcY, dstY;
+	//cv::Mat map_x, map_y;
+
+	srcX.create(GRID_POINTS_Y, GRID_POINTS_X, CV_32FC1);
+	srcY.create(GRID_POINTS_Y, GRID_POINTS_X, CV_32FC1);
+
+	for (int i = 0; i < GRID_POINTS_Y; i++) {
+		for (int j = 0; j < GRID_POINTS_X; j++) {
+			srcX.at<float>(i, j) = anglePointsX.at(i, j);
+			srcY.at<float>(i, j) = anglePointsY.at(i, j);
+		}
+	}
+	
+	dstX.create(CAMERA_RESOLUTION, CAMERA_RESOLUTION, CV_32FC1);
+	dstY.create(CAMERA_RESOLUTION, CAMERA_RESOLUTION, CV_32FC1);
+
+	resize(srcX, dstX, dstX.size(), 0, 0, cv::INTER_LINEAR);
+	resize(srcY, dstY, dstY.size(), 0, 0, cv::INTER_LINEAR);
+
+	
+	for (int i = 0; i < CAMERA_RESOLUTION; i++) {
+		for (int j = 0; j < CAMERA_RESOLUTION; j++) {
+			angleMat[i][j][0] = (short) (dstX.at<float>(i, j) * 1000);
+			angleMat[i][j][1] = (short) (dstY.at<float>(i, j) * 1000);
+		}
+	}
+	
+	
+}
+
+
 
 void initAngleMat(short angleMat[][CAMERA_RESOLUTION][2]) {
 	vec X = linspace(0, CAMERA_RESOLUTION - 1, 5);
@@ -89,7 +129,7 @@ void loadAnglePoints(mat& gridX, mat& gridY, const char* fileName) {
 	myfile.close();
 }
 
-
+/*
 void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][2]) {
 	mat wallCorners(4, 3);
 	findWallCorners(maxAngles, wallCorners);
@@ -104,6 +144,7 @@ void recalculateAnglesMat(rowvec maxAngles, short angleMat[][CAMERA_RESOLUTION][
 	genAnglesTable(pixMat, XYZ_Matrix, angleMat);
 
 }
+*/
 
 /*
 void memsNorm(double xAngle, double yAngle, rowvec& norm) {
@@ -150,7 +191,7 @@ double* getAngle(int xCoord, int yCoord) {
 	return XYAngles;
 }
 */
-
+/*
 void findWallCorners(rowvec maxAngles, mat& wallCorners) {
 
 	float x, y;
@@ -197,8 +238,9 @@ void genPixMat(mat wallCorners, mat& pixMat) {
 	pixMat.row(1) = height;
 
 }
+*/
 
-
+/*
 int calcArraySize(rowvec maxAngles) {
 	int arraySize = ((abs(maxAngles[0]) + abs(maxAngles[1])) / XYZ_MATRIX_PRECISION + 1) * ((abs(maxAngles[2]) + abs(maxAngles[3])) / XYZ_MATRIX_PRECISION + 1);
 	return ceil(arraySize);
@@ -224,7 +266,8 @@ void genXYZ_Matrix(rowvec maxAngles, mat& XYZ_Matrix) {
 		}
 	}
 }
-
+*/
+/*
 void genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMat[][CAMERA_RESOLUTION][2]) {
 	//double angles[2];
 	mat modules;
@@ -242,6 +285,7 @@ void genAnglesTable(mat pixMat, mat XYZ_Matrix, short angleMat[][CAMERA_RESOLUTI
 	}
 
 }
+*/
 /*
 void findAngles(double x, double y, mat XYZ_Matrix, double* angles) {
 	int xTol = 8;
@@ -264,7 +308,7 @@ void findAngles(double x, double y, mat XYZ_Matrix, double* angles) {
 
 }
 */
-
+/*
 void angle2XY(float aX, float aY, float &x, float &y) {
 	float theta_x = deg2rad(aX);
 	float theta_y = deg2rad(aY);
@@ -287,4 +331,6 @@ void angle2XY(float aX, float aY, float &x, float &y) {
 double deg2rad(float angle) {
 	return (angle * M_PI / 180);
 }
+
+*/
 

@@ -1,6 +1,10 @@
 #include <iostream>
 #include <ctime>
+
+
+
 #include "vectorManipulation.h"
+
 
 short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
 
@@ -10,7 +14,8 @@ int main()
 {
 	mat gridX(4, 5, fill::ones);
 	mat gridY(4, 5, fill::zeros);
-	initAngleMat(angleMat);
+	initAngleMat_CV2(angleMat);
+	//initAngleMat(angleMat);
 
 	saveAnglePoints(gridX, gridY, "exportData.txt");
 	loadAnglePoints(gridY, gridX, "exportData.txt");
