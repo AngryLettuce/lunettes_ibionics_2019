@@ -12,7 +12,7 @@
 
 cv::Point getRegionPos(int x,int y,int DIM_L,int DIM_C,int imgCols,int imgRows);
 
-void cropRegion(cv::Mat *imgOr,cv::Mat *imgZoom, int x,int y,int DIM_L,int DIM_C);
+void cropRegion(cv::Mat *imgOr,cv::Mat *imgZoom, int x,int y,int DIM_L,int DIM_C, bool showRect);
 
 void cropRegionShow(cv::Mat *imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C);
 

@@ -6,20 +6,21 @@
 
 int getRegionPos(int x,int DIM_C,int imgCols){
     //setting position x, can be and will be use for y too
-    if(x <=DIM_C)
+    if(x <=DIM_C/2)
         return 0;
-    else if (x >= imgCols - DIM_C)
-        return imgCols - DIM_C;
+    else if (x >= imgCols - DIM_C/2)
+        return (int) imgCols - DIM_C/2;
     else
         return (int) (x - DIM_C/2);
 }
-void cropRegion(cv::Mat *imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C){
+void cropRegion(cv::Mat *imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C, bool showRect){
 
     int posX = getRegionPos(x,DIM_C,imgOr->cols);
     int posY = getRegionPos(y,DIM_L,imgOr->rows);
 
     *imgZoom = cv::Mat (*imgOr,cv::Rect(posX,posY,DIM_C,DIM_L));
-    cv::rectangle(*imgOr,cv::Rect(posX,posY,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
+    if(showRect)
+        cv::rectangle(*imgOr,cv::Rect(posX,posY,DIM_C,DIM_L) , cv::Scalar(0,255,0), 3, 8,0 );
 
 }
 
