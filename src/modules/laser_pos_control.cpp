@@ -61,8 +61,8 @@ Laser_pos_control::Laser_pos_control() :
     button3(GPIO5_BUTTON3),
     button4(GPIO4_BUTTON4) {
 #ifdef __arm__
-	gridPointsX.create(GRID_POINTS_Y, GRID_POINTS_X, CV_32FC1);
-	gridPointsY.create(GRID_POINTS_Y, GRID_POINTS_X, CV_32FC1);
+	gridPointsX.create(Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS, CV_32FC1);
+	gridPointsY.create(Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS, CV_32FC1);
 #endif
 	loadAnglePoints();
 	initAngleMat_CV2();
@@ -97,8 +97,8 @@ void Laser_pos_control::initAngleMat() {
 }
 */
 
-void initAngleMat_CV2(short angleMat[][CAMERA_RESOLUTION][2]) {
-#ifdef _arm_
+void Laser_pos_control::initAngleMat_CV2() {
+#ifdef __arm__
 
 	cv::Mat dstX, dstY;
 	//cv::Mat map_x, map_y;
@@ -106,8 +106,8 @@ void initAngleMat_CV2(short angleMat[][CAMERA_RESOLUTION][2]) {
 	dstX.create(CAMERA_RESOLUTION, CAMERA_RESOLUTION, CV_32FC1);
 	dstY.create(CAMERA_RESOLUTION, CAMERA_RESOLUTION, CV_32FC1);
 
-	resize(srcX, dstX, dstX.size(), 0, 0, cv::INTER_LINEAR);
-	resize(srcY, dstY, dstY.size(), 0, 0, cv::INTER_LINEAR);
+	resize(gridPointsX, dstX, dstX.size(), 0, 0, cv::INTER_LINEAR);
+	resize(gridPointsY, dstY, dstY.size(), 0, 0, cv::INTER_LINEAR);
 
 	for (int i = 0; i < CAMERA_RESOLUTION; i++) {
 		for (int j = 0; j < CAMERA_RESOLUTION; j++) {
@@ -115,7 +115,7 @@ void initAngleMat_CV2(short angleMat[][CAMERA_RESOLUTION][2]) {
 			angleMat[i][j][1] = (short)(dstY.at<float>(i, j) * 1000);
 		}
 	}
-#endif // _arm_
+#endif // __arm__
 }
 
 /*
@@ -564,8 +564,8 @@ void Laser_pos_control::saveAnglePoints() {
 
 	for (int i = 0; i < Y_ANGLES_GRID_POINTS; i++) {
 		for (int j = 0; j < X_ANGLES_GRID_POINTS; j++) {
-			myfile << gridPointsY.at(i, j);
-			if (j == X_ANGLES_GRID_POINTS<float> - 1) {
+			myfile << gridPointsY.at<float>(i, j);
+			if (j == X_ANGLES_GRID_POINTS- 1) {
 				myfile << endl;
 			}
 			else {

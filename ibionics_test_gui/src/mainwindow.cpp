@@ -90,14 +90,14 @@ void MainWindow::initHw()
 
     camState0 = arducam_init_camera2(&arducamInstance0, camInterface);
     if(!camState0){
-        std::cout << "Cam1 Initialized (EyeCam)" << endl;
+        std::cout << "Cam1 Initialized (EyeCam)" << std::endl;
         arducam_set_resolution(arducamInstance0, &cameraWidth0, &cameraHeight0);
     }
 
     camInterface.camera_num = 0;
     camState1 = arducam_init_camera2(&arducamInstance1, camInterface);
     if(!camState1){
-        std::cout << "Cam2 Initialized (WorldCam)" << endl;
+        std::cout << "Cam2 Initialized (WorldCam)" << std::endl;
         arducam_set_resolution(arducamInstance1, &cameraWidth1, &cameraHeight1);
 
     }

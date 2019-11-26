@@ -10,7 +10,7 @@
 
 #ifdef __arm__
 //#include <armadillo>
-#include <opencv2/core/mat.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #endif
 
