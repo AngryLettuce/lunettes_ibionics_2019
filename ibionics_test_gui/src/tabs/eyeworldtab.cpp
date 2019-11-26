@@ -25,19 +25,19 @@ void EyeWorldTab::processFrameEye()
 #ifdef __arm__
     imgEye = *getImage(0, 640, 480);
 #endif
-#ifdef WIN32
+//#ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
-#endif
+//#endif
     if(imgEye.channels() <= 1){
         if(imgEye.empty()) return;
         // if the signature of the functions changes and return a cv::Point, we could make it in one line
-        (pupilMethod) ? applyEllipseMethod(&imgEye, posX,posY) : applyHoughMethod(imgEye,posX,posY) ;
+        (pupilMethod) ? applyEllipseMethod(&imgEye, posX,posY) : applyHoughMethod(&imgEye,posX,posY) ;
         cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
     }
     else{
         cv::Mat img2Eye;
         cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
-        (pupilMethod) ? applyEllipseMethod(&img2Eye, posX,posY) : applyHoughMethod(img2Eye,posX,posY) ;
+        (pupilMethod) ? applyEllipseMethod(&img2Eye, posX,posY) : applyHoughMethod(&img2Eye,posX,posY) ;
         cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
         cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
     }
@@ -72,17 +72,18 @@ void EyeWorldTab::processFrameWorld()
 #ifdef __arm__
     imgWorld = *getImage(1, 640, 480);
 #endif
-#ifdef WIN32
+//#ifdef WIN32
     (mainWindowPtr->camWorld).read(imgWorld);
-#endif
+//#endif
     cv::Mat img2World = imgWorld;
 	if(imgWorld.empty()) return;
     if(imgWorld.channels() <= 1){
-        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(&imgWorld, &img2World, posX, posY, 160, 180);
+        if(imgWorld.empty()) return;
+        (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180);
     }
     else{
         cv::cvtColor(imgWorld,img2World,cv::COLOR_RGB2GRAY);
-        (RECTSHOW) ? cropRegion(imgWorld, &img2World, posX, posY, 160, 180) : cropRegionShow(&imgWorld, &img2World, posX, posY, 160, 180);
+        (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180);
         cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
     }
 

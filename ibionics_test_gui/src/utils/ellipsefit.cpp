@@ -7,9 +7,10 @@ bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Poin
     return ( i < j );
 }
 
+
 void applyEllipseMethod(cv::Mat *image, int& posX, int& posY)
 {
-    double thresh = 127;
+    double thresh = 15;//change name
     double maxval = 255;
     int kernel_size = 8;
 
@@ -30,8 +31,6 @@ void applyEllipseMethod(cv::Mat *image, int& posX, int& posY)
 
     //find contours
     cv::findContours(*image,contours,hierarchy,cv::RETR_TREE,cv::CHAIN_APPROX_SIMPLE ,cv::Point(0, 0) );
-
-    //std::sort(contours.begin(),contours.end(),compareContourAreas);
 
     //find center
     double area_max = 0;

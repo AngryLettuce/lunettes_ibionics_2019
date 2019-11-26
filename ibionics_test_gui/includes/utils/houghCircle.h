@@ -40,7 +40,7 @@ struct parametre
 };
 
 
-void applyHoughMethodDyn(cv::Mat image,HoughParams param, std::vector<cv::Vec3f> &circles, int posX,int posY);
-void applyHoughMethod(cv::Mat image,int &posX,int &posY);
+void applyHoughMethodDyn(cv::Mat *image,HoughParams param, std::vector<cv::Vec3f> &circles, int posX,int posY);
+void applyHoughMethod(cv::Mat *image,int &posX,int &posY);
 
 #endif //PUPILDETECTION_HOUGHCIRCLE_H
