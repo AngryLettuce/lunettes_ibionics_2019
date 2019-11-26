@@ -33,6 +33,8 @@ public:
     int columns;
     int currentRow;
     int currentColumn;
+
+    cv::Mat processedImg;
     
     MainWindow* mainWindowPtr;
 
