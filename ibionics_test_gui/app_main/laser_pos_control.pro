@@ -39,7 +39,7 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
 }
 unix:{OPENCV_LIBS_FOLDER = /usr/local/lib}
 
-SOURCES     +=  $${MEMS_LASER_FOLDER}/src/main.cpp \
+SOURCES     +=  main.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/button.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/getch.cpp \

@@ -8,11 +8,8 @@
 #ifndef SRC_MODULES_LASER_POS_CONTROL_H_
 #define SRC_MODULES_LASER_POS_CONTROL_H_
 
-#ifdef __arm__
-//#include <armadillo>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
-#endif
 
 #include "mems.h"
 #include "laser.h"

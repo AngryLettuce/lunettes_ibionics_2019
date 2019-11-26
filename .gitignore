@@ -12,15 +12,16 @@ build-ibionics_test_gui-Desktop_Qt_5_13_1_MinGW_64_bit-Debug/
 
 ibionics_test_gui/lib/
 ibionics_test_gui/lib.zip
-ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_64_bit-Release/
-ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_64_bit-Debug/
-ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_32_bit-Release/
-ibionics_test_gui/build-app-Desktop_Qt_5_12_3_MinGW_32_bit-Debug/
-ibionics_test_gui/build-app-Desktop_Qt_5_13_1_MinGW_64_bit-Release/
-ibionics_test_gui/build-app-Desktop_Qt_5_13_1_MinGW_64_bit-Debug/
-ibionics_test_gui/build-app-Desktop_Qt_5_13_1_MinGW_32_bit-Release/
-ibionics_test_gui/build-app-Desktop_Qt_5_13_1_MinGW_32_bit-Debug/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_12_3_MinGW_64_bit-Release/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_12_3_MinGW_64_bit-Debug/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_12_3_MinGW_32_bit-Release/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_12_3_MinGW_32_bit-Debug/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_13_1_MinGW_64_bit-Release/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_13_1_MinGW_64_bit-Debug/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_13_1_MinGW_32_bit-Release/
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_13_1_MinGW_32_bit-Debug/
 *.o
 
 ibionics_test_gui/gui_main/ibionics_test_gui.pro.user
 ibionics_test_gui/app_main/ibionics_test_gui.pro.user
+ibionics_test_gui/build-laser_pos_control-Desktop_Qt_5_12_3_MinGW_64_bit-Debug/
