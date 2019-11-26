@@ -8,7 +8,9 @@
 #include <fstream>
 #include <math.h>
 
+#ifdef __arm__
 #include <wiringPi.h>
+#endif
 
 #include "laser_pos_control.h"
 //#include "anglesPoints2.h"
@@ -51,6 +53,7 @@
 using namespace std;
 
 Laser_pos_control::Laser_pos_control() :
+
     laser(),
     mems(),
     button1(GPIO7_BUTTON1),
@@ -67,6 +70,7 @@ Laser_pos_control::Laser_pos_control() :
 
 
 void Laser_pos_control::initAngleMat() {
+#ifdef __arm__
 	vec X = linspace(0, CAMERA_RESOLUTION - 1, X_ANGLES_GRID_POINTS);
 	vec Y = linspace(0, CAMERA_RESOLUTION - 1, Y_ANGLES_GRID_POINTS);
 	vec Xi = linspace(0, CAMERA_RESOLUTION - 1, CAMERA_RESOLUTION);
@@ -84,6 +88,7 @@ void Laser_pos_control::initAngleMat() {
 			angleMat[i][j][1] = short(ZiY.at(i, j) * 1000);
 		}
 	}
+#endif
 }
 
 /*
@@ -235,6 +240,7 @@ double Laser_pos_control::deg2rad(float angle) {
 */
 
 void Laser_pos_control::draw_rectangle(int time_delay) {
+#ifdef __arm__
 	float *angles;
 	for (int i = 0; i < RECTANGLE_SEQUENCE_LENGTH; i++) {
 		angles = getAngles(rectangle_LUT[i][0], rectangle_LUT[i][1]);
@@ -242,9 +248,11 @@ void Laser_pos_control::draw_rectangle(int time_delay) {
 		delay(time_delay);
 		//std::cout<<angles[0]<<angles[1]<<std::endl;
 	}
+#endif
 }
 
 void Laser_pos_control::draw_Closingrectangle(int time_delay) {
+#ifdef __arm__
 	float *angles;
 	for (int i = 0; i < CLOSING_RECTANGLE_LENGTH; i++) {
 		angles = getAngles(closingRect_LUT[i][0], closingRect_LUT[i][1]);
@@ -253,9 +261,11 @@ void Laser_pos_control::draw_Closingrectangle(int time_delay) {
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
+#endif
 }
 
 void Laser_pos_control::draw_spiral(int time_delay) {
+#ifdef __arm__
 	float *angles;
 	for (int i = 0; i < SPIRAL_RESOLUTION; i++) {
 		angles = getAngles(spiral_LUT[i][0], spiral_LUT[i][1]);
@@ -263,9 +273,11 @@ void Laser_pos_control::draw_spiral(int time_delay) {
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
+#endif
 }
 
 void Laser_pos_control::draw_infinity(int time_delay) {
+#ifdef __arm__
 	float *angles;
 	for (int i = 0; i < INFINITY_SEQUENCE_LENGTH; i++) {
 		angles = getAngles(infinity_LUT[i][0], infinity_LUT[i][1]);
@@ -274,9 +286,11 @@ void Laser_pos_control::draw_infinity(int time_delay) {
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
+#endif
 }
 
 void Laser_pos_control::draw_circluarLoop(int time_delay){
+#ifdef __arm__
 	float *angles;
 	for (int i = 0; i < CIRCULAR_LOOP_SEQUENCE_LENGTH; i++) {
 		angles = getAngles(circularLoop_LUT[i][0], circularLoop_LUT[i][1]);
@@ -285,9 +299,11 @@ void Laser_pos_control::draw_circluarLoop(int time_delay){
 		mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
+#endif
 }
 
 void Laser_pos_control::manual_mode() {
+#ifdef __arm__
     const float delta_angle = 0.02;
     const int wait_delay = 100;
     float momentum = delta_angle;
@@ -336,6 +352,7 @@ void Laser_pos_control::manual_mode() {
         }
         delay(wait_delay);
     }
+#endif
 }
 
 /*void Laser_pos_control::set_max_angles() { // TODO: get angle_x and angle_y
@@ -356,13 +373,16 @@ void Laser_pos_control::manual_mode() {
 }*/
 
 void Laser_pos_control::send_pos(int x, int y){
+#ifdef __arm__
 	float *XYAngles;
 	XYAngles = getAngles(x,y);
 	mems.send_angles(XYAngles[0], XYAngles[1]);
+#endif
 }
 
 
 void Laser_pos_control::keyboard_manual_mode() {
+#ifdef __arm__
     const float delta_angle = 0.01;
     const int wait_delay = 30;
     float momentum = 0;//delta_angle;
@@ -426,6 +446,7 @@ void Laser_pos_control::keyboard_manual_mode() {
 		}
         delay(wait_delay);
     }
+#endif
 }
 /*
 void Laser_pos_control::export2Header(const char *fileName, mat gridPointsX, mat gridPointsY) {
@@ -474,6 +495,7 @@ void Laser_pos_control::export2Header(const char *fileName, mat gridPointsX, mat
 */
 
 void Laser_pos_control::calibrateGrid() {
+#ifdef __arm__
 
     for (int yIndex = 0; yIndex < Y_ANGLES_GRID_POINTS; yIndex ++) {
 		for (int xIndex = 0; xIndex < X_ANGLES_GRID_POINTS; xIndex++) {
@@ -491,9 +513,11 @@ void Laser_pos_control::calibrateGrid() {
 
 	saveAnglePoints();
    // export2Header(ANGLE_POINTS_FILENAME_H, gridPointsX, gridPointsY);
+#endif
 }
 
 void Laser_pos_control::saveAnglePoints() {
+#ifdef __arm__
 	std::ofstream myfile;
 	myfile.open(ANGLE_POINTS_FILENAME_TXT);
 
@@ -521,9 +545,11 @@ void Laser_pos_control::saveAnglePoints() {
 		}
 	}
 	myfile.close();
+#endif
 }
 
 void Laser_pos_control::loadAnglePoints() {
+#ifdef __arm__
 	std::ifstream myfile;
 	myfile.open(ANGLE_POINTS_FILENAME_TXT);
 
@@ -539,4 +565,5 @@ void Laser_pos_control::loadAnglePoints() {
 		}
 	}
 	myfile.close();
+#endif
 }

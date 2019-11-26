@@ -1,13 +1,11 @@
+#ifndef TESTVIDEO_H
+#define TESTVIDEO_H
+
 #include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <iostream>
 #include <fstream>
-
-
-#ifndef TESTVIDEO_H
-#define TESTVIDEO_H
 
 extern int mouseX;
 extern int mouseY;

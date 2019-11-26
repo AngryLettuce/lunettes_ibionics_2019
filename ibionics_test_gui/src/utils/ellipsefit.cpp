@@ -1,15 +1,11 @@
 #include "ellipsefit.h"
 
-bool debug = true;
-
-//testing for ellipse
 bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 )
 {
     double i = fabs( cv::contourArea(cv::Mat(contour1)) );
     double j = fabs( cv::contourArea(cv::Mat(contour2)) );
     return ( i < j );
 }
-
 
 void applyEllipseMethod(cv::Mat *image, int& posX, int& posY)
 {

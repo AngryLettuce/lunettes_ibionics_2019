@@ -54,23 +54,20 @@ win32:contains(QMAKESPEC, $$PATH_TO_MINGW_32){
 unix:{OPENCV_LIBS_FOLDER = /usr/local/lib}
 
 SOURCES     +=  main.cpp \
-                $${BASE_FOLDER}/src/utils/threads.cpp \
                 $${BASE_FOLDER}/src/mainwindow.cpp \
-                $${BASE_FOLDER}/src/tabs/eyetab.cpp \
+                $${BASE_FOLDER}/src/tabs/calibrationtab.cpp \
+                $${BASE_FOLDER}/src/tabs/eyeworldtab.cpp \
                 $${BASE_FOLDER}/src/tabs/gpiotab.cpp \
-                $${BASE_FOLDER}/src/tabs/lasertab.cpp \
                 $${BASE_FOLDER}/src/tabs/memstab.cpp \
-                $${BASE_FOLDER}/src/tabs/worldtab.cpp \
-                $${BASE_FOLDER}/src/utils/gpioview.cpp \
-                $${BASE_FOLDER}/src/utils/medialabel.cpp \
+                $${BASE_FOLDER}/src/utils/config.cpp \
                 $${BASE_FOLDER}/src/utils/crop.cpp \
                 $${BASE_FOLDER}/src/utils/edgeDetection.cpp \
-                $${BASE_FOLDER}/src/utils/houghCircle.cpp \
                 $${BASE_FOLDER}/src/utils/ellipsefit.cpp \
+                $${BASE_FOLDER}/src/utils/gpioview.cpp \
+                $${BASE_FOLDER}/src/utils/houghCircle.cpp \
+                $${BASE_FOLDER}/src/utils/medialabel.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
-                $${BASE_FOLDER}/src/utils/config.cpp \
-                $${BASE_FOLDER}/src/tabs/eyeworldtab.cpp \
-		$${BASE_FOLDER}/src/tabs/calibrationtab.cpp \
+                $${BASE_FOLDER}/src/utils/threads.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/button.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/getch.cpp \
@@ -85,26 +82,22 @@ SOURCES     +=  main.cpp \
                 $${MEMS_LASER_FOLDER}/src/peripherals/spi.cpp
 
 HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
-                $${BASE_FOLDER}/includes/tabs/eyetab.h \
+                $${BASE_FOLDER}/includes/tabs/calibrationtab.h \
+                $${BASE_FOLDER}/includes/tabs/eyeworldtab.h \
                 $${BASE_FOLDER}/includes/tabs/gpiotab.h \
-                $${BASE_FOLDER}/includes/tabs/lasertab.h \
                 $${BASE_FOLDER}/includes/tabs/memstab.h \
-                $${BASE_FOLDER}/includes/tabs/worldtab.h \
-                $${BASE_FOLDER}/includes/utils/gpioview.h \
-                $${BASE_FOLDER}/includes/utils/medialabel.h \
+                $${BASE_FOLDER}/includes/utils/config.h \
                 $${BASE_FOLDER}/includes/utils/crop.h \
-                #$${BASE_FOLDER}/includes/utils/dev_tool.h \
                 $${BASE_FOLDER}/includes/utils/edgeDetection.h \
-                $${BASE_FOLDER}/includes/utils/houghCircle.h \
-                $${BASE_FOLDER}/includes/utils/grayLevelsTable.h \
-                $${BASE_FOLDER}/includes/utils/threads.h \
                 $${BASE_FOLDER}/includes/utils/ellipsefit.h \
+                $${BASE_FOLDER}/includes/utils/gpioview.h \
+                $${BASE_FOLDER}/includes/utils/grayLevelsTable.h \
+                $${BASE_FOLDER}/includes/utils/houghCircle.h \
+                $${BASE_FOLDER}/includes/utils/medialabel.h \
                 $${BASE_FOLDER}/includes/utils/modes.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
-                $${BASE_FOLDER}/includes/utils/config.h \
-                $${BASE_FOLDER}/includes/tabs/eyeworldtab.h \
-                $${BASE_FOLDER}/includes/tabs/calibrationtab.h \
-                $${BASE_FOLDER}/includes/modules/arducam_mipicamera.h \
+                $${BASE_FOLDER}/includes/utils/threads.h \
+                $${BASE_FOLDER}/includes/modules/*.h \
                 $${MEMS_LASER_FOLDER}/src/modules/button.h \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.h \
                 $${MEMS_LASER_FOLDER}/src/modules/getch.h \

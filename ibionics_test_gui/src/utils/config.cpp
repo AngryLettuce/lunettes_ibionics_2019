@@ -1,14 +1,9 @@
 #include "config.h"
-#include <stdio.h>
-#include <fstream>
-#include <iostream>
-#include <string>
 
-using namespace std;
-config::config(string pathToConfigFile)
+config::config(std::string pathToConfigFile)
 {
-    ifstream configFile(pathToConfigFile);
-    string line;
+    std::ifstream configFile(pathToConfigFile);
+    std::string line;
     if (configFile.is_open())
     {
         while (getline(configFile, line)){
@@ -87,6 +82,4 @@ config::config(string pathToConfigFile)
         }
         configFile.close();
     }
-    else
-        cout << "Not opened";
 }

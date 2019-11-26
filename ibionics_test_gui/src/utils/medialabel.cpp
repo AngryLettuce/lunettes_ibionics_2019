@@ -1,13 +1,9 @@
 #include "medialabel.h"
 
-
 MediaLabel::MediaLabel(QWidget *parent, QString filename) : QLabel(parent)
 {
-
     pix = new QPixmap(filename);
     this->setPixmap(*pix);
-    memsTab = reinterpret_cast<MemsTab*>(parent); //Change pointer type from QWidget to MemsTab
-
 }
 
 void MediaLabel::mouseMoveEvent(QMouseEvent *event)

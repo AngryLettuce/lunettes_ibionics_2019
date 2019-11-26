@@ -1,33 +1,23 @@
+#ifndef PUPILDETECTION_HOUGHCIRCLE_H
+#define PUPILDETECTION_HOUGHCIRCLE_H
+
 //
 // Created by ibionics-michel on 10/19/19.
 //
 
-#ifndef PUPILDETECTION_HOUGHCIRCLE_H
-#define PUPILDETECTION_HOUGHCIRCLE_H
-
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/opencv.hpp>
-#include <iostream>
-using namespace std;
-using namespace cv;
+#include <opencv2/core.hpp>
 
 class HoughParams
 {
+public:
+    HoughParams(int param1, int param2, int minRadius, int maxRadius, int minDist);
 
     cv::Mat tmps;
-
-    public:
-
     int param1;
     int param2;
     int minRadius;
     int maxRadius;
     int minDist;
-    HoughParams(int param1, int param2, int minRadius, int maxRadius, int minDist);
-
-
-    //enlever des param et utiliser celle du constructuer,variable priver
 };
 
 struct parametre
@@ -50,8 +40,7 @@ struct parametre
 };
 
 
-void applyHoughMethodDyn(cv::Mat image,HoughParams param,vector<Vec3f> &circles, int posX,int posY);
-
+void applyHoughMethodDyn(cv::Mat image,HoughParams param, std::vector<cv::Vec3f> &circles, int posX,int posY);
 void applyHoughMethod(cv::Mat image,int &posX,int &posY);
 
 #endif //PUPILDETECTION_HOUGHCIRCLE_H

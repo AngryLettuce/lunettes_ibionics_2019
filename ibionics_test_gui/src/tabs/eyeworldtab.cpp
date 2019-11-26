@@ -1,8 +1,4 @@
 #include "eyeworldtab.h"
-#include <QCoreApplication>
-#include "mainwindow.h"
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
 
 #define VCOS_ALIGN_DOWN(p,n) (((ptrdiff_t)(p)) & ~((n)-1))
 #define VCOS_ALIGN_UP(p,n) VCOS_ALIGN_DOWN((ptrdiff_t)(p)+(n)-1,(n))
@@ -99,7 +95,7 @@ void EyeWorldTab::switchPupilMethodButton()
 {   
     pupilMethod = !pupilMethod; //change stage of pupil detection
     if(VERBOSE)
-        std::cout << ((pupilMethod) ? "Change pupil detection method to Ellipse" : "Change pupil detection method to hough circle")<< endl;
+        std::cout << ((pupilMethod) ? "Change pupil detection method to Ellipse" : "Change pupil detection method to hough circle")<< std::endl;
     button->setText((pupilMethod)?"using Ellipse, click to switch to hough circle":"using Hough cricle, click to switch to Ellipse");
 }
 

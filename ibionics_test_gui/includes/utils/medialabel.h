@@ -1,15 +1,9 @@
 #ifndef MEDIALABEL_H
 #define MEDIALABEL_H
 
-#include <QWidget>
 #include <QLabel>
-#include <QEvent>
 #include <QMouseEvent>
-#include <QObject>
-#include <QDebug>
-#include "memstab.h"
-
-class MemsTab; //foward declaration to avoid circular dependencies with memstab.h
+#include <iostream>
 
 class MediaLabel : public QLabel
 {
@@ -18,7 +12,6 @@ class MediaLabel : public QLabel
 public:
     explicit MediaLabel(QWidget *parent = nullptr, QString filename = "");
     QPixmap* pix;
-    MemsTab* memsTab;
     int posX = 0;
     int posY = 0;
 signals:

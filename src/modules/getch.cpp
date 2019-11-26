@@ -1,14 +1,17 @@
 #include <unistd.h>
+#ifdef __arm__
 #include <termios.h>
+#endif
 #include <stdio.h>
 
 #include "getch.h"
-
+#ifdef __arm__
 static struct termios old, current;
-
+#endif
 /* Initialize new terminal i/o settings */
 void initTermios(int echo) 
 {
+    #ifdef __arm__
   tcgetattr(0, &old); /* grab old terminal i/o settings */
   current = old; /* make new settings same as old settings */
   current.c_lflag &= ~ICANON; /* disable buffered i/o */
@@ -18,12 +21,15 @@ void initTermios(int echo)
       current.c_lflag &= ~ECHO; /* set no echo mode */
   }
   tcsetattr(0, TCSANOW, &current); /* use these new terminal i/o settings now */
+#endif
 }
 
 /* Restore old terminal i/o settings */
 void resetTermios(void) 
 {
+#ifdef __arm__
   tcsetattr(0, TCSANOW, &old);
+#endif
 }
 
 /* Read 1 character - echo defines echo mode */

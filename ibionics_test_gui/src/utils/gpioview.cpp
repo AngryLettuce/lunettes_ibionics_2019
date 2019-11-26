@@ -1,14 +1,4 @@
 #include "gpioview.h"
-#include <QLabel>
-#include <QRadioButton>
-#include <QHBoxLayout>
-#include <QPainter>
-
-//#define RPI
-
-#ifdef RPI
-#include "wiringpi.h"
-#endif
 
 GpioView::GpioView(QString name, QWidget *parent) : QWidget(parent)
 {
@@ -56,11 +46,6 @@ void GpioView::updateOut(bool currentState)
         outputBeacon->setText("X");
     else
         outputBeacon->setText(" ");
-
-#ifdef RPI
-    SEND TO RPI with wiringpi
-#endif
-
 }
 
 void GpioView::inUse(bool state)

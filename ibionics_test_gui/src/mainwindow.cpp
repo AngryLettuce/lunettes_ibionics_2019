@@ -1,14 +1,4 @@
 #include "mainwindow.h"
-#include "memstab.h"
-#include "lasertab.h"
-#include "eyetab.h"
-#include "worldtab.h"
-#include "gpiotab.h"
-#include "eyeworldtab.h"
-#include "config.h"
-#include "calibrationtab.h"
-
-#include "arducam_mipicamera.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,7 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
     tabs = new QTabWidget(centralWidget);
 
     memsTab = new MemsTab(tabs);
-    laserTab = new LaserTab(tabs);
     calibrationTab = new CalibrationTab(tabs, this);
     eyeWorldTab = new EyeWorldTab(tabs, this);
     gpioTab = new GPIOTab();
@@ -32,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Add Qwidgets as tabs
     memsIndex = tabs->addTab(memsTab,"MEMS");
-    laserIndex = tabs->addTab(laserTab,"Laser");
     calibrationIndex = tabs->addTab(calibrationTab,"Laser Calibration");
     eyeWorldIndex = tabs->addTab(eyeWorldTab,"Eye & World Cam");
     setCentralWidget(centralWidget);
@@ -78,17 +66,17 @@ void MainWindow::tabChange(int currentIndex)
 
 void MainWindow::initHw()
 {
-    int cameraWidth0 = 640;
-    int cameraHeight0 = 480;
-    int cameraWidth1 = 640;
-    int cameraHeight1 = 480;
-    
     tmrTimerEye = new QTimer(this);
     tmrTimerWorld = new QTimer(this);
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
 
 #ifdef __arm__
+    int cameraWidth0 = 640;
+    int cameraHeight0 = 480;
+    int cameraWidth1 = 640;
+    int cameraHeight1 = 480;
+
     camInterface.i2c_bus = 0;
     camInterface.camera_num = 1;
     camInterface.sda_pins[0] = 28;

@@ -3,14 +3,12 @@
 
 #include <QWidget>
 #include <QLayout>
-#include <QPushButton>
 #include <QComboBox>
 #include <QLabel>
 #include <QPixmap>
 #include "medialabel.h"
 #include "mainwindow.h"
 
-class MediaLabel; //foward declaration to avoid circular dependencies with medialabel.h
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 
 class MemsTab : public QWidget
@@ -21,6 +19,7 @@ public:
     MediaLabel *lbl;
     QPixmap *pix;
     QLabel *posMouseLabel;
+    QGridLayout *layout;
 
     MainWindow* mainWindowPtr;
 

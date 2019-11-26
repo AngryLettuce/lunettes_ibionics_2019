@@ -1,7 +1,4 @@
-#include"edgeDetection.h"
-
-using namespace cv;
-using namespace std;
+#include "edgeDetection.h"
 
 void edge_sobel(cv::Mat img, cv::Mat &img_out) {
 	int ddepth  = CV_64F;
@@ -12,8 +9,8 @@ void edge_sobel(cv::Mat img, cv::Mat &img_out) {
 	cv::Mat grad, grad_x, grad_y;
 	cv::Mat abs_grad_x, abs_grad_y;
 
-	Sobel(img, grad_x, ddepth, 1, 0, kernel, scale, delta, BORDER_DEFAULT);
-	Sobel(img, grad_y, ddepth, 0, 1, kernel, scale, delta, BORDER_DEFAULT);
+    Sobel(img, grad_x, ddepth, 1, 0, kernel, scale, delta, cv::BORDER_DEFAULT);
+    Sobel(img, grad_y, ddepth, 0, 1, kernel, scale, delta, cv::BORDER_DEFAULT);
 
 	convertScaleAbs(grad_x, abs_grad_x);
 	convertScaleAbs(grad_y, abs_grad_y);
@@ -26,7 +23,7 @@ void sobel_sequence(cv::Mat img, cv::Mat &img_out, cv::Mat gray_LUT) {
 	cv::Mat img_blurred, img_sobel;
 	cv::Mat img_gray;
 
-	cvtColor(img, img_gray, COLOR_BGR2GRAY);
+    cvtColor(img, img_gray, cv::COLOR_BGR2GRAY);
 
 	int width,height;
 	float sigmaX,sigmaY;
@@ -35,7 +32,7 @@ void sobel_sequence(cv::Mat img, cv::Mat &img_out, cv::Mat gray_LUT) {
 	sigmaX = 0.75; //0
 	sigmaY = 0.75; //0
 
-	GaussianBlur(img_gray, img_blurred, Size(width, height), sigmaX, sigmaY, BORDER_DEFAULT);
+    GaussianBlur(img_gray, img_blurred, cv::Size(width, height), sigmaX, sigmaY, cv::BORDER_DEFAULT);
 	edge_sobel(img_blurred, img_sobel);
 
 

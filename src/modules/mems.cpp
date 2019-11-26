@@ -8,8 +8,9 @@
  * kernel: gpio load spi
  */
 #include <iostream>
-
+#ifdef __arm__
 #include <wiringPi.h>
+#endif
 
 #include "mems.h"
 #include "../peripherals/spi.h"
@@ -33,6 +34,7 @@ using namespace std;
 Mems::Mems() :
 	spi(SPI_CHANNEL, 250000, 1),
 	enable(GPIO45_MEMS_EN_DRV) {
+#ifdef __arm__
 	//clock(GPIO4_MEMS_FILT_X),
 	angle_x = 0;
 	angle_y = 0;
@@ -42,18 +44,22 @@ Mems::Mems() :
 	send_voltage_diff_y(0);
 	//clock.set_clock(60000);
 	enable.write(HIGH); // TODO: Test when always high
+#endif
 }
 
 
 void Mems::init_DAC() {
+#ifdef __arm__
 	send_data(FULL_RESET);
 	send_data(ENABLE_INTERNAL_REF);
 	send_data(ENABLE_DAC_CHAN);
 	send_data(ENABLE_SOFT_LDAC);
+#endif
 }
 
 
 void Mems::send_data(unsigned int data) {
+#ifdef __arm__
 	unsigned char send_buffer[3] = {0,0,0};
 
 	send_buffer[0] = data >> 16 & 0xFF;
@@ -61,9 +67,11 @@ void Mems::send_data(unsigned int data) {
 	send_buffer[2] = data & 0xFF;
 
 	spi.send(send_buffer, 3);
+#endif
 }
 
 void Mems::send_voltage_diff_x(float voltage_diff) {
+#ifdef __arm__
   voltage_diff = saturate_voltage_diff(voltage_diff);
   
   unsigned short bin_pos = VBIAS*65536/200 + (voltage_diff*65536/200)/2;
@@ -75,9 +83,11 @@ void Mems::send_voltage_diff_x(float voltage_diff) {
   send_data(bin_pos);
   delayMicroseconds(2);
   send_data(data);
+#endif
 }
 
 void Mems::send_voltage_diff_y(float voltage_diff) {
+#ifdef __arm__
   voltage_diff = saturate_voltage_diff(voltage_diff);
   //cout << voltage_diff << endl;
   unsigned short bin_pos = VBIAS*65536/200 - (voltage_diff*65536/200)/2;
@@ -91,18 +101,22 @@ void Mems::send_voltage_diff_y(float voltage_diff) {
   send_data(data1);
   delayMicroseconds(2);
   send_data(data2);
+#endif
 }
 
 float Mems::saturate_voltage_diff(float voltage_diff) {
+
   if(voltage_diff > V_DIFF_MAX) {
 	  voltage_diff = V_DIFF_MAX;
   } else if(voltage_diff < -V_DIFF_MAX) {
 	  voltage_diff = -V_DIFF_MAX;
   }
   return voltage_diff;
+
 }
 
 float Mems::saturate_angle(float angle) {
+
 	float max_angle = voltage_diff_to_angle(V_DIFF_MAX);
 	if(angle > max_angle) {
 		angle = max_angle;
@@ -110,13 +124,16 @@ float Mems::saturate_angle(float angle) {
 		angle = -max_angle;
 	}
 	return angle;
+
 }
 
 void Mems::stop() {
+    #ifdef __arm__
 	send_voltage_diff_x(0);
 	send_voltage_diff_y(0);
 	delay(1);  // necessary?
 	enable.write(LOW);
+#endif
 }
 
 float Mems::angle_to_voltage_diff(float angle) {

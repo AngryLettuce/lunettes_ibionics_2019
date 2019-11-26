@@ -9,9 +9,10 @@
  * kernel: gpio load spi
  */
 //#include <iostream>
- 
+ #ifdef __arm__
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
+#endif
 
 #include "spi.h"
 
@@ -25,6 +26,7 @@ Spi::Spi(int chan, int speed, int mode) :
     //mosi(GPIO38_SPI2_MOSI),
     //miso(GPIO40_SPI2_MISO),
 	cs(GPIO44_SPI2_CS)  {
+#ifdef __arm__
     channel = chan;
     
     if(chan == 0) {
@@ -32,17 +34,20 @@ Spi::Spi(int chan, int speed, int mode) :
     }
     
     cs.write(HIGH);
+#endif
 }
 
 
 void Spi::send(unsigned char* data, int len) {
     if(channel == 0) {
+    #ifdef __arm__
         cs.write(LOW);
         delayMicroseconds(5);
         wiringPiSPIDataRW(channel, data, len);
         delayMicroseconds(5);
         cs.write(HIGH);
         delayMicroseconds(5);
+    #endif
         
     } /*else {
         cs.write(LOW);

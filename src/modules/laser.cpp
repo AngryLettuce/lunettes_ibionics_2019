@@ -3,7 +3,9 @@
  *  @author Patrice Buteau
  *  @version 17 septembre 2019
  */
+#ifdef __arm__
 #include <wiringPi.h>
+#endif
 
 #include "laser.h"
 
@@ -16,6 +18,7 @@
 
 
 Laser::Laser() :
+
 	//digital_pot_U13("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U13),
 	//digital_pot_U14("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U14),
 	//digital_pot_U15("/dev/i2c-0", DIGITAL_POTENTIOMETER_ADDRESS_U15),
@@ -26,6 +29,7 @@ Laser::Laser() :
 	low(GPIO36_LASER_EN_CH_LOW),
 	mid(GPIO37_LASER_EN_CH_MID),
 	high(GPIO33_LASER_EN_CH_HIGH)  {
+    #ifdef __arm__
 	// Configure LASER GPIOs
 	regen.write(HIGH);
 	enable.write(LOW);
@@ -45,17 +49,21 @@ Laser::Laser() :
 	//digital_pot_U13.set_resistance_0_50k(50);
 	//digital_pot_U14.set_resistance_0_50k(20);
 	//digital_pot_U15.set_resistance_0_50k(10);
-
+#endif
 }
 
 
 void Laser::off() {
+    #ifdef __arm__
 	enable.write(LOW);
+#endif
 }
 
 void Laser::on() {
+#ifdef __arm__
 	enable.write(HIGH);
-	///digitalWrite(GPIO32_LASER_EN_DRV, HIGH);
+    ///digitalWrite(GPIO32_LASER_EN_DRV, HIGH);
+#endif
 }
 
 

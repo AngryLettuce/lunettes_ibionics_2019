@@ -1,10 +1,7 @@
 #ifndef THREADS_H
 #define THREADS_H
 
-//#include <cstdlib>
 #include <iostream>
-//#include <numeric>
-//#include <sstream>
 #include <thread>
 #include <chrono>
 #include <mutex>
@@ -14,6 +11,8 @@
 #include "ellipsefit.h"
 #include "houghCircle.h"
 #include "modes.h"
+#include "opencv2/core.hpp"
+#include "opencv2/highgui.hpp"
 
 //Global objects/flags for threads
 extern std::mutex mx;

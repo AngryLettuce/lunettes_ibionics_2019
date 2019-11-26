@@ -2,27 +2,17 @@
 #define EYEWORLDTAB_H
 
 #include <iostream>
-#include <Qt>
-#include <QTabWidget>
 #include <QLayout>
-#include <QTimer>
 #include <QLabel>
- #include <QPushButton>
+#include <QPushButton>
 #include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
 
-
-//#include "laser_pos_control.h"
 #include "mainwindow.h"
 #include "crop.h"
 #include "edgeDetection.h"
 #include "ellipsefit.h"
 #include "houghCircle.h"
 #include "modes.h"
-
-
-
-
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with mainwindow.h
@@ -37,12 +27,6 @@ public:
     cv::Mat imgEye;
     cv::Mat imgWorld;
 
-    QImage qimgEye;
-    QImage qimgWorld;
-
-    QTimer *tmrTimerEye;
-    QTimer *tmrTimerWorld;
-
     QLabel *imgLblEye;
     QLabel *imgLblWorld;
     
@@ -53,12 +37,9 @@ public:
     int posY = 0;
     bool pupilMethod = true;
     MainWindow* mainWindowPtr;
-    
-    
 
     cv::Point pupilPos;
     cv::Mat processedImg;
-
 
 signals:
 

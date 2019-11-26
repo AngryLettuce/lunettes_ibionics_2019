@@ -8,24 +8,21 @@
 #include <QPixmap>
 
 #include "memstab.h"
-#include "lasertab.h"
-#include "eyetab.h"
-#include "worldtab.h"
 #include "gpiotab.h"
 #include "eyeworldtab.h"
-#include "config.h"
-#include "arducam_mipicamera.h"
 #include "calibrationtab.h"
 
+#include "config.h"
 #include "laser_pos_control.h"
 
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include "arducam_mipicamera.h"
 
 class MemsTab; //foward declaration to avoid circular dependencies with memstab.h
-class WorldTab; //foward declaration to avoid circular dependencies with worldtab.h
-class EyeTab; //foward declaration to avoid circular dependencies with eyetab.h
 class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
-class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 class CalibrationTab; //foward declaration to avoid circular dependencies with calibrationtab.h
+class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 
 class MainWindow : public QMainWindow
 {
@@ -37,9 +34,6 @@ public:
     void initHw();
 
     MemsTab *memsTab;
-    LaserTab *laserTab;
-    EyeTab *eyeCamTab;
-    WorldTab *worldCamTab;
     GPIOTab *gpioTab;
     EyeWorldTab *eyeWorldTab;
     CalibrationTab *calibrationTab;

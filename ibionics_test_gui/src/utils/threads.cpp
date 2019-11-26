@@ -1,5 +1,4 @@
 #include "threads.h"
-#include "modes.h"
 
 //Mutex object for lcoking oin threads
 bool WORLDLOOP = true;
@@ -66,7 +65,7 @@ void WorldThread2(int id)
 
 
     //Grayscale convert
-    Mat gray_LUT(1, 256, CV_8U);
+    cv::Mat gray_LUT(1, 256, CV_8U);
     uchar*p = gray_LUT.ptr();
     for (int i = 0; i < 256; i++) {
         p[i] = grayLevelsTable[i];
@@ -127,7 +126,7 @@ void WorldThread(int id, cv::Mat3b *img)
     cv::Mat imgZoom;
 
     //Grayscale convert
-    Mat gray_LUT(1, 256, CV_8U);
+    cv::Mat gray_LUT(1, 256, CV_8U);
     uchar*p = gray_LUT.ptr();
     for (int i = 0; i < 256; i++) {
         p[i] = grayLevelsTable[i];
@@ -237,13 +236,11 @@ void EyeThread(int id)
 
         //testing on windows
 
-        Point center;
-        center.x = posX;
-        center.y = posY;
+        cv::Point center(posX,posY);
         //circle(image2, center, 4, Scalar(255,0,0), -1, 8, 0 );
         //cv::imshow("in eye thread",image2);
 
-        circle(tmps, center, 4, Scalar(255,0,0), -1, 8, 0 );//image
+        circle(tmps, center, 4, cv::Scalar(255,0,0), -1, 8, 0 );//image
         cv::imshow("in eye thread",tmps);
 
         //debug print found position

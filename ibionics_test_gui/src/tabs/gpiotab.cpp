@@ -1,5 +1,4 @@
 #include "gpiotab.h"
-#include "gpioview.h"
 
 GPIOTab::GPIOTab(QWidget *parent) : QWidget(parent)
 {
@@ -7,25 +6,25 @@ GPIOTab::GPIOTab(QWidget *parent) : QWidget(parent)
     QGridLayout *gpioLayout = new QGridLayout(this);
 
     // Sections Widget
-    QWidget *mems = new QWidget(this);
-    QWidget *laser = new QWidget(this);
-    QWidget *pot = new QWidget(this);
-    QWidget *camera = new QWidget(this);
-    QWidget *aiy = new QWidget(this);
+    mems = new QWidget(this);
+    laser = new QWidget(this);
+    pot = new QWidget(this);
+    camera = new QWidget(this);
+    aiy = new QWidget(this);
 
     // Sections Layouts
-    QVBoxLayout *layoutMems = new QVBoxLayout(mems);
-    QVBoxLayout *layoutLaser = new QVBoxLayout(laser);
-    QVBoxLayout *layoutPot = new QVBoxLayout(pot);
-    QVBoxLayout *layoutCamera = new QVBoxLayout(camera);
-    QVBoxLayout *layoutAiy = new QVBoxLayout(aiy);
+    layoutMems = new QVBoxLayout(mems);
+    layoutLaser = new QVBoxLayout(laser);
+    layoutPot = new QVBoxLayout(pot);
+    layoutCamera = new QVBoxLayout(camera);
+    layoutAiy = new QVBoxLayout(aiy);
 
     //Sections Labels
-    QLabel *memsLbl = new QLabel("MEMS", this);
-    QLabel *laserLbl = new QLabel("Laser", this);
-    QLabel *potLbl = new QLabel("Digital Potentiometer", this);
-    QLabel *cameraLbl = new QLabel("Camera", this);
-    QLabel *aiyLbl = new QLabel("AIY", this);
+    memsLbl = new QLabel("MEMS", this);
+    laserLbl = new QLabel("Laser", this);
+    potLbl = new QLabel("Digital Potentiometer", this);
+    cameraLbl = new QLabel("Camera", this);
+    aiyLbl = new QLabel("AIY", this);
 
     memsLbl->setStyleSheet("border-bottom-width: 1px; border-bottom-style: solid; border-radius: 1px;");
     laserLbl->setStyleSheet("border-bottom-width: 1px; border-bottom-style: solid; border-radius: 1px;");

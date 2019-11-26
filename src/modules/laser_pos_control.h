@@ -8,7 +8,9 @@
 #ifndef SRC_MODULES_LASER_POS_CONTROL_H_
 #define SRC_MODULES_LASER_POS_CONTROL_H_
 
+#ifdef __arm__
 #include <armadillo>
+#endif
 
 #include "mems.h"
 #include "laser.h"
@@ -19,15 +21,19 @@
 #define X_ANGLES_GRID_POINTS 5
 #define Y_ANGLES_GRID_POINTS 4
 
+#ifdef __arm__
 using namespace arma;
+#endif
 
 class Laser_pos_control {
 public:
+
     Laser laser;
     Mems mems;
-
+#ifdef __arm__
 	mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
 	mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
+#endif
 	/**
 	 * @brief Laser_pos_control constructor.
 	 */
@@ -86,8 +92,9 @@ public:
     	/**
 	 * @brief write the grid points in X and Y to a header file
 	 */
+    #ifdef __arm__
 	void export2Header(const char *fileName, mat gridPointsX, mat gridPointsY);
-
+#endif
 	/**
 	 * @brief fille gridPointX and gridPointY with the keyboard manual mode
 	 */

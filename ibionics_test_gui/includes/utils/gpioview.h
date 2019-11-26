@@ -1,9 +1,7 @@
 #ifndef GPIOVIEW_H
 #define GPIOVIEW_H
 
-#include <QWidget>
 #include <QLabel>
-#include <QRadioButton>
 #include <QHBoxLayout>
 
 class GpioView : public QWidget

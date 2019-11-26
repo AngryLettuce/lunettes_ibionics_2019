@@ -1,10 +1,9 @@
 #include "memstab.h"
 
-
 MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
     //Layout
-    QGridLayout *layout = new QGridLayout(this);
+    layout = new QGridLayout(this);
 
     mainWindowPtr = mW;
         
@@ -35,6 +34,6 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
 void MemsTab::comboboxItemChanged(QString sequence)
 {
-    //std::cout<<"In Sequence event"<<std::endl;
-    mainWindowPtr->laser_pos_control->draw_rectangle(10);
+    std::cout<<"In Sequence event : " << sequence.toStdString() << std::endl;
+    //mainWindowPtr->laser_pos_control->draw_rectangle(10);
 }

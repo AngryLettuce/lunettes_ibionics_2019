@@ -4,13 +4,17 @@
 #include "houghCircle.h"
 #include "modes.h"
 #include "testvideo.h"
+#ifdef __arm__
 #include <wiringPi.h>
+#endif
 
 std::mutex mx;
 
 int main(int argc, char *argv[])
 {
-    wiringPiSetupGpio();
+    #ifdef __arm__
+        wiringPiSetupGpio();
+    #endif
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
