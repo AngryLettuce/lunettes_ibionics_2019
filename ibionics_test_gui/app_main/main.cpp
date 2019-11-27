@@ -46,27 +46,29 @@ int main() {
         //cout << angles[0] << endl;
         //cout << angles[1] << endl;
            // laser_pos_control.mems.send_angle_x(0);
+            
+           for(int i=0; i<3; i++){
+               laser_pos_control.draw_rectangle();
+           }
+          
+           for(int i=0; i<3; i++){
+               laser_pos_control.draw_circluarLoop();
+           }
+           for(int i=0; i<3; i++){
+               laser_pos_control.draw_infinity();
+           }
+           for(int i=0; i<3; i++){
+               laser_pos_control.draw_spiral();
+           }
+           for(int i=0; i<3; i++){
+               laser_pos_control.draw_Closingrectangle();
+           }
            
-           for(int i=0; i<5; i++){
-               laser_pos_control.draw_rectangle(10);
-           }
-           for(int i=0; i<5; i++){
-               laser_pos_control.draw_circluarLoop(10);
-           }
-           for(int i=0; i<5; i++){
-               laser_pos_control.draw_infinity(10);
-           }
-           for(int i=0; i<5; i++){
-               laser_pos_control.draw_spiral(10);
-           }
-           for(int i=0; i<5; i++){
-               laser_pos_control.draw_Closingrectangle(10);
-           }
            
         //delay(10);
-        //laser_pos_control.send_pos(100,100);
-       // delay(1000);
-        //delay(2000);
+        laser_pos_control.send_pos(100,100);
+        //delay(1000);
+        delay(2000);
         //laser_pos_control.manual_mode();
     //laser_pos_control.mems.print_angles() ;
 }

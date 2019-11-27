@@ -118,5 +118,6 @@ unix:LIBS +=    $${OPENCV_LIBS_FOLDER}/libopencv_calib3d.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_video.so \
                 $${OPENCV_LIBS_FOLDER}/libopencv_videoio.so \
                 $${OPENCV_LIBS_FOLDER}/../lib/libarducam_mipicamera.so \
-                -lwiringPi
+                -lwiringPi \
+		-larmadillo
 
