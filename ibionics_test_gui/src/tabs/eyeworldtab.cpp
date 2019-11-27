@@ -30,7 +30,7 @@ void EyeWorldTab::processFrameEye()
 #endif
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
-    cv::resize(imgEye, imgEye ,cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
+    cv::resize(imgEye, imgEye ,cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);
 
     if(imgEye.channels() <= 1){
         if(imgEye.empty()) return;

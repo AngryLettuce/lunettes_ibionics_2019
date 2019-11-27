@@ -8,10 +8,12 @@ int getRegionPos(int x,int DIM_C,int imgCols){
     //setting position x, can be and will be use for y too
     if(x <=DIM_C/2)
         return 0;
-    else if (x >= imgCols - DIM_C/2)
-        return (int) imgCols - DIM_C/2;
+    else if (x >= (imgCols - DIM_C/2))
+        return (int) imgCols - DIM_C;
     else
         return (int) (x - DIM_C/2);
+
+
 }
 void cropRegion(cv::Mat *imgOr, cv::Mat *imgZoom,int x,int y,int DIM_L,int DIM_C, bool showRect){
 
