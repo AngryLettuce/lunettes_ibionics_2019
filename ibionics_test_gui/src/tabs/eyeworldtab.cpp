@@ -28,10 +28,10 @@ void EyeWorldTab::processFrameEye()
 #ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
 #endif
+    //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
-    //cv::resize(imgEye, imgEye ,cv::Size(), 400/mainWindowPtr->roiSize, 400/mainWindowPtr->roiSize, cv::INTER_LINEAR);
-    cv::resize(imgEye, imgEye ,cv::Size(400,400), 0, 0, cv::INTER_LINEAR);
-    std::cout<<"Size: "<<imgEye.size()<<std::endl;
+    cv::resize(imgEye, imgEye ,cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
+
     if(imgEye.channels() <= 1){
         if(imgEye.empty()) return;
         // if the signature of the functions changes and return a cv::Point, we could make it in one line
@@ -51,6 +51,7 @@ void EyeWorldTab::processFrameEye()
     
     //Adjust laser position 
 	//TODO Hot Fix
+/*
     if (posX < 0 || posY < 0)
     {
         posX = 0;
@@ -66,6 +67,8 @@ void EyeWorldTab::processFrameEye()
         if(posY >= 199)
             posY = 199;
     }
+*/
+
     //std::cout<<"PosX: "<<posX<<"PosY: "<<posY<<std::endl;
     
     mainWindowPtr->laser_pos_control->send_pos(posY, posX);
