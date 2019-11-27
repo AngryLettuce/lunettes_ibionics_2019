@@ -9,9 +9,9 @@
 #define SRC_MODULES_LASER_POS_CONTROL_H_
 
 #ifdef __arm__
-//#include <armadillo>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
+#include <armadillo>
+//#include <opencv2/core.hpp>
+//#include <opencv2/imgproc.hpp>
 #endif
 
 #include "mems.h"
@@ -20,8 +20,10 @@
 
 #define CAMERA_RESOLUTION 200
 
-#define X_ANGLES_GRID_POINTS 5
+#define X_ANGLES_GRID_POINTS 4
 #define Y_ANGLES_GRID_POINTS 4
+
+#define DEFAULT_DELAY 50
 
 #ifdef __arm__
 //using namespace arma;
@@ -33,9 +35,9 @@ public:
     Laser laser;
     Mems mems;
 #ifdef __arm__
-	//mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
-	//mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
-	cv::Mat gridPointsX, gridPointsY;
+	arma::mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsX;
+	arma::mat::fixed<Y_ANGLES_GRID_POINTS, X_ANGLES_GRID_POINTS> gridPointsY;
+	//cv::Mat gridPointsX, gridPointsY;
 #endif
 	/**
 	 * @brief Laser_pos_control constructor.
@@ -57,27 +59,27 @@ public:
 	 * @brief send the rectangle sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
 	 */
-	void draw_rectangle(int time_delay);
+	void draw_rectangle(int time_delay=DEFAULT_DELAY);
 	/**
 	 * @brief send the closing rectangle sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
 	 */
-	void draw_Closingrectangle(int time_delay);
+	void draw_Closingrectangle(int time_delay=DEFAULT_DELAY);
 	/**
 	 * @brief send the spiral sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
 	 */
-	void draw_spiral(int time_delay);
+	void draw_spiral(int time_delay=DEFAULT_DELAY);
 	/**
 	 * @brief send the infinity symbol sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
 	 */
-	void draw_infinity(int time_delay);
+	void draw_infinity(int time_delay=DEFAULT_DELAY);
 	/**
 	 * @brief send the circular loop symbol sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
 	 */
-	void draw_circluarLoop(int time_delay);
+	void draw_circluarLoop(int time_delay=DEFAULT_DELAY);
 	/**
 	 * @brief Set the maximum angles in x and y using the manual mode
 	 */
