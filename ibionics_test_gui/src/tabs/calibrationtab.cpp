@@ -6,17 +6,24 @@
 CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
     //TODO Init size of config in init file
-    rows = 4;
-    columns = 5;
+    rows = Y_ANGLES_GRID_POINTS;
+    columns = X_ANGLES_GRID_POINTS;
     
     layout = new QGridLayout(this);
     imgLblEye = new MediaLabel(this, "");
     button = new QPushButton("Start Calibration", this);
 
+    slider = new QSlider(Qt::Horizontal, this);
+    slider->setMinimum(100);
+    slider->setMaximum(400);
+    slider->setValue(400);
+
     layout->addWidget(imgLblEye,1,0);
     layout->addWidget(button,0,0);
+    layout->addWidget(slider,2,0);
 
     connect(button, SIGNAL (clicked()), this, SLOT (startCalibration()));
+    connect(slider, SIGNAL (valueChanged(int)), this, SLOT (changeRoiSize(int)));
     mainWindowPtr = mW;
 }
 
@@ -31,43 +38,28 @@ void CalibrationTab::processCalibrationFrame()
     if(imgEye.empty()) return;
 
     //Get corners of roi
-    cv::Point upLeft = cv::Point(imgLblEye->posX - 200,imgLblEye->posY - 200);
-    cv::Point downRight = cv::Point(imgLblEye->posX + 200,imgLblEye->posY + 200);
-    
+    mainWindowPtr->upLeft = cv::Point(imgLblEye->posX - calibrationRoiSize/2,imgLblEye->posY - calibrationRoiSize/2);
+    mainWindowPtr->downRight = cv::Point(imgLblEye->posX + calibrationRoiSize/2,imgLblEye->posY + calibrationRoiSize/2);
+
     //Add grid to roi
-    /*
-    int height = imgEye.size().height;
-    int width = imgEye.size().width;
-    int heightSpace = height/(rows - 1);
-    int widthSpace = width/(columns - 1);
-    */
+    mainWindowPtr->leftSide = mainWindowPtr->upLeft.x;
+    mainWindowPtr->upSide = mainWindowPtr->upLeft.y;
     
-    int leftSide = upLeft.x;
-    int upSide = upLeft.y;
+    mainWindowPtr->rightSide = mainWindowPtr->downRight.x;
+    mainWindowPtr->downSide = mainWindowPtr->downRight.y;
     
-    int rightSide = downRight.x;
-    int downSide = downRight.y;
-    
-    int heightSpace = (rightSide-leftSide)/(rows - 1);
-    int widthSpace = (downSide-upSide)/(columns - 1);
+    int heightSpace = (mainWindowPtr->rightSide - mainWindowPtr->leftSide)/(rows - 1);
+    int widthSpace = (mainWindowPtr->downSide - mainWindowPtr->upSide)/(columns - 1);
     
 
-    for (int i = upSide; i<downSide; i += heightSpace)
-        cv::line(imgEye, cv::Point(leftSide, i), cv::Point(rightSide, i), cv::Scalar(0, 255, 255));
+    for (int i = mainWindowPtr->upSide; i<mainWindowPtr->downSide; i += heightSpace)
+        cv::line(imgEye, cv::Point(mainWindowPtr->leftSide, i), cv::Point(mainWindowPtr->rightSide, i), cv::Scalar(0, 255, 255));
 
-    for (int i = leftSide; i<rightSide; i += widthSpace)
-        cv::line(imgEye, cv::Point(i, upSide), cv::Point(i, downSide), cv::Scalar(255, 0, 255));
-    
-    /*
-    for(int i = 0; i<height; i = i + heightSpace) //Each row
-
-    for(int i = 0; i<width; i = i + widthSpace) //Each column
-        for(int j = 0; j<=height; j++) //Each pixel in column
-            cv::line(imgEye,Point());
-    */
+    for (int i = mainWindowPtr->leftSide; i<mainWindowPtr->rightSide; i += widthSpace)
+        cv::line(imgEye, cv::Point(i, mainWindowPtr->upSide), cv::Point(i, mainWindowPtr->downSide), cv::Scalar(255, 0, 255));
     
     cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
-    cv::rectangle(imgEye,cv::Rect(upLeft,downRight) , cv::Scalar(0,255,0), 1, 8,0 );
+    cv::rectangle(imgEye,cv::Rect(mainWindowPtr->upLeft,mainWindowPtr->downRight) , cv::Scalar(0,255,0), 1, 8,0 );
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
 }
@@ -79,7 +71,14 @@ void CalibrationTab::processPressedKey()
 
 void CalibrationTab::startCalibration()
 {
-    
+    mainWindowPtr->roiSize = slider->value();
+    mainWindowPtr->calibrationPosX = mainWindowPtr->upLeft.x + mainWindowPtr->roiSize/2;
+    mainWindowPtr->calibrationPosY = mainWindowPtr->upLeft.y + mainWindowPtr->roiSize/2;
+}
+
+void CalibrationTab::changeRoiSize(int size)
+{
+    calibrationRoiSize = size;
 }
 
 cv::Mat* CalibrationTab::getImage(int camNumber, int width, int height)

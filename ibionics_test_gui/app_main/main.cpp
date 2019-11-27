@@ -6,11 +6,13 @@
 
 #include <iostream>
 
+#ifdef __arm__
 #include <wiringPi.h>
+#endif
 
-#include "modules/mems.h"
-#include "modules/laser.h"
-#include "modules/laser_pos_control.h"
+#include "mems.h"
+#include "laser.h"
+#include "laser_pos_control.h"
 
 using namespace std;
 
@@ -18,7 +20,9 @@ using namespace std;
  *  @brief Main function.
  */
 int main() {
+#ifdef __arm__
     wiringPiSetupGpio(); // TODO : Should be done once in gpio.h
+#endif
     //piHiPri(20);
     Laser_pos_control laser_pos_control;
     

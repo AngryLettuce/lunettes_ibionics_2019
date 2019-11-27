@@ -5,6 +5,7 @@
 #include <QLayout>
 #include <QTimer>
 #include <QLabel>
+#include <QSlider>
 #include <QPushButton>
 #include <opencv2/core.hpp>
 
@@ -27,23 +28,27 @@ public:
     MediaLabel *imgLblEye;
 
     QPushButton *button;
+    QSlider *slider;
     QGridLayout *layout;
 
     int rows;
     int columns;
     int currentRow;
     int currentColumn;
+    int calibrationRoiSize = 400;
 
     cv::Mat processedImg;
     
     MainWindow* mainWindowPtr;
 
 signals:
+    void valueChanged(int value);
 
 public slots:
     void processCalibrationFrame();
     void processPressedKey();
     void startCalibration();
+    void changeRoiSize(int size);
 
 };
 

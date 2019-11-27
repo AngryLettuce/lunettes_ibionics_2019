@@ -102,10 +102,10 @@ void MainWindow::initHw()
 
     }
 #endif
-#ifdef WIN32
+//#ifdef WIN32
     camEye.open(0);//2 for webcam
-    camWorld.open(1);
-#endif
+    camWorld.open(2);
+//#endif
 }
 
 int MainWindow::getPosX()

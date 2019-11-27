@@ -1,8 +1,8 @@
 BANK0 (GPIO 0 to 27):
-GPIO 0: 	Cam_SDA 			Level=1		Dir=In		fsel=SDA0	alt=a0				
-GPIO 1: 	Cam_Scl				Level=1		Dir=In		fsel=SCL0	alt=a0
-GPIO 2: 	LED_2				Level=0		Dir=Out		fsel=\ 		alt=\
-GPIO 3: 	LED_1				Level=0		Dir=Out		fsel=\ 		alt=\
+GPIO 0: 	Cam_SDA 			Level=1		Dir=In		fsel=SDA0	alt=a0	0xDEAD			
+GPIO 1: 	Cam_Scl				Level=1		Dir=In		fsel=SCL0	alt=a0	0xDEAD
+GPIO 2: 	LED_2				Level=0		Dir=Out		fsel=\ 		alt=\ User LED Not used right now
+GPIO 3: 	LED_1				Level=0		Dir=Out		fsel=\ 		alt=\ User LED Not used right now
 GPIO 4: 	button_4			Level=1		Dir=In		fsel=\ 		alt=\
 GPIO 5: 	button_3			Level=1		Dir=In		fsel=\ 		alt=\
 GPIO 6: 	button_2			Level=1		Dir=In		fsel=\ 		alt=\
@@ -19,35 +19,38 @@ GPIO 16: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
 GPIO 17: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
 GPIO 18: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
 GPIO 19: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
-GPIO 20: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
+GPIO 20: 	ClockDevKit			Level=0		Dir=In		fsel=GPCLK0	alt=a5
 GPIO 21: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
-GPIO 22: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
+GPIO 22: 	unused				Level=0		Dir=In		fsel=\		alt=\
 GPIO 23: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
 GPIO 24: 	IR_LED_ON			Level=0		Dir=Out		fsel=\ 		alt=\
 GPIO 25: 	Sel_to_AIY			Level=1		Dir=Out		fsel=\ 		alt=\
 GPIO 26: 	Sel_World_Cam		Level=1		Dir=Out		fsel=\ 		alt=\
 GPIO 27: 	Sel_Eye_Cam			Level=1		Dir=Out		fsel=\ 		alt=\
 BANK1 (GPIO 28 to 45):
-GPIO 28: 	Mod_SDA				Level=1		Dir=In		fsel=SDA1	alt=a0
-GPIO 29: 	Mod_SCL				Level=1		Dir=In		fsel=SCL1	alt=a0
-GPIO 30: 	Laser_ENCAL			Level=?		Dir=Out		fsel=\ 		alt=\
-GPIO 31: 	Laser_REGEN			Level=?		Dir=Out		fsel=\ 		alt=\
-GPIO 32: 	Laser_EN_DRIVER		Level=?		Dir=Out		fsel=\ 		alt=\
-GPIO 33: 	Laser_EN_CH_HIGH	Level=?		Dir=Out		fsel=\ 		alt=?
-GPIO 34: 	AIY_BCM26			Level=?		Dir=?		fsel=? 		alt=?
-GPIO 35: 	AIY_TO_MYRIAD_IRQ	Level=?		Dir=?		fsel=? 		alt=?
-GPIO 36: 	AIY_FROM_MYRIAD_IRQ	Level=?		Dir=?		fsel=? 		alt=?
-GPIO 37: 	Laser_EN_CH_MID		Level=?		Dir=Out		fsel=? 		alt=?
-GPIO 38: 	Laser_EN_CH_LOW		Level=?		Dir=Out		fsel=? 		alt=?
-GPIO 39: 	unused				Level=0		Dir=In		fsel=\ 		alt=\
-GPIO 40: 	SPI2_MISO			Level=?		Dir=?		fsel=\ 		alt=\ What is the replacement?
-GPIO 41: 	SPI2_MOSI			Level=?		Dir=?		fsel=\ 		alt=\ What is the replacement?
-GPIO 42: 	SPI2_SCLK			Level=?		Dir=?		fsel=\ 		alt=\ What is the replacement?
-GPIO 43: 	SPI2_CE0			Level=?		Dir=?		fsel=\ 		alt=\ What is the replacement?
-GPIO 44: 	SPI2_CE1			Level=?		Dir=?		fsel=\ 		alt=\ What is the replacement?
-GPIO 45: 	???					Level=?		Dir=?		fsel=\ 		alt=\ Used In Code, but not wired in Schematics
+GPIO 28: 	Mod_SDA				Level=1		Dir=In		fsel=SDA0	alt=a0 Pot digital
+GPIO 29: 	Mod_SCL				Level=1		Dir=In		fsel=SCL0	alt=a0 Pot digital
+GPIO 30: 	Laser_ENCAL			Level=0		Dir=Out		fsel=\ 		alt=\
+GPIO 31: 	Laser_REGEN			Level=0		Dir=Out		fsel=\ 		alt=\
+GPIO 32: 	Laser_EN_DRIVER		Level=0		Dir=Out		fsel=\ 		alt=\
+GPIO 33: 	Laser_EN_CH_HIGH	Level=0		Dir=Out		fsel=\ 		alt=?
+GPIO 34: 	AIY_BCM26			Level=0		Dir=Out		fsel=? 		alt=?
+GPIO 35: 	AIY_TO_MYRIAD_IRQ	Level=0		Dir=Out		fsel=? 		alt=?
+GPIO 36: 	Laser_EN_CH_LOW		Level=0		Dir=Out		fsel=? 		alt=?
+GPIO 37: 	Laser_EN_CH_MID		Level=0		Dir=Out		fsel=? 		alt=?
+GPIO 38: 	SPI0_MOSI			Level=?		Dir=?		fsel=a0 		alt=? RELIÉ AU GPIO 41 Pour avoir SPI0_MOSI
+GPIO 39: 	SPI0_SCLK			Level=?		Dir=?		fsel=a0 		alt=\ RELIÉ AU GPIO 42 Pour avoir SPI0_SCLK
+GPIO 40: 	\SPI2_MISO			Level=0		Dir=Out		fsel=\ 		alt=\ unused
+GPIO 41: 	\SPI2_MOSI			Level=Flot	Dir=In		fsel=\ 		alt=\ RELIÉ AU GPIO 38 Pour avoir SPI0_MOSI
+GPIO 42: 	unused***			Level=Flot	Dir=In		fsel=\ 		alt=\ RELIÉ AU GPIO 39 Pour avoir SPI0_SCLK
+GPIO 43: 	\SPI2_CE0			Level=0		Dir=Out		fsel=\ 		alt=\ unused
+GPIO 44: 	GPIO CE				Level=1		Dir=Out		fsel=\ 		alt=\ unused
+GPIO 45: 	MEMS_ENABLE			Level=0		Dir=Out		fsel=\ 		alt=\ Used In Code, but not wired in Schematics
 
 
+Pin 58 drive laser_EN_LOW
+Pin 64 était Laser CH EN LOW drive Pin 70 SPI0_MISO
+Pin 66 drive pin SPI0_SCLK
 
 
 
