@@ -67,7 +67,7 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp \
                 $${BASE_FOLDER}/src/utils/medialabel.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
-                $${BASE_FOLDER}/src/utils/threads.cpp \
+                #$${BASE_FOLDER}/src/utils/threads.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/button.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/getch.cpp \
@@ -96,7 +96,7 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/medialabel.h \
                 $${BASE_FOLDER}/includes/utils/modes.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
-                $${BASE_FOLDER}/includes/utils/threads.h \
+                #$${BASE_FOLDER}/includes/utils/threads.h \
                 $${BASE_FOLDER}/includes/modules/*.h \
                 $${MEMS_LASER_FOLDER}/src/modules/button.h \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.h \

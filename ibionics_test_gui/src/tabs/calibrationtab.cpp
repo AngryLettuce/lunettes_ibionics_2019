@@ -25,6 +25,10 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
     connect(button, SIGNAL (clicked()), this, SLOT (startCalibration()));
     connect(slider, SIGNAL (valueChanged(int)), this, SLOT (changeRoiSize(int)));
     mainWindowPtr = mW;
+
+    //get initial mems values
+    angle_x = mainWindowPtr->laser_pos_control->mems.get_angle_x();
+    angle_y = mainWindowPtr->laser_pos_control->mems.get_angle_x();
 }
 
 void CalibrationTab::processCalibrationFrame()
@@ -62,6 +66,45 @@ void CalibrationTab::processCalibrationFrame()
     cv::rectangle(imgEye,cv::Rect(mainWindowPtr->upLeft,mainWindowPtr->downRight) , cv::Scalar(0,255,0), 1, 8,0 );
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
+}
+
+void CalibrationTab::keyPressEvent(QKeyEvent *event)
+{
+   // std::cout<<"test"<<std::endl;
+    currentKey = event->key();
+
+    if (lastKeyPressed != currentKey)
+        momentum = delta_angle;
+
+    switch(currentKey){
+    case Qt::Key_W:
+        angle_x += momentum;
+        angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
+        momentum += delta_angle;
+        break;
+    case Qt::Key_S:
+        angle_x -= momentum;
+        angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
+        momentum += delta_angle;
+        break;
+    case Qt::Key_A:
+        angle_y -= momentum;
+        angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
+        momentum += delta_angle;
+        break;
+    case Qt::Key_D:
+        angle_y += momentum;
+        angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
+        momentum += delta_angle;
+        break;
+    case Qt::Key_Space:
+        mainWindowPtr->laser_pos_control->mems.print_angles();
+        mainWindowPtr->laser_pos_control->gri
+        break;
+   }
+
+
+    lastKeyPressed = currentKey;
 }
 
 void CalibrationTab::processPressedKey()

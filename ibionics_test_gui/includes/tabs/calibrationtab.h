@@ -8,6 +8,7 @@
 #include <QSlider>
 #include <QPushButton>
 #include <opencv2/core.hpp>
+#include <QKeyEvent>
 
 #include "mainwindow.h"
 #include "modes.h"
@@ -22,7 +23,7 @@ class CalibrationTab : public QWidget
 public:
     explicit CalibrationTab(QWidget *parent = nullptr, MainWindow* mW = nullptr);
     cv::Mat* getImage(int camNumber, int width, int height);
-
+    void keyPressEvent(QKeyEvent *event);
     cv::Mat imgEye;
 
     MediaLabel *imgLblEye;
@@ -40,6 +41,15 @@ public:
     cv::Mat processedImg;
     
     MainWindow* mainWindowPtr;
+
+    float momentum = 0;
+    int lastKeyPressed = 0;
+    int currentKey = 0;
+    const float delta_angle = 0.01;
+    float angle_x;
+    float angle_y;
+    int row_calib_counter = 0;
+    int column_calib_counter = 0;
 
 signals:
     void valueChanged(int value);
