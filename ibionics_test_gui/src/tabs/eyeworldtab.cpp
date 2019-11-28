@@ -69,9 +69,9 @@ void EyeWorldTab::processFrameEye()
     }
 */
 
-    //std::cout<<"PosX: "<<posX<<"PosY: "<<posY<<std::endl;
+    std::cout<<"PosX: "<<posX<<"PosY: "<<posY<<std::endl;
     
-    mainWindowPtr->laser_pos_control->send_pos(posY, posX);
+    mainWindowPtr->laser_pos_control->send_pos(posX, posY);
 }
 
 void EyeWorldTab::processFrameWorld()

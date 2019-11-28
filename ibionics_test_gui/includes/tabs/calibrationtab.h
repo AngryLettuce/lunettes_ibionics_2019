@@ -48,15 +48,16 @@ public:
     const float delta_angle = 0.01;
     float angle_x;
     float angle_y;
-    int row_calib_counter = 0;
-    int column_calib_counter = 0;
+    int row_calib_counter = 1;
+    int column_calib_counter = 1;
+    
+    bool inCalibration = false;
 
 signals:
     void valueChanged(int value);
 
 public slots:
     void processCalibrationFrame();
-    void processPressedKey();
     void startCalibration();
     void changeRoiSize(int size);
 

@@ -31,11 +31,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
     laser_pos_control->draw_rectangle(10);
+    laser_pos_control->draw_spiral(10);
+    laser_pos_control->draw_infinity(10);
+    laser_pos_control->draw_circluarLoop(10);
 }
 
 MainWindow::~MainWindow()
 {
-
+    //TODO exit clean (close laser, events, etc...)
 }
 
 void MainWindow::tabChange(int currentIndex)
@@ -77,35 +80,45 @@ void MainWindow::initHw()
     int cameraWidth1 = 640;
     int cameraHeight1 = 480;
 
-    camInterface.i2c_bus = 0;
-    camInterface.camera_num = 1;
-    camInterface.sda_pins[0] = 28;
-    camInterface.sda_pins[1] = 0;
-    camInterface.scl_pins[0] = 29;
-    camInterface.scl_pins[1] = 1;
-    camInterface.led_pins[0] = 34;
-    camInterface.led_pins[1] = 4;
-    camInterface.shutdown_pins[0] = 35;
-    camInterface.shutdown_pins[1] = 5;
+    camInterface0.i2c_bus = 0;
+    camInterface0.camera_num = 0;
+    camInterface0.sda_pins[0] = 0;
+    camInterface0.sda_pins[1] = 28;
+    camInterface0.scl_pins[0] = 1;
+    camInterface0.scl_pins[1] = 29;
+    camInterface0.led_pins[0] = 2;
+    camInterface0.led_pins[1] = 10;
+    camInterface0.shutdown_pins[0] = 14;
+    camInterface0.shutdown_pins[1] = 15;
 
-    camState0 = arducam_init_camera2(&arducamInstance0, camInterface);
+    camState0 = arducam_init_camera2(&arducamInstance0, camInterface0);
     if(!camState0){
         std::cout << "Cam1 Initialized (EyeCam)" << std::endl;
         arducam_set_resolution(arducamInstance0, &cameraWidth0, &cameraHeight0);
     }
 
-    camInterface.camera_num = 0;
-    camState1 = arducam_init_camera2(&arducamInstance1, camInterface);
+    camInterface1.i2c_bus = 0;
+    camInterface1.camera_num = 1;
+    camInterface1.sda_pins[0] = 0;
+    camInterface1.sda_pins[1] = 28;
+    camInterface1.scl_pins[0] = 1;
+    camInterface1.scl_pins[1] = 29;
+    camInterface1.led_pins[0] = 3;
+    camInterface1.led_pins[1] = 10;
+    camInterface1.shutdown_pins[0] = 14;
+    camInterface1.shutdown_pins[1] = 15;
+
+    camState1 = arducam_init_camera2(&arducamInstance1, camInterface1);
     if(!camState1){
         std::cout << "Cam2 Initialized (WorldCam)" << std::endl;
         arducam_set_resolution(arducamInstance1, &cameraWidth1, &cameraHeight1);
 
     }
 #endif
-//#ifdef WIN32
+#ifdef WIN32
     camEye.open(0);//2 for webcam
     camWorld.open(2);
-//#endif
+#endif
 }
 
 int MainWindow::getPosX()

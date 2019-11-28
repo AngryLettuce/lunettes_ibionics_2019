@@ -29,6 +29,8 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
     //get initial mems values
     angle_x = mainWindowPtr->laser_pos_control->mems.get_angle_x();
     angle_y = mainWindowPtr->laser_pos_control->mems.get_angle_x();
+    
+    QWidget::setFocusPolicy(Qt::StrongFocus);
 }
 
 void CalibrationTab::processCalibrationFrame()
@@ -52,8 +54,8 @@ void CalibrationTab::processCalibrationFrame()
     mainWindowPtr->rightSide = mainWindowPtr->downRight.x;
     mainWindowPtr->downSide = mainWindowPtr->downRight.y;
     
-    int heightSpace = (mainWindowPtr->rightSide - mainWindowPtr->leftSide)/(rows - 1);
-    int widthSpace = (mainWindowPtr->downSide - mainWindowPtr->upSide)/(columns - 1);
+    int heightSpace = (mainWindowPtr->rightSide - mainWindowPtr->leftSide)/(rows-1);
+    int widthSpace = (mainWindowPtr->downSide - mainWindowPtr->upSide)/(columns-1);
     
 
     for (int i = mainWindowPtr->upSide; i<mainWindowPtr->downSide; i += heightSpace)
@@ -70,46 +72,64 @@ void CalibrationTab::processCalibrationFrame()
 
 void CalibrationTab::keyPressEvent(QKeyEvent *event)
 {
-   // std::cout<<"test"<<std::endl;
-    currentKey = event->key();
+    if(inCalibration)
+    {
+        #ifdef __arm__
+        currentKey = event->key();
+        
+        if (lastKeyPressed != currentKey)
+            momentum = delta_angle;
 
-    if (lastKeyPressed != currentKey)
-        momentum = delta_angle;
-
-    switch(currentKey){
-    case Qt::Key_W:
-        angle_x += momentum;
-        angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
-        momentum += delta_angle;
-        break;
-    case Qt::Key_S:
-        angle_x -= momentum;
-        angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
-        momentum += delta_angle;
-        break;
-    case Qt::Key_A:
-        angle_y -= momentum;
-        angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
-        momentum += delta_angle;
-        break;
-    case Qt::Key_D:
-        angle_y += momentum;
-        angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
-        momentum += delta_angle;
-        break;
-    case Qt::Key_Space:
-        mainWindowPtr->laser_pos_control->mems.print_angles();
-        mainWindowPtr->laser_pos_control->gri
-        break;
-   }
-
-
-    lastKeyPressed = currentKey;
-}
-
-void CalibrationTab::processPressedKey()
-{
-    
+        switch(currentKey){
+        case Qt::Key_W:
+            angle_x += momentum;
+            angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
+            momentum += delta_angle;
+            break;
+        case Qt::Key_S:
+            angle_x -= momentum;
+            angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
+            momentum += delta_angle;
+            break;
+        case Qt::Key_A:
+            angle_y -= momentum;
+            angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
+            momentum += delta_angle;
+            break;
+        case Qt::Key_D:
+            angle_y += momentum;
+            angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
+            momentum += delta_angle;
+            break;
+        case Qt::Key_Space:
+            mainWindowPtr->laser_pos_control->mems.print_angles();
+            mainWindowPtr->laser_pos_control->gridPointsX.at(row_calib_counter,column_calib_counter) = (double)mainWindowPtr->laser_pos_control->mems.get_angle_x();
+            mainWindowPtr->laser_pos_control->gridPointsY.at(row_calib_counter,column_calib_counter) = (double)mainWindowPtr->laser_pos_control->mems.get_angle_y();
+            
+            std::cout<<"In Row: Point "<<row_calib_counter<<" out of "<< X_ANGLES_GRID_POINTS << "done ";
+            std::cout<<"for column "<<column_calib_counter<<" out of "<< Y_ANGLES_GRID_POINTS <<std::endl;
+            
+            if(row_calib_counter < X_ANGLES_GRID_POINTS)
+                row_calib_counter++;
+            else
+            {
+                row_calib_counter = 1;
+                column_calib_counter++;
+                if(column_calib_counter > Y_ANGLES_GRID_POINTS)
+                {
+                    column_calib_counter = 1;
+                    mainWindowPtr->laser_pos_control->saveAnglePoints();
+                    startCalibration();
+                }     
+            }
+            break;
+        default:
+            break;
+        }
+        
+        lastKeyPressed = currentKey;
+        #endif
+    }
 }
 
 void CalibrationTab::startCalibration()
@@ -117,6 +137,18 @@ void CalibrationTab::startCalibration()
     mainWindowPtr->roiSize = slider->value();
     mainWindowPtr->calibrationPosX = mainWindowPtr->upLeft.x + mainWindowPtr->roiSize/2;
     mainWindowPtr->calibrationPosY = mainWindowPtr->upLeft.y + mainWindowPtr->roiSize/2;
+
+    if(!inCalibration)
+    {
+        button->setText("In Calibration");
+        inCalibration = true;
+    }
+    else
+    {
+        button->setText("Start Calibration");
+
+        inCalibration = false;        
+    }
 }
 
 void CalibrationTab::changeRoiSize(int size)

@@ -59,7 +59,8 @@ public:
     Laser_pos_control* laser_pos_control;
 
     config* systemConfigs;
-    camera_interface camInterface;
+    camera_interface camInterface0;
+    camera_interface camInterface1;
     CAMERA_INSTANCE arducamInstance0;
     CAMERA_INSTANCE arducamInstance1;
     int camState0 = 0;
