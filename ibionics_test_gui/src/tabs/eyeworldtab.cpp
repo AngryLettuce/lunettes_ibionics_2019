@@ -22,12 +22,12 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
 void EyeWorldTab::processFrameEye()
 {
-#ifdef __arm__
+#ifdef __arm55__
     imgEye = *getImage(0, 640, 480);
 #endif
-#ifdef WIN32
+//#ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
-#endif
+//#endif
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
     cv::resize(imgEye, imgEye ,cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);

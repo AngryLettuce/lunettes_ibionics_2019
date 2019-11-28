@@ -193,8 +193,8 @@ void Laser_pos_control::genPixMat(mat wallCorners, mat &pixMat) {
 float* Laser_pos_control::getAngles(int xCoord, int yCoord) {
 	static float XYAngles[2];
 
-	XYAngles[0] = float(angleMat[xCoord][yCoord][0]) / 1000;
-	XYAngles[1] = float(angleMat[xCoord][yCoord][1]) / 1000;
+	XYAngles[0] = float(angleMat[yCoord][xCoord][0]) / 1000;
+	XYAngles[1] = float(angleMat[yCoord][xCoord][1]) / 1000;
 
 	return XYAngles;
 }
@@ -281,10 +281,11 @@ double Laser_pos_control::deg2rad(float angle) {
 
 void Laser_pos_control::draw_rectangle(int time_delay) {
 #ifdef __arm__
-	float *angles;
+	//float *angles;
 	for (int i = 0; i < RECTANGLE_SEQUENCE_LENGTH; i++) {
-		angles = getAngles(rectangle_LUT[i][0], rectangle_LUT[i][1]);
-		mems.send_angles(angles[0], angles[1]);
+		send_pos(rectangle_LUT[i][0], rectangle_LUT[i][1]);
+		//angles = getAngles(rectangle_LUT[i][0], rectangle_LUT[i][1]);
+		//mems.send_angles(angles[0], angles[1]);
 		delay(time_delay);
 		//std::cout<<angles[0]<<angles[1]<<std::endl;
 	}
@@ -293,12 +294,13 @@ void Laser_pos_control::draw_rectangle(int time_delay) {
 
 void Laser_pos_control::draw_Closingrectangle(int time_delay) {
 #ifdef __arm__
-	float *angles;
+	//float *angles;
 	for (int i = 0; i < CLOSING_RECTANGLE_LENGTH; i++) {
-		angles = getAngles(closingRect_LUT[i][0], closingRect_LUT[i][1]);
-		mems.send_angle_x(*angles++);
+		send_pos(closingRect_LUT[i][0], closingRect_LUT[i][1]);
+		//angles = getAngles(closingRect_LUT[i][0], closingRect_LUT[i][1]);
+		//mems.send_angle_x(*angles++);
 		//cout << *angles << endl;
-		mems.send_angle_y(*angles);
+		//mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
 #endif
@@ -306,11 +308,12 @@ void Laser_pos_control::draw_Closingrectangle(int time_delay) {
 
 void Laser_pos_control::draw_spiral(int time_delay) {
 #ifdef __arm__
-	float *angles;
+	//float *angles;
 	for (int i = 0; i < SPIRAL_RESOLUTION; i++) {
-		angles = getAngles(spiral_LUT[i][0], spiral_LUT[i][1]);
-		mems.send_angle_x(*angles++);
-		mems.send_angle_y(*angles);
+		send_pos(spiral_LUT[i][0], spiral_LUT[i][1]);
+		//angles = getAngles(spiral_LUT[i][0], spiral_LUT[i][1]);
+		//mems.send_angle_x(*angles++);
+		//mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
 #endif
@@ -318,12 +321,13 @@ void Laser_pos_control::draw_spiral(int time_delay) {
 
 void Laser_pos_control::draw_infinity(int time_delay) {
 #ifdef __arm__
-	float *angles;
+	//float *angles;
 	for (int i = 0; i < INFINITY_SEQUENCE_LENGTH; i++) {
-		angles = getAngles(infinity_LUT[i][0], infinity_LUT[i][1]);
-		mems.send_angle_x(*angles++);
+		send_pos(infinity_LUT[i][0], infinity_LUT[i][1]);
+		//angles = getAngles(infinity_LUT[i][0], infinity_LUT[i][1]);
+		//mems.send_angle_x(*angles++);
 		//cout << *angles << endl;
-		mems.send_angle_y(*angles);
+		//mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
 #endif
@@ -331,12 +335,13 @@ void Laser_pos_control::draw_infinity(int time_delay) {
 
 void Laser_pos_control::draw_circluarLoop(int time_delay){
 #ifdef __arm__
-	float *angles;
+	//float *angles;
 	for (int i = 0; i < CIRCULAR_LOOP_SEQUENCE_LENGTH; i++) {
-		angles = getAngles(circularLoop_LUT[i][0], circularLoop_LUT[i][1]);
-		mems.send_angle_x(*angles++);
+		send_pos(circularLoop_LUT[i][0], circularLoop_LUT[i][1]);
+		//angles = getAngles(circularLoop_LUT[i][0], circularLoop_LUT[i][1]);
+		//mems.send_angle_x(*angles++);
 		//cout << *angles << endl;
-		mems.send_angle_y(*angles);
+		//mems.send_angle_y(*angles);
 		delay(time_delay);
 	}
 #endif
@@ -415,7 +420,9 @@ void Laser_pos_control::manual_mode() {
 void Laser_pos_control::send_pos(int x, int y){
 #ifdef __arm__
 	float *XYAngles;
-	XYAngles = getAngles(x,y);
+	//int x_inverted = CAMERA_RESOLUTION - x; // TODO: verify angleMat gen.
+	//int y_inverted = CAMERA_RESOLUTION - y; // TODO: verify angleMat gen.
+	XYAngles = getAngles(x, y);
 	mems.send_angles(XYAngles[0], XYAngles[1]);
 #endif
 }

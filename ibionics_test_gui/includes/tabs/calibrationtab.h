@@ -42,14 +42,14 @@ public:
     
     MainWindow* mainWindowPtr;
 
-    float momentum = 0;
+    float momentum;
     int lastKeyPressed = 0;
     int currentKey = 0;
     const float delta_angle = 0.01;
     float angle_x;
     float angle_y;
-    int row_calib_counter = 1;
-    int column_calib_counter = 1;
+    int row_calib_counter;
+    int column_calib_counter;
     
     bool inCalibration = false;
 
