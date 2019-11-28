@@ -7,7 +7,7 @@ resolution = 200;
 nbOfPointX  = 5;
 nbOfPointY  = 4;
 
-[X,Y] = meshgrid(0:resolution/(nbOfPointX-1):resolution, 0:resolution/(nbOfPointY-1):resolution);
+[X,Y] = meshgrid(linspace(0, resolution-1, nbOfPointX), linspace(0, resolution-1, nbOfPointY));
 [Xq,Yq] = meshgrid(0:resolution-1, 0:resolution-1);
 
 anglesX = [2.50, 2.56, 2.65, 2.75, 2.84; ...
