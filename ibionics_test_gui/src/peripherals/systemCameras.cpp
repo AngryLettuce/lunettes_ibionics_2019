@@ -13,21 +13,21 @@ systemCameras::systemCameras()
     camInterface[0].sda_pins[1] = 28;
     camInterface[0].scl_pins[0] = 1;
     camInterface[0].scl_pins[1] = 29;
-    camInterface[0].led_pins[0] = 2;
-    camInterface[0].led_pins[1] = 10;
-    camInterface[0].shutdown_pins[0] = 14;
-    camInterface[0].shutdown_pins[1] = 15;
+    camInterface[0].led_pins[0] = 10;
+    camInterface[0].led_pins[1] = 12;
+    camInterface[0].shutdown_pins[0] = 11;
+    camInterface[0].shutdown_pins[1] = 13;
 
     camInterface[1].i2c_bus = 0;
     camInterface[1].camera_num = 1;
-    camInterface[1].sda_pins[0] = 0;
-    camInterface[1].sda_pins[1] = 28;
-    camInterface[1].scl_pins[0] = 1;
-    camInterface[1].scl_pins[1] = 29;
-    camInterface[1].led_pins[0] = 3;
-    camInterface[1].led_pins[1] = 10;
-    camInterface[1].shutdown_pins[0] = 14;
-    camInterface[1].shutdown_pins[1] = 15;
+    camInterface[1].sda_pins[0] = 28;
+    camInterface[1].sda_pins[1] = 0;
+    camInterface[1].scl_pins[0] = 29;
+    camInterface[1].scl_pins[1] = 1;
+    camInterface[1].led_pins[0] = 10;
+    camInterface[1].led_pins[1] = 12;
+    camInterface[1].shutdown_pins[0] = 11;
+    camInterface[1].shutdown_pins[1] = 13;
 
     int initializedCam = 0;
 
