@@ -8,9 +8,8 @@ bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Poin
 }
 
 
-void applyEllipseMethod(cv::Mat *image, int& posX, int& posY)
+void applyEllipseMethod(cv::Mat *image, double binary_threshold, int& posX, int& posY)
 {
-    double thresh = 15;//change name
     double maxval = 255;
     int kernel_size = 8;
 
@@ -22,7 +21,7 @@ void applyEllipseMethod(cv::Mat *image, int& posX, int& posY)
     static cv::Mat element;//maybe put that outside of function for be create only at begening of program
 
     cv::equalizeHist(*image,*image);
-    cv::threshold(*image, *image, thresh, maxval, cv::THRESH_BINARY_INV);
+    cv::threshold(*image, *image, binary_threshold, maxval, cv::THRESH_BINARY_INV);
 
     element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
 

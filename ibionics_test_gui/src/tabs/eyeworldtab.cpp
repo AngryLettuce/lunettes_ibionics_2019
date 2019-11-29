@@ -11,10 +11,16 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     imgLblWorld = new QLabel("WORLD",this);
     button = new QPushButton("using Ellipse, click to switch to hough circle", this);
 
+    slider = new QSlider(Qt::Horizontal, this);
+    slider->setMinimum(0);
+    slider->setMaximum(255);
+    slider->setValue(25);
+
     //Placement in Layout
-    layout->addWidget(imgLblEye,1,0,1,1);
-    layout->addWidget(imgLblWorld,1,1,1,1);
+    layout->addWidget(imgLblEye,2,0,1,1);
+    layout->addWidget(imgLblWorld,2,1,1,1);
     layout->addWidget(button,0,0,1,2);
+    layout->addWidget(slider,1,0,1,2);
 
     connect(button, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
     mainWindowPtr = mW;
@@ -28,22 +34,22 @@ void EyeWorldTab::processFrameEye()
 //#ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
 //#endif
+    if(imgEye.empty()) return;
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
-    cv::resize(imgEye, imgEye ,cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);
+    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);
 
     if(imgEye.channels() <= 1){
-        if(imgEye.empty()) return;
         // if the signature of the functions changes and return a cv::Point, we could make it in one line
-        (pupilMethod) ? applyEllipseMethod(&imgEye, posX,posY) : applyHoughMethod(&imgEye,posX,posY) ;
-        cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
+        (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value, posX, posY) : applyHoughMethod(&imgEye, posX, posY) ;
+        cv::circle(imgEye, cv::Point(posX, posY),7, cv::Scalar(255, 0, 0), -1);
     }
     else{
         cv::Mat img2Eye;
-        cv::cvtColor(imgEye,img2Eye,cv::COLOR_RGB2GRAY);
-        (pupilMethod) ? applyEllipseMethod(&img2Eye, posX,posY) : applyHoughMethod(&img2Eye,posX,posY) ;
-        cv::circle(imgEye, cv::Point(posX,posY),7, cv::Scalar(255, 0, 0), -1);
-        cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
+        cv::cvtColor(imgEye, img2Eye, cv::COLOR_RGB2GRAY);
+        (pupilMethod) ? applyEllipseMethod(&img2Eye, slider->value, posX, posY) : applyHoughMethod(&img2Eye, posX, posY) ;
+        cv::circle(imgEye, cv::Point(posX, posY),7, cv::Scalar(255, 0, 0), -1);
+        cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
     }
 	
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
@@ -82,10 +88,9 @@ void EyeWorldTab::processFrameWorld()
 #ifdef WIN32
     (mainWindowPtr->camWorld).read(imgWorld);
 #endif
-    cv::Mat img2World = imgWorld;
-	if(imgWorld.empty()) return;
+    if(imgWorld.empty()) return;
+    cv::Mat img2World = imgWorld;	
     if(imgWorld.channels() <= 1){
-        if(imgWorld.empty()) return;
         (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, true) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, false);
     }
     else{

@@ -31,6 +31,7 @@ public:
     QLabel *imgLblWorld;
     
     QPushButton *button;
+    QSlider *slider;
     QGridLayout *layout;
 
     int posX = 0;
