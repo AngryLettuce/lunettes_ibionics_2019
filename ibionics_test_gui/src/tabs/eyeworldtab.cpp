@@ -41,13 +41,13 @@ void EyeWorldTab::processFrameEye()
 
     if(imgEye.channels() <= 1){
         // if the signature of the functions changes and return a cv::Point, we could make it in one line
-        (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value, posX, posY) : applyHoughMethod(&imgEye, posX, posY) ;
+        (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY) : applyHoughMethod(&imgEye, posX, posY) ;
         cv::circle(imgEye, cv::Point(posX, posY),7, cv::Scalar(255, 0, 0), -1);
     }
     else{
         cv::Mat img2Eye;
         cv::cvtColor(imgEye, img2Eye, cv::COLOR_RGB2GRAY);
-        (pupilMethod) ? applyEllipseMethod(&img2Eye, slider->value, posX, posY) : applyHoughMethod(&img2Eye, posX, posY) ;
+        (pupilMethod) ? applyEllipseMethod(&img2Eye, slider->value(), posX, posY) : applyHoughMethod(&img2Eye, posX, posY) ;
         cv::circle(imgEye, cv::Point(posX, posY),7, cv::Scalar(255, 0, 0), -1);
         cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
     }
@@ -77,7 +77,7 @@ void EyeWorldTab::processFrameEye()
 
     std::cout<<"PosX: "<<posX<<"PosY: "<<posY<<std::endl;
     
-    mainWindowPtr->laser_pos_control->send_pos(posX, posY);
+    mainWindowPtr->laser_pos_control.send_pos(posX, posY);
 }
 
 void EyeWorldTab::processFrameWorld()

@@ -4,6 +4,7 @@ MediaLabel::MediaLabel(QWidget *parent, QString filename) : QLabel(parent)
 {
     pix = new QPixmap(filename);
     this->setPixmap(*pix);
+    
 }
 
 void MediaLabel::mouseMoveEvent(QMouseEvent *event)

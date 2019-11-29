@@ -47,6 +47,12 @@ Mems::Mems() :
 #endif
 }
 
+Mems::~Mems() {
+#ifdef __arm__
+  stop();
+#endif
+}
+
 
 void Mems::init_DAC() {
 #ifdef __arm__
@@ -105,7 +111,6 @@ void Mems::send_voltage_diff_y(float voltage_diff) {
 }
 
 float Mems::saturate_voltage_diff(float voltage_diff) {
-
   if(voltage_diff > V_DIFF_MAX) {
 	  voltage_diff = V_DIFF_MAX;
   } else if(voltage_diff < -V_DIFF_MAX) {
@@ -116,7 +121,6 @@ float Mems::saturate_voltage_diff(float voltage_diff) {
 }
 
 float Mems::saturate_angle(float angle) {
-
 	float max_angle = voltage_diff_to_angle(V_DIFF_MAX);
 	if(angle > max_angle) {
 		angle = max_angle;

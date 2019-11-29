@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+    laser_pos_control()
 {
 	systemConfigs = new config("C:/views/s8ibionics/ibionics_test_gui/gui_main/config.txt");
-    laser_pos_control = new Laser_pos_control();
 
     centralWidget = new QWidget(this);
     layout = new QGridLayout(centralWidget);
@@ -30,10 +30,10 @@ MainWindow::MainWindow(QWidget *parent)
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
-    laser_pos_control->draw_rectangle(10);
-    laser_pos_control->draw_spiral(10);
-    laser_pos_control->draw_infinity(10);
-    laser_pos_control->draw_circluarLoop(10);
+    laser_pos_control.draw_rectangle(10);
+    laser_pos_control.draw_spiral(10);
+    laser_pos_control.draw_infinity(10);
+    laser_pos_control.draw_circluarLoop(10);
 }
 
 MainWindow::~MainWindow()

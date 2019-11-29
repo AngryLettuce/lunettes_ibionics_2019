@@ -20,6 +20,10 @@ public:
 	 */
 	Mems();
 	/**
+	 * @brief Mems destructor.
+	 */
+	~Mems();
+	/**
 	 * @brief Send an angle command for the x axis.
 	 * @param angle x angle (deg).
 	 * @return the saturated angle sent.

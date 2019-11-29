@@ -36,7 +36,7 @@ public:
     int columns;
     int currentRow;
     int currentColumn;
-    int calibrationRoiSize = 400;
+    int calibrationRoiSize;
 
     cv::Mat processedImg;
     
@@ -58,6 +58,8 @@ signals:
 
 public slots:
     void processCalibrationFrame();
+    void saveCalibrationGridParams();
+    void loadCalibrationGridParams();
     void startCalibration();
     void changeRoiSize(int size);
 

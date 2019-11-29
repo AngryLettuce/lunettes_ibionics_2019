@@ -27,7 +27,7 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     //Placement in layout
     layout->addWidget(lbl,0,0,1,4);
     layout->addWidget(seqLbl,2,0,1,1);
-    layout->addWidget(seqCombo,3,0,3,1);
+    layout->addWidget(seqCombo,3,0,1,1);
     layout->addWidget(button,3,1,1,1);
     layout->addWidget(posMouseLabel,2,3,1,1);
 
@@ -44,9 +44,9 @@ void MemsTab::comboboxItemChanged(QString sequence)
     //mainWindowPtr->laser_pos_control->draw_rectangle(10);
 }
 
-void EyeWorldTab::switchLaserState()
+void MemsTab::switchLaserState()
 {   
+    (laser_on? mainWindowPtr->laser_pos_control.laser.off() : mainWindowPtr->laser_pos_control.laser.on());
+    button->setText(laser_on? "Start Laser" : "Stop Laser");
     laser_on = !laser_on; //change stage of laser
-    button->setText(laser_on? "Stop Laser" : "Start Laser");
-    (laser_on? mainWindowPtr->laser_pos_control->laser.off() : mainWindowPtr->laser_pos_control->laser.on());
 }

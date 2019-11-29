@@ -1,5 +1,8 @@
+#include <fstream>
+
 #include "calibrationtab.h"
 
+#define CALIBRATION_GRID_PARAMS_FILENAME "calibrationGridParams.txt"
 #define VCOS_ALIGN_DOWN(p,n) (((ptrdiff_t)(p)) & ~((n)-1))
 #define VCOS_ALIGN_UP(p,n) VCOS_ALIGN_DOWN((ptrdiff_t)(p)+(n)-1,(n))
 
@@ -27,6 +30,9 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
     mainWindowPtr = mW;
     
     QWidget::setFocusPolicy(Qt::StrongFocus);
+    
+    loadCalibrationGridParams();
+    
 }
 
 void CalibrationTab::processCalibrationFrame()
@@ -38,7 +44,7 @@ void CalibrationTab::processCalibrationFrame()
     (mainWindowPtr->camEye).read(imgEye);
 #endif
     if(imgEye.empty()) return;
-
+    
     //Get corners of roi
     mainWindowPtr->upLeft = cv::Point(imgLblEye->posX - calibrationRoiSize/2,imgLblEye->posY - calibrationRoiSize/2);
     mainWindowPtr->downRight = cv::Point(imgLblEye->posX + calibrationRoiSize/2,imgLblEye->posY + calibrationRoiSize/2);
@@ -53,7 +59,7 @@ void CalibrationTab::processCalibrationFrame()
     int heightSpace = (mainWindowPtr->rightSide - mainWindowPtr->leftSide)/(rows-1);
     int widthSpace = (mainWindowPtr->downSide - mainWindowPtr->upSide)/(columns-1);
     
-
+    // Drawing calibration grid
     for (int i = mainWindowPtr->upSide; i<mainWindowPtr->downSide; i += heightSpace)
         cv::line(imgEye, cv::Point(mainWindowPtr->leftSide, i), cv::Point(mainWindowPtr->rightSide, i), cv::Scalar(0, 255, 255));
 
@@ -80,31 +86,31 @@ void CalibrationTab::keyPressEvent(QKeyEvent *event)
         case Qt::Key_W:
             angle_x += momentum;
             //std::cout <<  angle_x << std::endl;
-            angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
+            angle_x = mainWindowPtr->laser_pos_control.mems.send_angle_x(angle_x);
             momentum += delta_angle;
             break;
         case Qt::Key_S:
             angle_x -= momentum;
             //std::cout <<  angle_x << std::endl;
-            angle_x = mainWindowPtr->laser_pos_control->mems.send_angle_x(angle_x);
+            angle_x = mainWindowPtr->laser_pos_control.mems.send_angle_x(angle_x);
             momentum += delta_angle;
             break;
         case Qt::Key_A:
             angle_y -= momentum;
             //std::cout <<  angle_y << std::endl;
-            angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
+            angle_y = mainWindowPtr->laser_pos_control.mems.send_angle_y(angle_y);
             momentum += delta_angle;
             break;
         case Qt::Key_D:
             angle_y += momentum;
             //std::cout <<  angle_y << std::endl;
-            angle_y = mainWindowPtr->laser_pos_control->mems.send_angle_y(angle_y);
+            angle_y = mainWindowPtr->laser_pos_control.mems.send_angle_y(angle_y);
             momentum += delta_angle;
             break;
         case Qt::Key_Space:
             
-            mainWindowPtr->laser_pos_control->gridPointsX.at(row_calib_counter,column_calib_counter) = (double)mainWindowPtr->laser_pos_control->mems.get_angle_x();
-            mainWindowPtr->laser_pos_control->gridPointsY.at(row_calib_counter,column_calib_counter) = (double)mainWindowPtr->laser_pos_control->mems.get_angle_y();
+            mainWindowPtr->laser_pos_control.gridPointsX.at(row_calib_counter,column_calib_counter) = (double)mainWindowPtr->laser_pos_control.mems.get_angle_x();
+            mainWindowPtr->laser_pos_control.gridPointsY.at(row_calib_counter,column_calib_counter) = (double)mainWindowPtr->laser_pos_control.mems.get_angle_y();
             
             //std::cout<<"GridPointsX :"<< std::endl;
             //mainWindowPtr->laser_pos_control->gridPointsX.print();
@@ -112,7 +118,7 @@ void CalibrationTab::keyPressEvent(QKeyEvent *event)
             //mainWindowPtr->laser_pos_control->gridPointsY.print();
             std::cout<<"In Row: Point "<<row_calib_counter+1<<" out of "<< Y_ANGLES_GRID_POINTS << " done ";
             std::cout<<"for column "<<column_calib_counter+1<<" out of "<< X_ANGLES_GRID_POINTS <<std::endl;
-            mainWindowPtr->laser_pos_control->mems.print_angles();
+            mainWindowPtr->laser_pos_control.mems.print_angles();
             
             if(column_calib_counter < X_ANGLES_GRID_POINTS - 1)
                 column_calib_counter++;
@@ -123,15 +129,16 @@ void CalibrationTab::keyPressEvent(QKeyEvent *event)
                 if(row_calib_counter >= Y_ANGLES_GRID_POINTS)
                 {
                     std::cout<<"GridPointsX :"<< std::endl;
-                    mainWindowPtr->laser_pos_control->gridPointsX.print();
+                    mainWindowPtr->laser_pos_control.gridPointsX.print();
                     std::cout<<"GridPointsY :"<< std::endl;
-                    mainWindowPtr->laser_pos_control->gridPointsY.print();
+                    mainWindowPtr->laser_pos_control.gridPointsY.print();
                     row_calib_counter = 0;
-                    mainWindowPtr->laser_pos_control->saveAnglePoints();
-                    mainWindowPtr->laser_pos_control->initAngleMat();
-
-                    mainWindowPtr->laser_pos_control->draw_rectangle();
-    
+                    mainWindowPtr->laser_pos_control.saveAnglePoints();
+                    mainWindowPtr->laser_pos_control.initAngleMat();
+                    
+                    saveCalibrationGridParams();
+                    mainWindowPtr->laser_pos_control.draw_rectangle();
+                    
                     startCalibration();
                 }     
             }
@@ -154,8 +161,8 @@ void CalibrationTab::startCalibration()
     mainWindowPtr->calibrationPosY = mainWindowPtr->upLeft.y + mainWindowPtr->roiSize/2;
     
      //get initial mems values
-    angle_x = mainWindowPtr->laser_pos_control->mems.get_angle_x();
-    angle_y = mainWindowPtr->laser_pos_control->mems.get_angle_y();
+    angle_x = mainWindowPtr->laser_pos_control.mems.get_angle_x();
+    angle_y = mainWindowPtr->laser_pos_control.mems.get_angle_y();
     
     row_calib_counter = 0;
     column_calib_counter = 0;
@@ -203,5 +210,31 @@ cv::Mat* CalibrationTab::getImage(int camNumber, int width, int height)
     return &processedImg;
 #endif
     return nullptr;
+}
+
+void CalibrationTab::saveCalibrationGridParams() {
+    std::ofstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
+    if(myfile.fail()) {
+    }
+    else {
+        myfile << imgLblEye->posX << std::endl;
+        myfile << imgLblEye->posY << std::endl;
+        myfile << calibrationRoiSize << std::endl;
+    }
+}
+
+
+void CalibrationTab::loadCalibrationGridParams() {
+    std::ifstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
+    if(myfile.fail()) {
+        imgLblEye->posX = 0;
+        imgLblEye->posY = 0;
+        calibrationRoiSize = 400;
+    }
+    else {
+        myfile >> imgLblEye->posX;
+        myfile >> imgLblEye->posY;
+        myfile >> calibrationRoiSize;
+    }
 }
 

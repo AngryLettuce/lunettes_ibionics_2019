@@ -52,6 +52,11 @@ Laser::Laser() :
 #endif
 }
 
+Laser::~Laser() {
+#ifdef __arm__
+  off();
+#endif
+}
 
 void Laser::off() {
     #ifdef __arm__

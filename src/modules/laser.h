@@ -27,6 +27,10 @@ public:
 	 */
 	Laser();
 	/**
+	 * @brief Laser destructor.
+	 */
+	~Laser();
+	/**
 	 * @brief Open laser.
 	 */
 	void on();

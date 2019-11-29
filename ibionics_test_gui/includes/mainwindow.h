@@ -55,8 +55,8 @@ public:
 
     cv::VideoCapture camEye;
     cv::VideoCapture camWorld;
-    
-    Laser_pos_control* laser_pos_control;
+
+    Laser_pos_control laser_pos_control;
 
     config* systemConfigs;
     camera_interface camInterface0;
