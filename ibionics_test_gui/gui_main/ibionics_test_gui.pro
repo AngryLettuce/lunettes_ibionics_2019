@@ -78,7 +78,8 @@ SOURCES     +=  main.cpp \
                 $${MEMS_LASER_FOLDER}/src/peripherals/digital_in.cpp \
                 $${MEMS_LASER_FOLDER}/src/peripherals/digital_out.cpp \
                 $${MEMS_LASER_FOLDER}/src/peripherals/i2c.cpp \
-                $${MEMS_LASER_FOLDER}/src/peripherals/spi.cpp
+                $${MEMS_LASER_FOLDER}/src/peripherals/spi.cpp \
+                $${BASE_FOLDER}/src/utils/fpschrono.cpp
 
 HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/tabs/calibrationtab.h \
@@ -112,7 +113,8 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${MEMS_LASER_FOLDER}/sequences/circularLoop_LUT.h \
                 $${MEMS_LASER_FOLDER}/sequences/closingRect_LUT.h \
                 $${MEMS_LASER_FOLDER}/sequences/infinity_LUT.h \
-                $${MEMS_LASER_FOLDER}/sequences/spiral_LUT.h
+                $${MEMS_LASER_FOLDER}/sequences/spiral_LUT.h \
+                $${BASE_FOLDER}/includes/utils/fpschrono.h
 
 OTHER_FILES +=  config.txt
 

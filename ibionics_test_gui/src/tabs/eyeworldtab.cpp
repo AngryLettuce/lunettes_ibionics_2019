@@ -28,9 +28,13 @@ void EyeWorldTab::processFrameEye()
 #ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
 #endif
+    FPSCHRONO cropTime;
+    cropTime.chronoStart();
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
     cv::resize(imgEye, imgEye ,cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);
+
+    cropTime.chronoStop();
 
     if(imgEye.channels() <= 1){
         if(imgEye.empty()) return;

@@ -13,6 +13,7 @@
 #include "ellipsefit.h"
 #include "houghCircle.h"
 #include "modes.h"
+#include "fpschrono.h"
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with mainwindow.h
