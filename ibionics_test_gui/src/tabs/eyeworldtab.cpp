@@ -26,16 +26,12 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     layout->addWidget(&stepsCombo,3,0,1,1);
 
     connect(button, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
-    connect(&stepsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(comboboxItemChanged(int)));
     mainWindowPtr = mW;
 }
 
 void EyeWorldTab::processFrameEye()
 {
-
     int comboBoxIndex = stepsCombo.currentIndex();
-
-
     imgEye = *(mainWindowPtr->cameras->readImgCam(0));
     if(imgEye.empty()) return;
 
@@ -43,29 +39,17 @@ void EyeWorldTab::processFrameEye()
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
     cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);
 
-    if(imgEye.channels() <= 1){
-        // if the signature of the functions changes and return a cv::Point, we could make it in one line
-        (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEye, posX, posY);
-        if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
-            cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(255, 0, 0), -1);
-            mainWindowPtr->laser_pos_control.send_pos(posX, posY);
-        }
+    (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEye, posX, posY) ;
+    if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
+        cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(180, 180, 180), -1);
+        mainWindowPtr->laser_pos_control.send_pos(posX, posY);
     }
-    else{
-        cv::Mat img2Eye;
-        cv::cvtColor(imgEye, img2Eye, cv::COLOR_RGB2GRAY);
-        (pupilMethod) ? applyEllipseMethod(&img2Eye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&img2Eye, posX, posY) ;
-        if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
-            cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(255, 0, 0), -1);
-            mainWindowPtr->laser_pos_control.send_pos(posX, posY);
-        }
-        cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
-    }
-	
+
+    cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
     
-    std::cout<<"PosX: "<<posX<<" PosY: "<<posY<<std::endl;
+    //std::cout<<"PosX: "<<posX<<" PosY: "<<posY<<std::endl;
 }
 
 void EyeWorldTab::processFrameWorld()
@@ -73,7 +57,7 @@ void EyeWorldTab::processFrameWorld()
     imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
     cv::Mat img2World = imgWorld;
 	if(imgWorld.empty()) return;
-
+    std::cout<<"PosX: "<<posX<<" PosY: "<<posY<<std::endl;
     if(imgWorld.channels() <= 1){
         (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, true) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, false);
     }

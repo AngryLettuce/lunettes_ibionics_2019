@@ -19,52 +19,66 @@ void applyEllipseMethod(cv::Mat *imageStepReturned, double binary_threshold, int
     cv::RotatedRect ellipse;
     double area;
 
+    if(imageStepReturned->channels() == 3)
+        cv::cvtColor(image, image, cv::COLOR_RGB2GRAY);
+
     static cv::Mat element;//maybe put that outside of function for be create only at begening of program
 
     cv::equalizeHist(image,image);
     cv::threshold(image, image, binary_threshold, maxval, cv::THRESH_BINARY_INV);
+
     if(comboBoxIndex == 1)
-        imageStepReturned = &image;
+        *imageStepReturned = image.clone();
 
     element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
 
     cv::morphologyEx(image, image, cv::MORPH_CLOSE,element); //closing
     if(comboBoxIndex == 2)
-        *imageStepReturned = image;
+        *imageStepReturned = image.clone();
+
     cv::morphologyEx(image,image,cv::MORPH_OPEN,element); //opening
     if(comboBoxIndex == 3)
-        *imageStepReturned = image;
+        *imageStepReturned = image.clone();
 
     //find contours
     cv::findContours(image,contours,hierarchy,cv::RETR_TREE,cv::CHAIN_APPROX_SIMPLE ,cv::Point(0, 0) );
 
     //find center
-    double area_max = 0;
-    int index_area_max = 0;
-    for( int i = 0; i < (int) contours.size(); i++ )
+    if(contours.size() != 0)
     {
-       //Rect[i] = cv::minAreaRect( cv::Mat(contours[i]) );
-       //std::cout << "minAreaRect "<< minRect[i].center << std::endl;
-       area = cv::contourArea(contours[i], false);
-        if( area > area_max )
-         {
-           index_area_max = i;
-           area_max = area;
-           //minEllipse[i] = cv::fitEllipse( cv::Mat(contours[i]) );
-          //std::cout << "fitEllipse "<< minEllipse[i].center << std::endl;
+        double area_max = 0;
+        int index_area_max = 0;
+        for( int i = 0; i < (int) contours.size(); i++ )
+        {
+           //Rect[i] = cv::minAreaRect( cv::Mat(contours[i]) );
+           //std::cout << "minAreaRect "<< minRect[i].center << std::endl;
+           area = cv::contourArea(contours[i], false);
+            if( area > area_max )
+             {
+               index_area_max = i;
+               area_max = area;
+               //minEllipse[i] = cv::fitEllipse( cv::Mat(contours[i]) );
+              //std::cout << "fitEllipse "<< minEllipse[i].center << std::endl;
+             }
          }
-     }
-    
-    if(contours[index_area_max].size() > 5) 
-    {
-        ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
-        
-        //Centre of ellipse
-        posX = (int) ellipse.center.x ;
-        posY = (int) ellipse.center.y;
+
+        if(contours[index_area_max].size() > 5)
+        {
+            ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
+
+            //Centre of ellipse
+            posX = (int) ellipse.center.x ;
+            posY = (int) ellipse.center.y;
+        }
+        else {
+            posX = -1;
+            posY = -1;
+        }
     }
     else {
         posX = -1;
         posY = -1;
     }
+
 }
+
