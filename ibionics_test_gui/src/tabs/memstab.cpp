@@ -32,17 +32,31 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     layout->addWidget(posMouseLabel,2,3,1,1);
 
     //Link signals to slots
-    connect(seqCombo, SIGNAL(currentTextChanged(QString)), this, SLOT(comboboxItemChanged(QString)));
+    connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
     connect(button, SIGNAL (clicked()), this, SLOT (switchLaserState()));
 
     mainWindowPtr = mW;
 }
 
-void MemsTab::comboboxItemChanged(QString sequence)
+void MemsTab::comboboxItemChanged(int index)
 {
-    std::cout<<"In Sequence event : " << sequence.toStdString() << std::endl;
-    
-    //mainWindowPtr->laser_pos_control->draw_rectangle(10);
+    switch(index) {
+        case 0:
+            mainWindowPtr->laser_pos_control.draw_rectangle(10);
+            break;
+        case 1:
+            mainWindowPtr->laser_pos_control.draw_closing_rectangle(10);
+            break;
+        case 2:
+            mainWindowPtr->laser_pos_control.draw_spiral(10);
+            break;
+        case 3:
+            mainWindowPtr->laser_pos_control.draw_infinity(10);
+            break;
+        case 4:
+            mainWindowPtr->laser_pos_control.draw_circular_loop(10);
+            break;
+    }
 }
 
 void MemsTab::switchLaserState()

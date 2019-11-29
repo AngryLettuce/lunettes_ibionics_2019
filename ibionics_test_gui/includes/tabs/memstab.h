@@ -31,7 +31,7 @@ signals:
 
 
 public slots:
-    void comboboxItemChanged(QString sequence);
+    void comboboxItemChanged(int index);
     void switchLaserState();
 };
 
