@@ -1,4 +1,4 @@
-#include "memstab.h"
+	#include "memstab.h"
 
 MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
@@ -8,8 +8,8 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     mainWindowPtr = mW;
         
     //PixMap
-    QString filename = "images\\eye.jpg";
-    lbl = new MediaLabel(this, filename);
+    //QString filename = "images\\eye.jpg";
+    imgLblEye = new MediaLabel(this, "");
     posMouseLabel = new QLabel(this);
     posMouseLabel->setText("X:0,Y0");
 
@@ -25,7 +25,7 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     button = new QPushButton("Stop Laser", this);
 
     //Placement in layout
-    layout->addWidget(lbl,0,0,1,4);
+    layout->addWidget(imgLblEye,0,0);
     layout->addWidget(seqLbl,2,0,1,1);
     layout->addWidget(seqCombo,3,0,1,1);
     layout->addWidget(button,3,1,1,1);
@@ -35,7 +35,7 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
     connect(button, SIGNAL (clicked()), this, SLOT (switchLaserState()));
 
-    mainWindowPtr = mW;
+    //mainWindowPtr = mW;
 }
 
 void MemsTab::comboboxItemChanged(int index)
@@ -64,4 +64,26 @@ void MemsTab::switchLaserState()
     (laser_on? mainWindowPtr->laser_pos_control.laser.off() : mainWindowPtr->laser_pos_control.laser.on());
     button->setText(laser_on? "Start Laser" : "Stop Laser");
     laser_on = !laser_on; //change stage of laser
+}
+
+void MemsTab::processMemsFrame()
+{
+    imgEye = *(mainWindowPtr->cameras->readImgCam(0));
+    if(imgEye.empty()) return;
+
+    //Crop and resize EyeCam image according to calibration settings
+    cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
+    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR); // CAMERA_RESOLUTION - 1 ?
+
+    if(lastposX != imgLblEye->posX || lastposY != imgLblEye->posY){
+        mainWindowPtr->laser_pos_control.send_pos(imgLblEye->posX, imgLblEye->posY);
+        lastposX = imgLblEye->posX;
+        lastposY = imgLblEye->posY;
+        //posMouseLabel->setText("X:%d,Y:%d", posX, posY);
+    }
+
+    QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
+    imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
+
+    std::cout<<"PosX: "<<imgLblEye->posX<<" PosY: "<<imgLblEye->posY<<std::endl;
 }

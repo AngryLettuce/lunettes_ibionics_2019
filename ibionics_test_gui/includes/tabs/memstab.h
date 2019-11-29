@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QPixmap>
+#include <opencv2/core.hpp>
 #include "medialabel.h"
 #include "mainwindow.h"
 
@@ -17,11 +18,16 @@ class MemsTab : public QWidget
     Q_OBJECT
 public:
     explicit MemsTab(QWidget *parent = nullptr, MainWindow* mW = nullptr);
-    MediaLabel *lbl;
+    MediaLabel *imgLblEye;
+    cv::Mat imgEye;
+
     QPixmap *pix;
     QLabel *posMouseLabel;
     QPushButton *button;
     QGridLayout *layout;
+
+    int lastposX = 0;
+    int lastposY = 0;
 
     bool laser_on = true;
 
@@ -31,6 +37,7 @@ signals:
 
 
 public slots:
+    void processMemsFrame();
     void comboboxItemChanged(int index);
     void switchLaserState();
 };

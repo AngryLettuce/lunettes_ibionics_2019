@@ -50,6 +50,7 @@ void MainWindow::tabChange(int currentIndex)
     disconnect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
     disconnect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
     disconnect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
+    disconnect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
         
     if(currentIndex == eyeWorldIndex){
         if(cameras->verifyCameraPresent(0))
@@ -66,6 +67,13 @@ void MainWindow::tabChange(int currentIndex)
     {
         if(cameras->verifyCameraPresent(0))
             connect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
+        else
+            std::cout<<"Error EyeCam not accessible"<<std::endl;
+    }
+    else if(currentIndex == memsIndex)
+    {
+        if(camEye.isOpened() || (!camState0))
+            connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
         else
             std::cout<<"Error EyeCam not accessible"<<std::endl;
     }
