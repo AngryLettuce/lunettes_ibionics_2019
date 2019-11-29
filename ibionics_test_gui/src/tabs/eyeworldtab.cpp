@@ -1,8 +1,5 @@
 #include "eyeworldtab.h"
 
-#define VCOS_ALIGN_DOWN(p,n) (((ptrdiff_t)(p)) & ~((n)-1))
-#define VCOS_ALIGN_UP(p,n) VCOS_ALIGN_DOWN((ptrdiff_t)(p)+(n)-1,(n))
-
 EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
     //Layout
@@ -28,13 +25,8 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
 void EyeWorldTab::processFrameEye()
 {
-#ifdef __arm55__
-    imgEye = *getImage(0, 640, 480);
-#endif
-//#ifdef WIN32
-    (mainWindowPtr->camEye).read(imgEye);
-//#endif
-    if(imgEye.empty()) return;
+
+    imgEye = *(mainWindowPtr->cameras->readImgCam(0));
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
     cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);
@@ -82,14 +74,9 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
-#ifdef __arm__
-    imgWorld = *getImage(1, 640, 480);
-#endif
-#ifdef WIN32
-    (mainWindowPtr->camWorld).read(imgWorld);
-#endif
-    if(imgWorld.empty()) return;
-    cv::Mat img2World = imgWorld;	
+    imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
+    cv::Mat img2World = imgWorld;
+	if(imgWorld.empty()) return;
     if(imgWorld.channels() <= 1){
         (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, true) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, false);
     }
@@ -112,29 +99,4 @@ void EyeWorldTab::switchPupilMethodButton()
     button->setText((pupilMethod)?"using Ellipse, click to switch to hough circle":"using Hough cricle, click to switch to Ellipse");
 }
 
-cv::Mat* EyeWorldTab::getImage(int camNumber, int width, int height)
-{
-
-    IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 100};
-    BUFFER *buffer = nullptr;
-#ifdef __arm__
-    if(camNumber == 0)
-        buffer = arducam_capture(mainWindowPtr->arducamInstance0, &fmt, 3000);
-    else
-        buffer = arducam_capture(mainWindowPtr->arducamInstance1, &fmt, 3000);
-#endif
-    if (!buffer)
-        return nullptr;
-#ifdef __arm__
-    // The actual width and height of the IMAGE_ENCODING_RAW_BAYER format and the IMAGE_ENCODING_I420 format are aligned,
-    // width 32 bytes aligned, and height 16 byte aligned.
-    width = VCOS_ALIGN_UP(width, 32);
-    height = VCOS_ALIGN_UP(height, 16);
-    processedImg = cv::Mat(cv::Size(width,(int)(height * 1.5)), CV_8UC1, buffer->data);
-    cv::cvtColor(processedImg, processedImg, cv::COLOR_YUV2BGR_I420);
-    arducam_release_buffer(buffer);
-    return &processedImg;
-#endif
-    return nullptr;
-}
 
