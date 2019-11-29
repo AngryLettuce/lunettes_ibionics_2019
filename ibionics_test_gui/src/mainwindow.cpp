@@ -36,6 +36,12 @@ MainWindow::MainWindow(QWidget *parent)
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
+    //Considering it start on 
+    if(camEye.isOpened() || (!camState0))
+        connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
+    else
+        std::cout<<"Error EyeCam not accessible"<<std::endl;
+    
     laser_pos_control.draw_rectangle(10);
     laser_pos_control.send_pos(CAMERA_RESOLUTION/2,CAMERA_RESOLUTION/2);
 }
