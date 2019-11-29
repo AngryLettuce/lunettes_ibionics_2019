@@ -1,11 +1,17 @@
+#include <fstream>
+
 #include "mainwindow.h"
+
+#define CALIBRATION_GRID_PARAMS_FILENAME "/home/pi/Desktop/s8ibionics/ibionics_test_gui/gui_main/calibrationGridParams.txt"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     laser_pos_control()
 {
 	systemConfigs = new config("C:/views/s8ibionics/ibionics_test_gui/gui_main/config.txt");
-
+    
+    loadCalibrationGridParams();
+    
     centralWidget = new QWidget(this);
     layout = new QGridLayout(centralWidget);
     tabs = new QTabWidget(centralWidget);
@@ -31,9 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
     laser_pos_control.draw_rectangle(10);
-    laser_pos_control.draw_spiral(10);
-    laser_pos_control.draw_infinity(10);
-    laser_pos_control.draw_circluarLoop(10);
+    laser_pos_control.send_pos(CAMERA_RESOLUTION/2,CAMERA_RESOLUTION/2);
 }
 
 MainWindow::~MainWindow()
@@ -74,7 +78,7 @@ void MainWindow::initHw()
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
 
-#ifdef __arm__
+/*#ifdef __arm__
     int cameraWidth0 = 640;
     int cameraHeight0 = 480;
     int cameraWidth1 = 640;
@@ -114,11 +118,11 @@ void MainWindow::initHw()
         arducam_set_resolution(arducamInstance1, &cameraWidth1, &cameraHeight1);
 
     }
-#endif
-#ifdef WIN32
+#endif*/
+//#ifdef WIN32
     camEye.open(0);//2 for webcam
     camWorld.open(2);
-#endif
+//#endif
 }
 
 int MainWindow::getPosX()
@@ -139,3 +143,29 @@ void MainWindow::setPosY(int y)
     posY = y;
 }
 
+void MainWindow::saveCalibrationGridParams() {
+    std::ofstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
+    if(myfile.fail()) {
+    }
+    else {
+        myfile << calibrationPosX << std::endl;
+        myfile << calibrationPosY << std::endl;
+        myfile << roiSize << std::endl;
+    }
+}
+
+
+void MainWindow::loadCalibrationGridParams() {
+    std::ifstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
+    if(myfile.fail()) {
+        calibrationPosX = 0;
+        calibrationPosY = 0;
+        roiSize = 400;
+    }
+    else {
+        
+        myfile >> calibrationPosX;
+        myfile >> calibrationPosY;
+        myfile >> roiSize;
+    }
+}

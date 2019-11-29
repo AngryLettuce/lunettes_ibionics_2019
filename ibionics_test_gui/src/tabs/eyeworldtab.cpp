@@ -28,9 +28,9 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
 void EyeWorldTab::processFrameEye()
 {
-#ifdef __arm55__
+/*#ifdef __arm55__
     imgEye = *getImage(0, 640, 480);
-#endif
+#endif*/
 //#ifdef WIN32
     (mainWindowPtr->camEye).read(imgEye);
 //#endif
@@ -41,53 +41,37 @@ void EyeWorldTab::processFrameEye()
 
     if(imgEye.channels() <= 1){
         // if the signature of the functions changes and return a cv::Point, we could make it in one line
-        (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY) : applyHoughMethod(&imgEye, posX, posY) ;
-        cv::circle(imgEye, cv::Point(posX, posY),7, cv::Scalar(255, 0, 0), -1);
+        (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY) : applyHoughMethod(&imgEye, posX, posY);
+        if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
+            cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(255, 0, 0), -1);
+            mainWindowPtr->laser_pos_control.send_pos(posX, posY);
+        }
     }
     else{
         cv::Mat img2Eye;
         cv::cvtColor(imgEye, img2Eye, cv::COLOR_RGB2GRAY);
-        (pupilMethod) ? applyEllipseMethod(&img2Eye, slider->value(), posX, posY) : applyHoughMethod(&img2Eye, posX, posY) ;
-        cv::circle(imgEye, cv::Point(posX, posY),7, cv::Scalar(255, 0, 0), -1);
+        (pupilMethod) ? applyEllipseMethod(&img2Eye, slider->value(), posX, posY) : applyHoughMethod(&img2Eye, posX, posY);
+        if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
+            cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(255, 0, 0), -1);
+            mainWindowPtr->laser_pos_control.send_pos(posX, posY);
+        }
         cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
     }
 	
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
     
-    //Adjust laser position 
-	//TODO Hot Fix
-/*
-    if (posX < 0 || posY < 0)
-    {
-        posX = 0;
-        posY = 0;
-    }
-    else
-    {
-        posX = posX*199/660;
-        posY = posY*199/490;
-        
-        if(posX >= 199)
-            posX = 199;
-        if(posY >= 199)
-            posY = 199;
-    }
-*/
-
-    std::cout<<"PosX: "<<posX<<"PosY: "<<posY<<std::endl;
-    
-    mainWindowPtr->laser_pos_control.send_pos(posX, posY);
+    std::cout<<"PosX: "<<posX<<" PosY: "<<posY<<std::endl;
 }
 
 void EyeWorldTab::processFrameWorld()
 {
-#ifdef __arm__
+/*#ifdef __arm__
     imgWorld = *getImage(1, 640, 480);
-#endif
-#ifdef WIN32
+#endif*/
+//#ifdef WIN32
     (mainWindowPtr->camWorld).read(imgWorld);
-#endif
+//#endif
     if(imgWorld.empty()) return;
     cv::Mat img2World = imgWorld;	
     if(imgWorld.channels() <= 1){

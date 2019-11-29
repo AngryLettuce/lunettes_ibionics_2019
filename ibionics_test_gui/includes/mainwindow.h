@@ -49,6 +49,9 @@ public:
     int getPosY();
     void setPosX(int x);
     void setPosY(int y);
+    
+    void saveCalibrationGridParams();
+    void loadCalibrationGridParams();
 
     QTimer *tmrTimerEye;
     QTimer *tmrTimerWorld;
@@ -66,17 +69,9 @@ public:
     int camState0 = 0;
     int camState1 = 0;
 
-    cv::Point upLeft  = cv::Point(0,0);
-    cv::Point downRight = cv::Point(1,1);
-
-    int calibrationPosX = 0;
-    int calibrationPosY = 0;
-
-    int roiSize = 400;
-    int leftSide;
-    int upSide;
-    int rightSide;
-    int downSide;
+    int calibrationPosX;
+    int calibrationPosY;
+    int roiSize;
 
 private:
     int memsIndex;
@@ -90,5 +85,6 @@ private:
 
 public slots:
     void tabChange(int currentIndex);
+    
 };
 #endif // MAINWINDOW_H

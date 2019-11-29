@@ -41,6 +41,7 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 void MemsTab::comboboxItemChanged(QString sequence)
 {
     std::cout<<"In Sequence event : " << sequence.toStdString() << std::endl;
+    
     //mainWindowPtr->laser_pos_control->draw_rectangle(10);
 }
 
