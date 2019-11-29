@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     layout = new QGridLayout(centralWidget);
     tabs = new QTabWidget(centralWidget);
 
-    memsTab = new MemsTab(tabs);
+    memsTab = new MemsTab(tabs, this);
     calibrationTab = new CalibrationTab(tabs, this);
     eyeWorldTab = new EyeWorldTab(tabs, this);
     gpioTab = new GPIOTab();

@@ -22,18 +22,31 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     seqCombo->addItem("Infinite");
     seqCombo->addItem("Circular Loop");
 
+    button = new QPushButton("Stop Laser", this);
+
     //Placement in layout
     layout->addWidget(lbl,0,0,1,4);
     layout->addWidget(seqLbl,2,0,1,1);
     layout->addWidget(seqCombo,3,0,3,1);
+    layout->addWidget(button,3,1,1,1);
     layout->addWidget(posMouseLabel,2,3,1,1);
 
     //Link signals to slots
     connect(seqCombo, SIGNAL(currentTextChanged(QString)), this, SLOT(comboboxItemChanged(QString)));
+    connect(button, SIGNAL (clicked()), this, SLOT (switchLaserState()));
+
+    mainWindowPtr = mW;
 }
 
 void MemsTab::comboboxItemChanged(QString sequence)
 {
     std::cout<<"In Sequence event : " << sequence.toStdString() << std::endl;
     //mainWindowPtr->laser_pos_control->draw_rectangle(10);
+}
+
+void EyeWorldTab::switchLaserState()
+{   
+    laser_on = !laser_on; //change stage of laser
+    button->setText(laser_on? "Stop Laser" : "Start Laser");
+    (laser_on? mainWindowPtr->laser_pos_control->laser.off() : mainWindowPtr->laser_pos_control->laser.on());
 }

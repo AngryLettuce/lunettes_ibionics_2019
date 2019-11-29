@@ -10,6 +10,7 @@
 #include "mainwindow.h"
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
+//class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 
 class MemsTab : public QWidget
 {
@@ -19,7 +20,10 @@ public:
     MediaLabel *lbl;
     QPixmap *pix;
     QLabel *posMouseLabel;
+    QPushButton *button;
     QGridLayout *layout;
+
+    bool laser_on = true;
 
     MainWindow* mainWindowPtr;
 
@@ -28,6 +32,7 @@ signals:
 
 public slots:
     void comboboxItemChanged(QString sequence);
+    void switchLaserState();
 };
 
 #endif // MEMSTAB_H
