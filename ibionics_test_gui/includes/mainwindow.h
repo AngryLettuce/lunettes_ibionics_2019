@@ -18,6 +18,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include "arducam_mipicamera.h"
+#include "systemCameras.h"
 
 class MemsTab; //foward declaration to avoid circular dependencies with memstab.h
 class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
@@ -72,6 +73,8 @@ public:
     int calibrationPosX;
     int calibrationPosY;
     int roiSize;
+
+    systemCameras* cameras;
 
 private:
     int memsIndex;
