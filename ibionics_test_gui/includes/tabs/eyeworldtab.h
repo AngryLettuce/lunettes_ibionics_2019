@@ -42,6 +42,8 @@ public:
     cv::Point pupilPos;
     cv::Mat processedImg;
 
+    QComboBox stepsCombo;
+
 signals:
 
 public slots:

@@ -1,4 +1,5 @@
 #include "ellipsefit.h"
+#include <iostream>
 
 bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 )
 {
@@ -8,11 +9,11 @@ bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Poin
 }
 
 
-void applyEllipseMethod(cv::Mat *image, double binary_threshold, int& posX, int& posY)
+void applyEllipseMethod(cv::Mat *imageStepReturned, double binary_threshold, int& posX, int& posY, int comboBoxIndex)
 {
     double maxval = 255;
     int kernel_size = 8;
-
+    cv::Mat image = imageStepReturned->clone();
     std::vector<std::vector<cv::Point> > contours;
     std::vector<cv::Vec4i> hierarchy;
     cv::RotatedRect ellipse;
@@ -20,16 +21,22 @@ void applyEllipseMethod(cv::Mat *image, double binary_threshold, int& posX, int&
 
     static cv::Mat element;//maybe put that outside of function for be create only at begening of program
 
-    cv::equalizeHist(*image,*image);
-    cv::threshold(*image, *image, binary_threshold, maxval, cv::THRESH_BINARY_INV);
+    cv::equalizeHist(image,image);
+    cv::threshold(image, image, binary_threshold, maxval, cv::THRESH_BINARY_INV);
+    if(comboBoxIndex == 1)
+        imageStepReturned = &image;
 
     element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
 
-    cv::morphologyEx(*image, *image, cv::MORPH_CLOSE,element); //closing
-    cv::morphologyEx(*image,*image,cv::MORPH_OPEN,element); //opening
+    cv::morphologyEx(image, image, cv::MORPH_CLOSE,element); //closing
+    if(comboBoxIndex == 2)
+        *imageStepReturned = image;
+    cv::morphologyEx(image,image,cv::MORPH_OPEN,element); //opening
+    if(comboBoxIndex == 3)
+        *imageStepReturned = image;
 
     //find contours
-    cv::findContours(*image,contours,hierarchy,cv::RETR_TREE,cv::CHAIN_APPROX_SIMPLE ,cv::Point(0, 0) );
+    cv::findContours(image,contours,hierarchy,cv::RETR_TREE,cv::CHAIN_APPROX_SIMPLE ,cv::Point(0, 0) );
 
     //find center
     double area_max = 0;

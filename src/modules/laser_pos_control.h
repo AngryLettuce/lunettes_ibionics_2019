@@ -64,7 +64,7 @@ public:
 	 * @brief send the closing rectangle sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
 	 */
-	void draw_Closingrectangle(int time_delay=DEFAULT_DELAY);
+	void draw_closing_rectangle(int time_delay=DEFAULT_DELAY);
 	/**
 	 * @brief send the spiral sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
@@ -79,7 +79,7 @@ public:
 	 * @brief send the circular loop symbol sequence to the mems mirror.
 	 * @param time_delay delay between mirror commands.
 	 */
-	void draw_circluarLoop(int time_delay=DEFAULT_DELAY);
+	void draw_circular_loop(int time_delay=DEFAULT_DELAY);
 	/**
 	 * @brief Set the maximum angles in x and y using the manual mode
 	 */

@@ -292,7 +292,7 @@ void Laser_pos_control::draw_rectangle(int time_delay) {
 #endif
 }
 
-void Laser_pos_control::draw_Closingrectangle(int time_delay) {
+void Laser_pos_control::draw_closing_rectangle(int time_delay) {
 #ifdef __arm__
 	//float *angles;
 	for (int i = 0; i < CLOSING_RECTANGLE_LENGTH; i++) {
@@ -333,7 +333,7 @@ void Laser_pos_control::draw_infinity(int time_delay) {
 #endif
 }
 
-void Laser_pos_control::draw_circluarLoop(int time_delay){
+void Laser_pos_control::draw_circular_loop(int time_delay){
 #ifdef __arm__
 	//float *angles;
 	for (int i = 0; i < CIRCULAR_LOOP_SEQUENCE_LENGTH; i++) {
