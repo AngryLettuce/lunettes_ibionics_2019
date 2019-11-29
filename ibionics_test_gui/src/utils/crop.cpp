@@ -4,7 +4,8 @@
 
 #include "crop.h"
 
-int getRegionPos(int x,int DIM_C,int imgCols){
+int getRegionPos(int x,int DIM_C,int imgCols)
+{
     //setting position x, can be and will be use for y too
     if(x <=DIM_C/2)
         return 0;

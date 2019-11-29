@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-cv::Point getRegionPos(int x,int y,int DIM_L,int DIM_C,int imgCols,int imgRows);
+int getRegionPos(int x,int DIM_C,int imgCols);
 
 void cropRegion(cv::Mat *imgOr,cv::Mat *imgZoom, int x,int y,int DIM_L,int DIM_C, bool showRect);
 

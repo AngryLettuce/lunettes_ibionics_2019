@@ -99,6 +99,16 @@ void EyeWorldTab::processFrameWorld()
         cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
     }
 
+    cv::Mat gray_LUT(1, 256, CV_8U);
+    uchar*p = gray_LUT.ptr();
+    for (int i = 0; i < 256; i++) {
+            p[i] = grayLevelsTable[i];
+    }
+
+    traitementWorld(&img2World,gray_LUT);
+    drawWorl2img(&imgWorld, &img2World,posX,posY);
+    //cv::imshow("test",imgWorld);
+
     QImage qimgWorld(reinterpret_cast<uchar*>(imgWorld.data), imgWorld.cols, imgWorld.rows, imgWorld.step, QImage::Format_RGB888);
     imgLblWorld->setPixmap(QPixmap::fromImage(qimgWorld));
 }
