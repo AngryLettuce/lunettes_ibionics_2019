@@ -21,13 +21,14 @@ step = 10;
 % bottomBorder = squeeze(angleMat(400, 2:step:end, :));
 % rightBorder = squeeze(angleMat(end-1:-step:1, 400, :));
 % topBorder = squeeze(angleMat(1, end-1:-step:2, :));
-leftBorder = [0:step:resolution-1 ; zeros(1,resolution/step)];
-bottomBorder = [ones(1, resolution/step) * (resolution-1) ;  0:step:resolution-1];
-rightBorder = [resolution-1:-step:0 ; ones(1,resolution/step) * (resolution-1)];
-topBorder = [zeros(1, resolution/step) ; resolution-1:-step:0];
+leftBorder = [zeros(1,resolution/step) ; 0:step:resolution-1];
+bottomBorder = [0:step:resolution-1 ;ones(1, resolution/step) * (resolution-1)];
+rightBorder = [ ones(1,resolution/step) * (resolution-1) ; resolution-1:-step:0];
+topBorder = [resolution-1:-step:0 ; zeros(1, resolution/step)];
 
 rectSequence = horzcat(leftBorder, bottomBorder, rightBorder, topBorder);
 rectSequence = rectSequence';
+
 % rectSequence = double(vertcat(leftBorder, bottomBorder, rightBorder, topBorder))/1000;
 
 
@@ -78,7 +79,11 @@ for closing = [0:resolution/10:resolution-1]
         closingRectSequence = horzcat(closingRectSequence, tempClosingRectSequence);
 
 end
+
 closingRectSequence = closingRectSequence';
+temp = closingRectSequence(:,1);
+closingRectSequence(:,1) = closingRectSequence(:,2);
+closingRectSequence(:,2) = temp;
 
 %% infinity sign sequence 
 t = 0  :pi/50: 2*pi; %+ 5*pi/16;

@@ -1,11 +1,17 @@
+#include <fstream>
+
 #include "mainwindow.h"
+
+#define CALIBRATION_GRID_PARAMS_FILENAME "/home/pi/Desktop/s8ibionics/ibionics_test_gui/gui_main/calibrationGridParams.txt"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     laser_pos_control()
 {
 	systemConfigs = new config("C:/views/s8ibionics/ibionics_test_gui/gui_main/config.txt");
-
+    
+    loadCalibrationGridParams();
+    
     centralWidget = new QWidget(this);
     layout = new QGridLayout(centralWidget);
     tabs = new QTabWidget(centralWidget);
@@ -30,10 +36,14 @@ MainWindow::MainWindow(QWidget *parent)
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
+    //Considering it start on the mems tab
+    if(camEye.isOpened() || (!camState0))
+        connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
+    else
+        std::cout<<"Error EyeCam not accessible"<<std::endl;
+    
     laser_pos_control.draw_rectangle(10);
-    laser_pos_control.draw_spiral(10);
-    laser_pos_control.draw_infinity(10);
-    laser_pos_control.draw_circluarLoop(10);
+    laser_pos_control.send_pos(CAMERA_RESOLUTION/2,CAMERA_RESOLUTION/2);
 }
 
 MainWindow::~MainWindow()
@@ -46,22 +56,30 @@ void MainWindow::tabChange(int currentIndex)
     disconnect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
     disconnect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
     disconnect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
+    disconnect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
         
     if(currentIndex == eyeWorldIndex){
-        if((camEye.isOpened()) || (!camState0))
+        if(cameras->verifyCameraPresent(0))
             connect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
         else
             std::cout<<"Error EyeCam not accessible"<<std::endl;
 
-        if((camWorld.isOpened()) || (!camState1))
+        if(cameras->verifyCameraPresent(1))
             connect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
         else
             std::cout<<"Error WorldCam not accessible"<<std::endl;
     }
     else if(currentIndex == calibrationIndex)
     {
-        if(camEye.isOpened() || (!camState0))
+        if(cameras->verifyCameraPresent(0))
             connect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
+        else
+            std::cout<<"Error EyeCam not accessible"<<std::endl;
+    }
+    else if(currentIndex == memsIndex)
+    {
+        if(camEye.isOpened() || (!camState0))
+            connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
         else
             std::cout<<"Error EyeCam not accessible"<<std::endl;
     }
@@ -74,68 +92,31 @@ void MainWindow::initHw()
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
 
-#ifdef __arm__
-    int cameraWidth0 = 640;
-    int cameraHeight0 = 480;
-    int cameraWidth1 = 640;
-    int cameraHeight1 = 480;
+    cameras = new systemCameras();
+}
 
-    camInterface0.i2c_bus = 0;
-    camInterface0.camera_num = 0;
-    camInterface0.sda_pins[0] = 0;
-    camInterface0.sda_pins[1] = 28;
-    camInterface0.scl_pins[0] = 1;
-    camInterface0.scl_pins[1] = 29;
-    camInterface0.led_pins[0] = 2;
-    camInterface0.led_pins[1] = 10;
-    camInterface0.shutdown_pins[0] = 14;
-    camInterface0.shutdown_pins[1] = 15;
-
-    camState0 = arducam_init_camera2(&arducamInstance0, camInterface0);
-    if(!camState0){
-        std::cout << "Cam1 Initialized (EyeCam)" << std::endl;
-        arducam_set_resolution(arducamInstance0, &cameraWidth0, &cameraHeight0);
+void MainWindow::saveCalibrationGridParams() {
+    std::ofstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
+    if(myfile.fail()) {
     }
-
-    camInterface1.i2c_bus = 0;
-    camInterface1.camera_num = 1;
-    camInterface1.sda_pins[0] = 0;
-    camInterface1.sda_pins[1] = 28;
-    camInterface1.scl_pins[0] = 1;
-    camInterface1.scl_pins[1] = 29;
-    camInterface1.led_pins[0] = 3;
-    camInterface1.led_pins[1] = 10;
-    camInterface1.shutdown_pins[0] = 14;
-    camInterface1.shutdown_pins[1] = 15;
-
-    camState1 = arducam_init_camera2(&arducamInstance1, camInterface1);
-    if(!camState1){
-        std::cout << "Cam2 Initialized (WorldCam)" << std::endl;
-        arducam_set_resolution(arducamInstance1, &cameraWidth1, &cameraHeight1);
-
+    else {
+        myfile << calibrationPosX << std::endl;
+        myfile << calibrationPosY << std::endl;
+        myfile << roiSize << std::endl;
     }
-#endif
-#ifdef WIN32
-    camEye.open(0);//2 for webcam
-    camWorld.open(2);
-#endif
 }
 
-int MainWindow::getPosX()
-{
-    return posX;
+void MainWindow::loadCalibrationGridParams() {
+    std::ifstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
+    if(myfile.fail()) {
+        calibrationPosX = 0;
+        calibrationPosY = 0;
+        roiSize = 400;
+    }
+    else {
+        
+        myfile >> calibrationPosX;
+        myfile >> calibrationPosY;
+        myfile >> roiSize;
+    }
 }
-
-int MainWindow::getPosY()
-{
-    return posY;
-}
-void MainWindow::setPosX(int x)
-{
-    posX = x;
-}
-void MainWindow::setPosY(int y)
-{
-    posY = y;
-}
-

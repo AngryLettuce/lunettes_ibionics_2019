@@ -42,11 +42,11 @@ void Spi::send(unsigned char* data, int len) {
     if(channel == 0) {
     #ifdef __arm__
         cs.write(LOW);
-        delayMicroseconds(5);
+        delayMicroseconds(1);
         wiringPiSPIDataRW(channel, data, len);
-        delayMicroseconds(5);
+        delayMicroseconds(1);
         cs.write(HIGH);
-        delayMicroseconds(5);
+        delayMicroseconds(1);
     #endif
         
     } /*else {

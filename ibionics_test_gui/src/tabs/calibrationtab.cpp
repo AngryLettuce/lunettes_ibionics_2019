@@ -1,8 +1,5 @@
-#include <fstream>
-
 #include "calibrationtab.h"
 
-#define CALIBRATION_GRID_PARAMS_FILENAME "calibrationGridParams.txt"
 #define VCOS_ALIGN_DOWN(p,n) (((ptrdiff_t)(p)) & ~((n)-1))
 #define VCOS_ALIGN_UP(p,n) VCOS_ALIGN_DOWN((ptrdiff_t)(p)+(n)-1,(n))
 
@@ -12,6 +9,8 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
     rows = Y_ANGLES_GRID_POINTS;
     columns = X_ANGLES_GRID_POINTS;
     
+    mainWindowPtr = mW;
+    
     layout = new QGridLayout(this);
     imgLblEye = new MediaLabel(this, "");
     button = new QPushButton("Start Calibration", this);
@@ -19,55 +18,50 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
     slider = new QSlider(Qt::Horizontal, this);
     slider->setMinimum(100);
     slider->setMaximum(400);
-    slider->setValue(400);
-
+    slider->setValue(mainWindowPtr->roiSize);
+    
     layout->addWidget(imgLblEye,1,0);
     layout->addWidget(button,0,0);
     layout->addWidget(slider,2,0);
 
     connect(button, SIGNAL (clicked()), this, SLOT (startCalibration()));
-    connect(slider, SIGNAL (valueChanged(int)), this, SLOT (changeRoiSize(int)));
-    mainWindowPtr = mW;
     
     QWidget::setFocusPolicy(Qt::StrongFocus);
     
-    loadCalibrationGridParams();
-    
+    imgLblEye->posX =  mainWindowPtr-> calibrationPosX;
+    imgLblEye->posY =  mainWindowPtr-> calibrationPosY;
 }
 
 void CalibrationTab::processCalibrationFrame()
 {
-#ifdef __arm__
-    imgEye = *getImage(0, 640, 480);
-#endif
-#ifdef WIN32
-    (mainWindowPtr->camEye).read(imgEye);
-#endif
+
+    imgEye = *mainWindowPtr->cameras->readImgCam(0);
     if(imgEye.empty()) return;
     
     //Get corners of roi
-    mainWindowPtr->upLeft = cv::Point(imgLblEye->posX - calibrationRoiSize/2,imgLblEye->posY - calibrationRoiSize/2);
-    mainWindowPtr->downRight = cv::Point(imgLblEye->posX + calibrationRoiSize/2,imgLblEye->posY + calibrationRoiSize/2);
+    int roiSize = slider->value();
+    cv::Point upLeft = cv::Point(imgLblEye->posX  - roiSize/2, imgLblEye->posY  - roiSize/2);
+    cv::Point downRight = cv::Point(imgLblEye->posX  + roiSize/2, imgLblEye->posY   + roiSize/2);
 
     //Add grid to roi
-    mainWindowPtr->leftSide = mainWindowPtr->upLeft.x;
-    mainWindowPtr->upSide = mainWindowPtr->upLeft.y;
+    int leftSide = upLeft.x; 
+    int upSide = upLeft.y;
     
-    mainWindowPtr->rightSide = mainWindowPtr->downRight.x;
-    mainWindowPtr->downSide = mainWindowPtr->downRight.y;
+    int rightSide = downRight.x;
+    int downSide = downRight.y;
     
-    int heightSpace = (mainWindowPtr->rightSide - mainWindowPtr->leftSide)/(rows-1);
-    int widthSpace = (mainWindowPtr->downSide - mainWindowPtr->upSide)/(columns-1);
+    int heightSpace = (rightSide - leftSide)/(rows-1);
+    int widthSpace = (downSide - upSide)/(columns-1);
     
     // Drawing calibration grid
-    for (int i = mainWindowPtr->upSide; i<mainWindowPtr->downSide; i += heightSpace)
-        cv::line(imgEye, cv::Point(mainWindowPtr->leftSide, i), cv::Point(mainWindowPtr->rightSide, i), cv::Scalar(0, 255, 255));
+    for (int i = upSide; i<downSide; i += heightSpace)
+        cv::line(imgEye, cv::Point(leftSide, i), cv::Point(rightSide, i), cv::Scalar(0, 255, 255));
 
-    for (int i = mainWindowPtr->leftSide; i<mainWindowPtr->rightSide; i += widthSpace)
-        cv::line(imgEye, cv::Point(i, mainWindowPtr->upSide), cv::Point(i, mainWindowPtr->downSide), cv::Scalar(255, 0, 255));
+    for (int i = leftSide; i<rightSide; i += widthSpace)
+        cv::line(imgEye, cv::Point(i, upSide), cv::Point(i, downSide), cv::Scalar(255, 0, 255));
     
     cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
-    cv::rectangle(imgEye,cv::Rect(mainWindowPtr->upLeft,mainWindowPtr->downRight) , cv::Scalar(0,255,0), 1, 8,0 );
+    cv::rectangle(imgEye, cv::Rect(upLeft, downRight) , cv::Scalar(0,255,0), 1, 8,0 );
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
 }
@@ -136,7 +130,11 @@ void CalibrationTab::keyPressEvent(QKeyEvent *event)
                     mainWindowPtr->laser_pos_control.saveAnglePoints();
                     mainWindowPtr->laser_pos_control.initAngleMat();
                     
-                    saveCalibrationGridParams();
+                    mainWindowPtr->calibrationPosX = imgLblEye->posX;
+                    mainWindowPtr->calibrationPosY = imgLblEye->posY;
+                    mainWindowPtr->roiSize = slider->value();
+                    mainWindowPtr->saveCalibrationGridParams();
+                    
                     mainWindowPtr->laser_pos_control.draw_rectangle();
                     
                     startCalibration();
@@ -156,10 +154,6 @@ void CalibrationTab::keyPressEvent(QKeyEvent *event)
 
 void CalibrationTab::startCalibration()
 {
-    mainWindowPtr->roiSize = slider->value();
-    mainWindowPtr->calibrationPosX = mainWindowPtr->upLeft.x + mainWindowPtr->roiSize/2;
-    mainWindowPtr->calibrationPosY = mainWindowPtr->upLeft.y + mainWindowPtr->roiSize/2;
-    
      //get initial mems values
     angle_x = mainWindowPtr->laser_pos_control.mems.get_angle_x();
     angle_y = mainWindowPtr->laser_pos_control.mems.get_angle_y();
@@ -179,12 +173,10 @@ void CalibrationTab::startCalibration()
 
         inCalibration = false;        
     }
+
+    imgLblEye->setFocus();
 }
 
-void CalibrationTab::changeRoiSize(int size)
-{
-    calibrationRoiSize = size;
-}
 
 cv::Mat* CalibrationTab::getImage(int camNumber, int width, int height)
 {
@@ -210,31 +202,5 @@ cv::Mat* CalibrationTab::getImage(int camNumber, int width, int height)
     return &processedImg;
 #endif
     return nullptr;
-}
-
-void CalibrationTab::saveCalibrationGridParams() {
-    std::ofstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
-    if(myfile.fail()) {
-    }
-    else {
-        myfile << imgLblEye->posX << std::endl;
-        myfile << imgLblEye->posY << std::endl;
-        myfile << calibrationRoiSize << std::endl;
-    }
-}
-
-
-void CalibrationTab::loadCalibrationGridParams() {
-    std::ifstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
-    if(myfile.fail()) {
-        imgLblEye->posX = 0;
-        imgLblEye->posY = 0;
-        calibrationRoiSize = 400;
-    }
-    else {
-        myfile >> imgLblEye->posX;
-        myfile >> imgLblEye->posY;
-        myfile >> calibrationRoiSize;
-    }
 }
 

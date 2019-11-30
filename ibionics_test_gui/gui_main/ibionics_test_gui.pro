@@ -67,6 +67,8 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp \
                 $${BASE_FOLDER}/src/utils/medialabel.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
+		$${BASE_FOLDER}/src/utils/saturate.cpp \
+                $${BASE_FOLDER}/src/peripherals/systemCameras.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/button.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/getch.cpp \
@@ -79,6 +81,7 @@ SOURCES     +=  main.cpp \
                 $${MEMS_LASER_FOLDER}/src/peripherals/digital_out.cpp \
                 $${MEMS_LASER_FOLDER}/src/peripherals/i2c.cpp \
                 $${MEMS_LASER_FOLDER}/src/peripherals/spi.cpp
+
 
 HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/tabs/calibrationtab.h \
@@ -95,6 +98,8 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/medialabel.h \
                 $${BASE_FOLDER}/includes/utils/modes.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
+		$${BASE_FOLDER}/includes/utils/saturate.h \
+                $${BASE_FOLDER}/includes/peripherals/systemCameras.h \
                 $${BASE_FOLDER}/includes/modules/*.h \
                 $${MEMS_LASER_FOLDER}/src/modules/button.h \
                 $${MEMS_LASER_FOLDER}/src/modules/digital_pot.h \
@@ -124,6 +129,7 @@ INCLUDEPATH +=  $${BASE_FOLDER}/src/ \
                 $${BASE_FOLDER}/includes/tabs/ \
                 $${BASE_FOLDER}/includes/utils/ \
                 $${BASE_FOLDER}/includes/modules/ \
+                $${BASE_FOLDER}/includes/peripherals/ \
                 $${BASE_FOLDER}/lib/ \
                 $${MEMS_LASER_FOLDER}/src/modules/ \
                 $${MEMS_LASER_FOLDER}/src/peripherals/

@@ -18,6 +18,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include "arducam_mipicamera.h"
+#include "systemCameras.h"
 
 class MemsTab; //foward declaration to avoid circular dependencies with memstab.h
 class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
@@ -41,14 +42,9 @@ public:
     QWidget *centralWidget;
     QGridLayout *layout;
     QTabWidget *tabs;
-
-    int posX = 0;
-    int posY = 0;
-
-    int getPosX();
-    int getPosY();
-    void setPosX(int x);
-    void setPosY(int y);
+    
+    void saveCalibrationGridParams();
+    void loadCalibrationGridParams();
 
     QTimer *tmrTimerEye;
     QTimer *tmrTimerWorld;
@@ -66,17 +62,11 @@ public:
     int camState0 = 0;
     int camState1 = 0;
 
-    cv::Point upLeft  = cv::Point(0,0);
-    cv::Point downRight = cv::Point(1,1);
+    int calibrationPosX;
+    int calibrationPosY;
+    int roiSize;
 
-    int calibrationPosX = 0;
-    int calibrationPosY = 0;
-
-    int roiSize = 400;
-    int leftSide;
-    int upSide;
-    int rightSide;
-    int downSide;
+    systemCameras* cameras;
 
 private:
     int memsIndex;
@@ -90,5 +80,6 @@ private:
 
 public slots:
     void tabChange(int currentIndex);
+    
 };
 #endif // MAINWINDOW_H
