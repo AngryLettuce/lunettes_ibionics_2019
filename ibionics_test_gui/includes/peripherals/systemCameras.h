@@ -36,6 +36,7 @@ private:
     bool isCamMipi[2];
 
     BUFFER *arducamBuffer = nullptr;
+    
     IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 100};
 
 

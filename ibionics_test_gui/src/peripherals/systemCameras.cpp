@@ -1,5 +1,6 @@
 #include "systemCameras.h"
 
+
 systemCameras::systemCameras()
 {
     camResolution[0][0]= 640;
@@ -10,9 +11,9 @@ systemCameras::systemCameras()
     camInterface[0].i2c_bus = 0;
     camInterface[0].camera_num = 0;
     camInterface[0].sda_pins[0] = 0;
-    camInterface[0].sda_pins[1] = 28;
+    camInterface[0].sda_pins[1] = 0;
     camInterface[0].scl_pins[0] = 1;
-    camInterface[0].scl_pins[1] = 29;
+    camInterface[0].scl_pins[1] = 1;
     camInterface[0].led_pins[0] = 10;
     camInterface[0].led_pins[1] = 12;
     camInterface[0].shutdown_pins[0] = 11;
@@ -20,57 +21,76 @@ systemCameras::systemCameras()
 
     camInterface[1].i2c_bus = 0;
     camInterface[1].camera_num = 1;
-    camInterface[1].sda_pins[0] = 28;
+    camInterface[1].sda_pins[0] = 0;
     camInterface[1].sda_pins[1] = 0;
-    camInterface[1].scl_pins[0] = 29;
+    camInterface[1].scl_pins[0] = 1;
     camInterface[1].scl_pins[1] = 1;
     camInterface[1].led_pins[0] = 10;
     camInterface[1].led_pins[1] = 12;
     camInterface[1].shutdown_pins[0] = 11;
     camInterface[1].shutdown_pins[1] = 13;
 
-    int initializedCam = 0;
+int initializedCam = 0;
 
 #ifdef __arm__
     camState[0] = arducam_init_camera2(&arducamInstance[0], camInterface[0]);
     if(!camState[0]){
-        std::cout << "Cam0 Initialized (EyeCam)" << std::endl;
         arducam_set_resolution(arducamInstance[0], &camResolution[0][0], &camResolution[0][1]);
-        camIdentifier[initializedCam] = 0;
-        initializedCam++;
+        arducamBuffer = arducam_capture(arducamInstance[0], &fmt, 3000);
+        if (arducamBuffer != nullptr) {
+            std::cout << "Cam0 Initialized (EyeCam)" << std::endl;
+            arducam_software_auto_white_balance(arducamInstance[0],1);
+            arducam_software_auto_exposure(arducamInstance[0],1);
+            camIdentifier[initializedCam] = 0;
+            initializedCam++;
+        }
+        arducam_release_buffer(arducamBuffer);
     }
 
     camState[1] = arducam_init_camera2(&arducamInstance[1], camInterface[1]);
     if(!camState[1]){
-        std::cout << "Cam1 Initialized (EyeCam)" << std::endl;
         arducam_set_resolution(arducamInstance[1], &camResolution[1][0], &camResolution[1][1]);
-        camIdentifier[initializedCam] = 1;
-        initializedCam++;
+        arducamBuffer = arducam_capture(arducamInstance[1], &fmt, 3000);
+        if (arducamBuffer != nullptr) {
+            std::cout << "Cam1 Initialized (WorldCam)" << std::endl;
+            arducam_software_auto_white_balance(arducamInstance[1],1);
+            arducam_software_auto_exposure(arducamInstance[1],1);
+            camIdentifier[initializedCam] = 1;
+            initializedCam++;
+        }
+        arducam_release_buffer(arducamBuffer);
     }
 #endif
 
-    if(initializedCam == 1){
-        camWorld.open(0);
-        camResolution[1][0] = static_cast <int> (camWorld.get(cv::CAP_PROP_FRAME_WIDTH));
-        camResolution[1][1] = static_cast <int> (camWorld.get(cv::CAP_PROP_FRAME_HEIGHT));
-        camIdentifier[1] = 2;
-    }
-
     if(initializedCam == 0){
-
-        camEye.open(0);//2 for webcam
-        camWorld.open(1);
-        camResolution[0][0] = static_cast <int> (camEye.get(cv::CAP_PROP_FRAME_WIDTH));
-        camResolution[0][1] = static_cast <int> (camEye.get(cv::CAP_PROP_FRAME_HEIGHT));
-        camResolution[1][0] = static_cast <int> (camWorld.get(cv::CAP_PROP_FRAME_WIDTH));
-        camResolution[1][1] = static_cast <int> (camWorld.get(cv::CAP_PROP_FRAME_HEIGHT));
+        int firstCamFound = 0;
         camIdentifier[0] = 2;
-        camIdentifier[1] = 3;
-        initializedCam++;
+        if( camEye.open(0) && camEye.grab())
+            firstCamFound = 0;
+        else if(camEye.open(1) && camEye.grab())
+            firstCamFound = 1;
+        else if(camEye.open(2) && camEye.grab())
+            firstCamFound = 2;
+        else if(camEye.open(3) && camEye.grab())
+            firstCamFound = 3;
+        else
+            camIdentifier[0] = 4;
+            
+        camIdentifier[1] = 4;
+        if( (camWorld.open(firstCamFound+1) && camWorld.grab()) ||
+            (camWorld.open(firstCamFound+2) && camWorld.grab()) ||
+            (camWorld.open(firstCamFound+3) && camWorld.grab()) )
+            camIdentifier[1] = 3;
     }
 
-
-    std::cout << camIdentifier[0] << " : " << camIdentifier[1];
+    if(initializedCam == 1){
+        if( (camWorld.open(0) && camWorld.grab()) || 
+            (camWorld.open(1) && camWorld.grab()) ||
+            (camWorld.open(2) && camWorld.grab()) ||
+            (camWorld.open(3) && camWorld.grab()) ){
+            camIdentifier[1] = 2;
+        }
+    }
 }
 
 bool systemCameras::verifyCameraPresent(int CamIndex)
