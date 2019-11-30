@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
     //Considering it start on the mems tab
-    if(camEye.isOpened() || (!camState0))
+    if(cameras->verifyCameraPresent(0))
         connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
     else
         std::cout<<"Error EyeCam not accessible"<<std::endl;
@@ -78,7 +78,7 @@ void MainWindow::tabChange(int currentIndex)
     }
     else if(currentIndex == memsIndex)
     {
-        if(camEye.isOpened() || (!camState0))
+        if(cameras->verifyCameraPresent(0))
             connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
         else
             std::cout<<"Error EyeCam not accessible"<<std::endl;

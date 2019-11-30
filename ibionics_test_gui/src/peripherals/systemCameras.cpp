@@ -30,7 +30,7 @@ systemCameras::systemCameras()
     camInterface[1].shutdown_pins[0] = 11;
     camInterface[1].shutdown_pins[1] = 13;
 
-int initializedCam = 0;
+    int initializedCam = 0;
 
 #ifdef __arm__
     camState[0] = arducam_init_camera2(&arducamInstance[0], camInterface[0]);
@@ -61,7 +61,11 @@ int initializedCam = 0;
         arducam_release_buffer(arducamBuffer);
     }
 #endif
-
+    
+    /*int width;
+    int height;
+    int fps;*/
+    
     if(initializedCam == 0){
         int firstCamFound = 0;
         camIdentifier[0] = 2;
@@ -75,7 +79,16 @@ int initializedCam = 0;
             firstCamFound = 3;
         else
             camIdentifier[0] = 4;
-            
+        //camEye.setResolution(camResolution[0][0], camResolution[0][1])
+        /*width = camEye.get(cv::CAP_PROP_FRAME_WIDTH);
+        height = camEye.get(cv::CAP_PROP_FRAME_HEIGHT);
+        fps = camEye.get(cv::CAP_PROP_FPS);
+        std::cout << width << " " << height << " " << fps << std::endl;
+        camEye.set(cv::CAP_PROP_FRAME_WIDTH, 0);
+        camEye.set(cv::CAP_PROP_FRAME_HEIGHT, 0);
+        width = camEye.get(cv::CAP_PROP_FRAME_WIDTH);
+        height = camEye.get(cv::CAP_PROP_FRAME_HEIGHT);
+        std::cout << width << " " << height << std::endl;*/
         camIdentifier[1] = 4;
         if( (camWorld.open(firstCamFound+1) && camWorld.grab()) ||
             (camWorld.open(firstCamFound+2) && camWorld.grab()) ||
@@ -91,6 +104,16 @@ int initializedCam = 0;
             camIdentifier[1] = 2;
         }
     }
+    //camWorld.setResolution(camResolution[1][0], camResolution[1][1])
+    /*width = camWorld.get(cv::CAP_PROP_FRAME_WIDTH);
+    height = camWorld.get(cv::CAP_PROP_FRAME_HEIGHT);
+    fps = camWorld.get(cv::CAP_PROP_FPS);
+    std::cout << width << " " << height << " " << fps << std::endl;
+    camWorld.set(cv::CAP_PROP_FRAME_WIDTH, 0);
+    camWorld.set(cv::CAP_PROP_FRAME_HEIGHT, 0);
+    width = camWorld.get(cv::CAP_PROP_FRAME_WIDTH);
+    height = camWorld.get(cv::CAP_PROP_FRAME_HEIGHT);
+    std::cout << width << " " << height << std::endl;*/
 }
 
 bool systemCameras::verifyCameraPresent(int CamIndex)

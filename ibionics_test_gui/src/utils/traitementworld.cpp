@@ -41,10 +41,10 @@ void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y)
     x = getRegionPos(x,180,imgOr->cols);
     y = getRegionPos(y,160,imgOr->rows);
 
-    std::cout<< "imgOr rows : "<< imgOr->rows << " imgOr cols : " << imgOr->cols << std::endl;
-    std::cout<< "imgZo rows : "<< imgZoom->rows << " imgZo cols : " << imgZoom->cols << std::endl;
-    std::cout<<"rows demander de "<< y << " a " << y+imgZoom->rows << std::endl;
-    std::cout<<"cols demander de "<< x <<" a "<< x + imgZoom->cols << std::endl;
+    //std::cout<< "imgOr rows : "<< imgOr->rows << " imgOr cols : " << imgOr->cols << std::endl;
+    //std::cout<< "imgZo rows : "<< imgZoom->rows << " imgZo cols : " << imgZoom->cols << std::endl;
+    //std::cout<<"rows demander de "<< y << " a " << y+imgZoom->rows << std::endl;
+    //std::cout<<"cols demander de "<< x <<" a "<< x + imgZoom->cols << std::endl;
 
     //resize
     cv::resize(*imgZoom,*imgZoom,cv::Size(18,16),cv::INTER_LINEAR );

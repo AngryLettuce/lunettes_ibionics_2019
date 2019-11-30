@@ -49,8 +49,8 @@ public:
     QTimer *tmrTimerEye;
     QTimer *tmrTimerWorld;
 
-    cv::VideoCapture camEye;
-    cv::VideoCapture camWorld;
+    //cv::VideoCapture camEye;
+    //cv::VideoCapture camWorld;
 
     Laser_pos_control laser_pos_control;
 
