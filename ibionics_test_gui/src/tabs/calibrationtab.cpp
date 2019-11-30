@@ -14,6 +14,9 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
     layout = new QGridLayout(this);
     imgLblEye = new MediaLabel(this, "");
     button = new QPushButton("Start Calibration", this);
+    QSpacerItem *lastColSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QSpacerItem *lastRowSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 
     slider = new QSlider(Qt::Horizontal, this);
     slider->setMinimum(100);
@@ -23,6 +26,9 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
     layout->addWidget(imgLblEye,1,0);
     layout->addWidget(button,0,0);
     layout->addWidget(slider,2,0);
+
+    layout->addItem(lastColSpacer,0,1,3,1);
+    layout->addItem(lastRowSpacer,3,0,1,1);
 
     connect(button, SIGNAL (clicked()), this, SLOT (startCalibration()));
     

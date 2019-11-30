@@ -7,6 +7,9 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     imgLblEye = new QLabel("EYE",this);
     imgLblWorld = new QLabel("WORLD",this);
     button = new QPushButton("using Ellipse, click to switch to hough circle", this);
+    QSpacerItem *lastColSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QSpacerItem *lastRowSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 
     stepsCombo.addItem("Original");
     stepsCombo.addItem("Threshold");
@@ -24,6 +27,9 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     layout->addWidget(button,0,0,1,2);
     layout->addWidget(slider,1,0,1,2);
     layout->addWidget(&stepsCombo,3,0,1,1);
+
+    layout->addItem(lastColSpacer,0,3,4,1);
+    layout->addItem(lastRowSpacer,4,0,1,3);
 
     connect(button, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
     mainWindowPtr = mW;

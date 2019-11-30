@@ -16,6 +16,9 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     //Sequence
     QLabel *seqLbl = new QLabel("Sequence: ",this);
     QComboBox *seqCombo = new QComboBox();
+    QSpacerItem *lastColSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QSpacerItem *lastRowSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     seqCombo->addItem("Rectangle");
     seqCombo->addItem("Closing Rectangle");
     seqCombo->addItem("Spiral");
@@ -25,15 +28,19 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     button = new QPushButton("Stop Laser", this);
 
     //Placement in layout
-    layout->addWidget(imgLblEye,0,0);
-    layout->addWidget(seqLbl,2,0,1,1);
-    layout->addWidget(seqCombo,3,0,1,1);
-    layout->addWidget(button,3,1,1,1);
-    layout->addWidget(posMouseLabel,2,3,1,1);
+    layout->addWidget(imgLblEye,0,0,1,1);
+    layout->addWidget(seqLbl,1,0,1,1);
+    layout->addWidget(seqCombo,2,0,1,1);
+    layout->addWidget(button,2,1,1,1);
+    layout->addWidget(posMouseLabel,1,1,1,1);
+
+    layout->addItem(lastColSpacer,0,2,3,1);
+    layout->addItem(lastRowSpacer,3,0,1,2);
 
     // allign the pixmap
     layout->setAlignment(imgLblEye, Qt::AlignLeft);
     layout->setAlignment(imgLblEye, Qt::AlignTop);
+
 
     //Link signals to slots
     connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
@@ -101,5 +108,4 @@ void MemsTab::updatePosMouseLabel(int x, int y){
     char labelText[7];
     std::sprintf(labelText, "X:%d,Y:%d", x,y);
     posMouseLabel->setText(labelText);
-
 }
