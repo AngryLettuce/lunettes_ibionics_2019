@@ -37,7 +37,7 @@ void EyeWorldTab::processFrameEye()
 
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
-    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR);
+    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
 
     (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEye, posX, posY) ;
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
@@ -56,7 +56,7 @@ void EyeWorldTab::processFrameWorld()
 {
     imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
     cv::Mat img2World = imgWorld;
-	if(imgWorld.empty()) return;
+    if(imgWorld.empty()) return;
     std::cout<<"PosX: "<<posX<<" PosY: "<<posY<<std::endl;
     if(imgWorld.channels() <= 1){
         (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, true) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, false);
