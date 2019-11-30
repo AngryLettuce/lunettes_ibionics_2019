@@ -31,6 +31,10 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     layout->addWidget(button,3,1,1,1);
     layout->addWidget(posMouseLabel,2,3,1,1);
 
+    // allign the pixmap
+    layout->setAlignment(imgLblEye, Qt::AlignLeft);
+    layout->setAlignment(imgLblEye, Qt::AlignTop);
+
     //Link signals to slots
     connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
     connect(button, SIGNAL (clicked()), this, SLOT (switchLaserState()));
@@ -73,17 +77,16 @@ void MemsTab::processMemsFrame()
 
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
-    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION-1, CAMERA_RESOLUTION-1), 0, 0, cv::INTER_LINEAR); // CAMERA_RESOLUTION - 1 ?
+    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
     posX = imgLblEye->posX;
     posY = imgLblEye->posY;
     saturateValue(posX, 0, CAMERA_RESOLUTION - 1);
     saturateValue(posY, 0, CAMERA_RESOLUTION - 1);
     if(lastposX != posX || lastposY != posY){
-
         mainWindowPtr->laser_pos_control.send_pos(posX, posY);
+        updatePosMouseLabel(posX, posY);
         lastposX = posX;
         lastposY = posY;
-        //posMouseLabel->setText("X:%d,Y:%d", posX, posY);
     }
     
     cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
@@ -91,4 +94,12 @@ void MemsTab::processMemsFrame()
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
 
     //std::cout<<"PosX: "<< posX<<" PosY: "<< posY<<std::endl;
+}
+
+
+void MemsTab::updatePosMouseLabel(int x, int y){
+    char labelText[7];
+    std::sprintf(labelText, "X:%d,Y:%d", x,y);
+    posMouseLabel->setText(labelText);
+
 }
