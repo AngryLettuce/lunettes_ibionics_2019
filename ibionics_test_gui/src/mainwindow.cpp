@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete cameras;
     //TODO exit clean (close laser, events, etc...)
 }
 
