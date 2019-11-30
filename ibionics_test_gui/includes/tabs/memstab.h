@@ -29,6 +29,7 @@ public:
     int posX, posY;
     int lastposX = 0;
     int lastposY = 0;
+    char XYposText[6];
 
     bool laser_on = true;
 

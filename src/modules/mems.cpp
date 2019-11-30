@@ -32,7 +32,7 @@
 using namespace std;
 
 Mems::Mems() :
-	spi(SPI_CHANNEL, 250000, 1),
+	spi(SPI_CHANNEL, 500000, 1),
 	enable(GPIO45_MEMS_EN_DRV) {
 #ifdef __arm__
 	//clock(GPIO4_MEMS_FILT_X),
@@ -87,7 +87,7 @@ void Mems::send_voltage_diff_x(float voltage_diff) {
   unsigned int data = command | address | bin_neg;
   
   send_data(bin_pos);
-  delayMicroseconds(2);
+  //delayMicroseconds(2);
   send_data(data);
 #endif
 }
@@ -105,7 +105,7 @@ void Mems::send_voltage_diff_y(float voltage_diff) {
   unsigned int data2 = command | address | bin_neg;
   
   send_data(data1);
-  delayMicroseconds(2);
+  //delayMicroseconds(2);
   send_data(data2);
 #endif
 }

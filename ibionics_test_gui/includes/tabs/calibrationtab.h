@@ -36,7 +36,6 @@ public:
     int columns;
     int currentRow;
     int currentColumn;
-    //int calibrationRoiSize;
 
     cv::Mat processedImg;
     

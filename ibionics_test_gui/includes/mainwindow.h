@@ -42,14 +42,6 @@ public:
     QWidget *centralWidget;
     QGridLayout *layout;
     QTabWidget *tabs;
-
-    int posX = 0;
-    int posY = 0;
-
-    int getPosX();
-    int getPosY();
-    void setPosX(int x);
-    void setPosY(int y);
     
     void saveCalibrationGridParams();
     void loadCalibrationGridParams();

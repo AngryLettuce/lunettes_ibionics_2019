@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
-    //Considering it start on 
+    //Considering it start on the mems tab
     if(camEye.isOpened() || (!camState0))
         connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
     else
@@ -95,24 +95,6 @@ void MainWindow::initHw()
     cameras = new systemCameras();
 }
 
-int MainWindow::getPosX()
-{
-    return posX;
-}
-
-int MainWindow::getPosY()
-{
-    return posY;
-}
-void MainWindow::setPosX(int x)
-{
-    posX = x;
-}
-void MainWindow::setPosY(int y)
-{
-    posY = y;
-}
-
 void MainWindow::saveCalibrationGridParams() {
     std::ofstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);
     if(myfile.fail()) {
@@ -123,7 +105,6 @@ void MainWindow::saveCalibrationGridParams() {
         myfile << roiSize << std::endl;
     }
 }
-
 
 void MainWindow::loadCalibrationGridParams() {
     std::ifstream myfile(CALIBRATION_GRID_PARAMS_FILENAME);

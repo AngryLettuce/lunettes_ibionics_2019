@@ -83,7 +83,7 @@ void MemsTab::processMemsFrame()
         mainWindowPtr->laser_pos_control.send_pos(posX, posY);
         lastposX = posX;
         lastposY = posY;
-        //posMouseLabel->setText("X:%d,Y:%d", posX, posY);
+        //posMouseLabel->setText("X:%d,Y:%d", posX, posY); // TODO: code a function to update the text
     }
     
     cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
