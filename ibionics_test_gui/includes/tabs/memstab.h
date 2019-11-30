@@ -42,6 +42,7 @@ public slots:
     void processMemsFrame();
     void comboboxItemChanged(int index);
     void switchLaserState();
+    void updatePosMouseLabel(int x, int y);
 };
 
 #endif // MEMSTAB_H
