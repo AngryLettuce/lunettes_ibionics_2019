@@ -7,20 +7,7 @@
 
 #include <opencv2/core.hpp>
 
-class HoughParams
-{
-public:
-    HoughParams(int param1, int param2, int minRadius, int maxRadius, int minDist);
-
-    cv::Mat tmps;
-    int param1;
-    int param2;
-    int minRadius;
-    int maxRadius;
-    int minDist;
-};
-
-struct parametre
+struct Hough_params
 {
     //DEMOMODE params
     int param1 = 100;
@@ -40,7 +27,7 @@ struct parametre
 };
 
 
-void applyHoughMethodDyn(cv::Mat *image,HoughParams param, std::vector<cv::Vec3f> &circles, int posX,int posY);
+//void applyHoughMethodDyn(cv::Mat *image,HoughParams param, std::vector<cv::Vec3f> &circles, int posX,int posY);
 void applyHoughMethod(cv::Mat *image,int &posX,int &posY);
 
 #endif //PUPILDETECTION_HOUGHCIRCLE_H
