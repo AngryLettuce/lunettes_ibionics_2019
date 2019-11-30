@@ -33,6 +33,7 @@ public:
 
     bool laser_on = true;
 
+    QComboBox *seqCombo;
     MainWindow* mainWindowPtr;
 
 signals:

@@ -104,6 +104,18 @@ void EyeWorldTab::switchPupilMethodButton()
     if(VERBOSE)
         std::cout << ((pupilMethod) ? "Change pupil detection method to Ellipse" : "Change pupil detection method to hough circle")<< std::endl;
     button->setText((pupilMethod)?"using Ellipse, click to switch to hough circle":"using Hough cricle, click to switch to Ellipse");
+
+    if(!pupilMethod){
+        stepsCombo.setEnabled(false);
+        stepsCombo.setCurrentIndex(0);
+        slider->setEnabled(false);
+
+    }
+    else{
+        stepsCombo.setEnabled(true);
+        slider->setEnabled(true);
+
+    }
 }
 
 

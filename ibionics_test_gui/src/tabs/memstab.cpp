@@ -15,7 +15,7 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
     //Sequence
     QLabel *seqLbl = new QLabel("Sequence: ",this);
-    QComboBox *seqCombo = new QComboBox();
+    seqCombo = new QComboBox();
     QSpacerItem *lastColSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
     QSpacerItem *lastRowSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -72,9 +72,22 @@ void MemsTab::comboboxItemChanged(int index)
 
 void MemsTab::switchLaserState()
 {   
+#ifdef __arm__
     (laser_on? mainWindowPtr->laser_pos_control.laser.off() : mainWindowPtr->laser_pos_control.laser.on());
+#endif
     button->setText(laser_on? "Start Laser" : "Stop Laser");
     laser_on = !laser_on; //change stage of laser
+
+    if (laser_on){
+        seqCombo->setEnabled(true);
+        connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
+        //imgLblEye->setMouseTracking(true);
+    }
+    else{
+        seqCombo->setEnabled(false);
+        disconnect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
+        //imgLblEye->setMouseTracking(false);
+    }
 }
 
 void MemsTab::processMemsFrame()

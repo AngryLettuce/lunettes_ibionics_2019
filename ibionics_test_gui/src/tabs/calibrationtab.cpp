@@ -45,9 +45,11 @@ void CalibrationTab::processCalibrationFrame()
     if(imgEye.empty()) return;
     
     //Get corners of roi
-    int roiSize = slider->value();
-    cv::Point upLeft = cv::Point(imgLblEye->posX  - roiSize/2, imgLblEye->posY  - roiSize/2);
-    cv::Point downRight = cv::Point(imgLblEye->posX  + roiSize/2, imgLblEye->posY   + roiSize/2);
+    if(!inCalibration){
+        roiSize = slider->value();
+        upLeft = cv::Point(imgLblEye->posX  - roiSize/2, imgLblEye->posY  - roiSize/2);
+        downRight = cv::Point(imgLblEye->posX  + roiSize/2, imgLblEye->posY   + roiSize/2);
+    }
 
     //Add grid to roi
     int leftSide = upLeft.x; 
@@ -170,43 +172,18 @@ void CalibrationTab::startCalibration()
     
     if(!inCalibration)
     {
+        slider->setEnabled(false);
         button->setText("In Calibration");
         inCalibration = true;
     }
     else
     {
+        slider->setEnabled(true);
         button->setText("Start Calibration");
 
         inCalibration = false;        
     }
 
     imgLblEye->setFocus();
-}
-
-
-cv::Mat* CalibrationTab::getImage(int camNumber, int width, int height)
-{
-
-    IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 100};
-    BUFFER *buffer = nullptr;
-#ifdef __arm__
-    if(camNumber == 0)
-        buffer = arducam_capture(mainWindowPtr->arducamInstance0, &fmt, 3000);
-    else
-        buffer = arducam_capture(mainWindowPtr->arducamInstance1, &fmt, 3000);
-#endif
-    if (!buffer)
-        return nullptr;
-#ifdef __arm__
-    // The actual width and height of the IMAGE_ENCODING_RAW_BAYER format and the IMAGE_ENCODING_I420 format are aligned,
-    // width 32 bytes aligned, and height 16 byte aligned.
-    width = VCOS_ALIGN_UP(width, 32);
-    height = VCOS_ALIGN_UP(height, 16);
-    processedImg = cv::Mat(cv::Size(width,(int)(height * 1.5)), CV_8UC1, buffer->data);
-    cv::cvtColor(processedImg, processedImg, cv::COLOR_YUV2BGR_I420);
-    arducam_release_buffer(buffer);
-    return &processedImg;
-#endif
-    return nullptr;
 }
 

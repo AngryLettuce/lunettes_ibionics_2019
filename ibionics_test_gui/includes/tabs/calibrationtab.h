@@ -37,6 +37,10 @@ public:
     int currentRow;
     int currentColumn;
 
+    int roiSize;
+    cv::Point upLeft;
+    cv::Point downRight;
+
     cv::Mat processedImg;
     
     MainWindow* mainWindowPtr;
