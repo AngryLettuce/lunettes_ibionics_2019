@@ -76,8 +76,8 @@ void applyHoughMethod(cv::Mat *imageReturned,int &posX,int &posY)
 
     //find circle center
     if (circles.size() == 0) {
-        posX = 0;
-        posY = 0;
+        posX = -1;
+        posY = -1;
     }
     else {
         //std::cout << circles[0] << std::endl;
