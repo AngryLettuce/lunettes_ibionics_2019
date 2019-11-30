@@ -14,6 +14,7 @@ class systemCameras
 {
 public:
     systemCameras();
+    ~systemCameras();
     bool verifyCameraPresent(int CamIndex);
     bool calibrateCamera(int CamIndex);
     bool isGrayScaleCam(int CamIndex);

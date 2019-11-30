@@ -116,6 +116,18 @@ systemCameras::systemCameras()
     std::cout << width << " " << height << std::endl;*/
 }
 
+systemCameras::~systemCameras()
+{
+    if((camIdentifier[0] == 0 ) || (camIdentifier[1] == 0 ))
+        arducam_close_camera(arducamInstance[0]);
+    if((camIdentifier[0] == 1 ) || (camIdentifier[1] == 1 ))
+        arducam_close_camera(arducamInstance[1]);
+    if(camIdentifier[0] == 2 )
+        camEye.release();
+    if((camIdentifier[0] == 3 ) || (camIdentifier[1] == 3 ) || (camIdentifier[1] == 2 ))
+        camWorld.release();
+}
+
 bool systemCameras::verifyCameraPresent(int CamIndex)
 {
     if (camIdentifier[CamIndex] == 0)
