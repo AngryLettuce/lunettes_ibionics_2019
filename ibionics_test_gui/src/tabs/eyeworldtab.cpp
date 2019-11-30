@@ -61,12 +61,18 @@ void EyeWorldTab::processFrameWorld()
     
     cv::Mat img2World = imgWorld;
 
+    //Adjust pupil position to worldCam resolution
+    int posXWorld = posX * imgWorld.cols / CAMERA_RESOLUTION;
+    int posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
+
+    std::cout<<"X: "<<posXWorld<<"Y: "<<posYWorld<<std::endl;
+
     if(imgWorld.channels() <= 1){
-        (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, true) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, false);
+        (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, false);
     }
     else{
         cv::cvtColor(imgWorld,img2World,cv::COLOR_RGB2GRAY);
-        (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, true) : cropRegion(&imgWorld, &img2World, posX, posY, 160, 180, false);
+        (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, false);
         cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
     }
 
@@ -77,7 +83,7 @@ void EyeWorldTab::processFrameWorld()
     }
 
     traitementWorld(&img2World,gray_LUT);
-    drawWorl2img(&imgWorld, &img2World,posX,posY);
+    drawWorl2img(&imgWorld, &img2World,posXWorld,posYWorld);
     //cv::imshow("test",imgWorld);
 
     QImage qimgWorld(reinterpret_cast<uchar*>(imgWorld.data), imgWorld.cols, imgWorld.rows, imgWorld.step, QImage::Format_RGB888);
