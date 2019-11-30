@@ -1,6 +1,8 @@
 #include "ellipsefit.h"
 #include <iostream>
 
+#define MIN_ELLIPSE_AREA 800
+
 bool compareContourAreas ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 )
 {
     double i = fabs( cv::contourArea(cv::Mat(contour1)) );
@@ -32,11 +34,11 @@ void applyEllipseMethod(cv::Mat *imageStepReturned, double binary_threshold, int
 
     element = cv::getStructuringElement( cv::MORPH_RECT, cv::Size( kernel_size, kernel_size), cv::Point( -1, -1 ) );
 
-    cv::morphologyEx(image, image, cv::MORPH_CLOSE,element); //closing
+    cv::morphologyEx(image, image, cv::MORPH_OPEN,element); 
     if(comboBoxIndex == 2)
         *imageStepReturned = image.clone();
 
-    cv::morphologyEx(image,image,cv::MORPH_OPEN,element); //opening
+    cv::morphologyEx(image,image,cv::MORPH_CLOSE,element); 
     if(comboBoxIndex == 3)
         *imageStepReturned = image.clone();
 
@@ -62,7 +64,7 @@ void applyEllipseMethod(cv::Mat *imageStepReturned, double binary_threshold, int
              }
          }
 
-        if(contours[index_area_max].size() > 5)
+        if(contours[index_area_max].size() > 5 && area_max > MIN_ELLIPSE_AREA)
         {
             ellipse = cv::fitEllipse( cv::Mat(contours[index_area_max]) );
 

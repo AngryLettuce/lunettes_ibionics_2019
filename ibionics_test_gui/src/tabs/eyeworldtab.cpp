@@ -10,8 +10,8 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
     stepsCombo.addItem("Original");
     stepsCombo.addItem("Threshold");
-    stepsCombo.addItem("Closing");
     stepsCombo.addItem("Opening");
+    stepsCombo.addItem("Closing");
 
     slider = new QSlider(Qt::Horizontal, this);
     slider->setMinimum(0);
