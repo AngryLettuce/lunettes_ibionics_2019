@@ -81,12 +81,10 @@ void MemsTab::switchLaserState()
     if (laser_on){
         seqCombo->setEnabled(true);
         connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
-        //imgLblEye->setMouseTracking(true);
     }
     else{
         seqCombo->setEnabled(false);
         disconnect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
-        //imgLblEye->setMouseTracking(false);
     }
 }
 
@@ -98,17 +96,18 @@ void MemsTab::processMemsFrame()
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
     cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
-    posX = imgLblEye->posX;
-    posY = imgLblEye->posY;
-    saturateValue(posX, 0, CAMERA_RESOLUTION - 1);
-    saturateValue(posY, 0, CAMERA_RESOLUTION - 1);
-    if(lastposX != posX || lastposY != posY){
-        mainWindowPtr->laser_pos_control.send_pos(posX, posY);
-        updatePosMouseLabel(posX, posY);
-        lastposX = posX;
-        lastposY = posY;
+    if(laser_on){
+        posX = imgLblEye->posX;
+        posY = imgLblEye->posY;
+        saturateValue(posX, 0, CAMERA_RESOLUTION - 1);
+        saturateValue(posY, 0, CAMERA_RESOLUTION - 1);
+        if(lastposX != posX || lastposY != posY){
+            mainWindowPtr->laser_pos_control.send_pos(posX, posY);
+            updatePosMouseLabel(posX, posY);
+            lastposX = posX;
+            lastposY = posY;
+        }
     }
-    
     cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
