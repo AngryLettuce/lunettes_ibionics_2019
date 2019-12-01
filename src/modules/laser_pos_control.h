@@ -126,7 +126,7 @@ private:
        
     //rowvec maxAngles; // {minX, maxX, minY, maxY}
     //rowvec VLM;
-    short angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
+    float angleMat[CAMERA_RESOLUTION][CAMERA_RESOLUTION][2];
 
     //void findWallCorners(mat &wallCorners);
 

@@ -97,9 +97,9 @@ void Laser_pos_control::initAngleMat() {
 
 	for (int i = 0; i < CAMERA_RESOLUTION; i++) {
 		for (int j = 0; j < CAMERA_RESOLUTION; j++) {
-			angleMat[i][j][0] = short(ZiX.at(i, j) * 1000);
+            angleMat[i][j][0] = float(ZiX.at(i, j));
 			
-			angleMat[i][j][1] = short(ZiY.at(i, j) * 1000);
+            angleMat[i][j][1] = float(ZiY.at(i, j));
 		}
 	}
 #endif
@@ -193,8 +193,8 @@ void Laser_pos_control::genPixMat(mat wallCorners, mat &pixMat) {
 float* Laser_pos_control::getAngles(int xCoord, int yCoord) {
 	static float XYAngles[2];
 
-	XYAngles[0] = float(angleMat[yCoord][xCoord][0]) / 1000;
-	XYAngles[1] = float(angleMat[yCoord][xCoord][1]) / 1000;
+    XYAngles[0] = angleMat[yCoord][xCoord][0];
+    XYAngles[1] = angleMat[yCoord][xCoord][1];
 
 	return XYAngles;
 }
