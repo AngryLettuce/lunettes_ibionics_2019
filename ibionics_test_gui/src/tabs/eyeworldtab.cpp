@@ -6,7 +6,9 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     layout = new QGridLayout(this);
     imgLblEye = new QLabel("EYE",this);
     imgLblWorld = new QLabel("WORLD",this);
-    button = new QPushButton("using Ellipse, click to switch to hough circle", this);
+    eyeFpsLabel = new QLabel("FPS (Eye) :",this);
+    worldFpsLabel = new QLabel("FPS (World) :",this);
+    button_method = new QPushButton("using Ellipse, click to switch to hough circle", this);
     QSpacerItem *lastColSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
     QSpacerItem *lastRowSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -22,21 +24,24 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     slider->setValue(25);
 
     //Placement in Layout
-    layout->addWidget(imgLblEye,2,0,1,1);
-    layout->addWidget(imgLblWorld,2,1,1,1);
-    layout->addWidget(button,0,0,1,2);
-    layout->addWidget(slider,1,0,1,2);
-    layout->addWidget(&stepsCombo,3,0,1,1);
+    layout->addWidget(eyeFpsLabel   ,FPS_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addWidget(worldFpsLabel ,FPS_ROW, IMAGE_WORLD_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addWidget(imgLblEye     ,IMAGES_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addWidget(imgLblWorld   ,IMAGES_ROW, IMAGE_WORLD_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addWidget(button_method ,BUTTON_METHOD_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, BUTTON_COLUMN_SPAN);
+    layout->addWidget(slider        ,SLIDER_PARAM_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, SLIDER_COLUMN_SPAN);
+    layout->addWidget(&stepsCombo   ,COMBOBOX_INTERMEDIATE_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
 
-    layout->addItem(lastColSpacer,0,3,4,1);
-    layout->addItem(lastRowSpacer,4,0,1,3);
+    layout->addItem(lastColSpacer   ,BUTTON_METHOD_ROW, SPACER_COLUMN, SPACER_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addItem(lastRowSpacer   ,SPACER_ROW ,IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, SPACER_COLUMN_SPAN);
 
-    connect(button, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
+    connect(button_method, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
     mainWindowPtr = mW;
 }
 
 void EyeWorldTab::processFrameEye()
 {
+    //start = std::chrono::system_clock::now();
     imgEye = *(mainWindowPtr->cameras->readImgCam(0));
     if(imgEye.empty()) return;
     
@@ -48,6 +53,7 @@ void EyeWorldTab::processFrameEye()
     cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
 
     (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEye, posX, posY) ;
+
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
         mainWindowPtr->laser_pos_control.laser.on();
         cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(180, 180, 180), -1);
@@ -58,7 +64,11 @@ void EyeWorldTab::processFrameEye()
 
     cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
-    imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
+    imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
+    //end = std::chrono::system_clock::now();
+    //std::chrono::duration<double> elapsed_seconds = end-start;
+    //std::cout << elapsed_seconds.count() << std::endl;
+
 }
 
 void EyeWorldTab::processFrameWorld()
@@ -103,7 +113,7 @@ void EyeWorldTab::switchPupilMethodButton()
     pupilMethod = !pupilMethod; //change stage of pupil detection
     if(VERBOSE)
         std::cout << ((pupilMethod) ? "Change pupil detection method to Ellipse" : "Change pupil detection method to hough circle")<< std::endl;
-    button->setText((pupilMethod)?"using Ellipse, click to switch to hough circle":"using Hough cricle, click to switch to Ellipse");
+    button_method->setText((pupilMethod)?"using Ellipse, click to switch to hough circle":"using Hough cricle, click to switch to Ellipse");
 
     if(!pupilMethod){
         stepsCombo.setEnabled(false);

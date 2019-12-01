@@ -14,6 +14,27 @@
 #include "houghCircle.h"
 #include "modes.h"
 #include "traitementworld.h"
+#include "chrono"
+#include "ctime"
+
+#define BUTTON_METHOD_ROW 0
+#define SLIDER_PARAM_ROW 1
+#define IMAGES_ROW 2
+#define COMBOBOX_INTERMEDIATE_ROW 3
+#define SPACER_ROW 4
+#define FPS_ROW 5
+
+#define IMAGE_EYE_COLUMN 0
+#define IMAGE_WORLD_COLUMN 1
+#define SPACER_COLUMN 2
+
+#define NORMAL_ROW_SPAN 1
+#define NORMAL_COLUMN_SPAN 1
+
+#define BUTTON_COLUMN_SPAN 2
+#define SLIDER_COLUMN_SPAN 2
+#define SPACER_ROW_SPAN 6
+#define SPACER_COLUMN_SPAN 3
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with mainwindow.h
@@ -30,8 +51,11 @@ public:
 
     QLabel *imgLblEye;
     QLabel *imgLblWorld;
+
+    QLabel *eyeFpsLabel;
+    QLabel *worldFpsLabel;
     
-    QPushButton *button;
+    QPushButton *button_method;
     QSlider *slider;
     QGridLayout *layout;
 
@@ -44,6 +68,8 @@ public:
     cv::Mat processedImg;
 
     QComboBox stepsCombo;
+
+    std::chrono::time_point<std::chrono::system_clock> start,end;
 
 signals:
 
