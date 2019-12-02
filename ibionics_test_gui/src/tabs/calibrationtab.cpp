@@ -174,12 +174,14 @@ void CalibrationTab::startCalibration()
     
     if(!inCalibration)
     {
+        imgLblEye->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         slider->setEnabled(false);
         button->setText("In Calibration");
         inCalibration = true;
     }
     else
     {
+        imgLblEye->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         slider->setEnabled(true);
         button->setText("Start Calibration");
 
