@@ -30,14 +30,6 @@
         android:text="Enable Downscale"
         android:textColor="#0009ff"
         android:translationY="80dp" />
-    <Switch
-        android:id="@+id/switch_HoughCircle"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_weight="1"
-        android:text="Enable Eye Detection"
-        android:textColor="#0009ff"
-        android:translationY="140dp" />
 
 
     <SeekBar
@@ -49,9 +41,9 @@
 
         android:min="0"/>
 
-
+    <!--
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imageView"
         android:layout_width="200dp"
         android:layout_height="50dp"
         opencv:srcCompat="@drawable/logo"
@@ -59,15 +51,15 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:alpha="0.5"/>
-
+    -->
     <ImageButton
-        android:id="@+id/switch_camera"
+        android:id="@+id/switch_activity"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
-        android:translationY="180dp"
+        android:translationY="130dp"
         android:background="@null"
-        opencv:srcCompat="@android:drawable/ic_menu_camera" />
+        opencv:srcCompat="@android:drawable/ic_menu_set_as" />
 
 
 

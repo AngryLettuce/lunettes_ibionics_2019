@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -41,7 +43,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-public class frontCameraActivity extends AppCompatActivity implements CvCameraViewListener2{
+public class backCameraActivity extends AppCompatActivity implements CvCameraViewListener2{
     // Used for logging success or failure messages
     private static final String TAG = "OCVSample::Activity";
 
@@ -105,7 +107,7 @@ public class frontCameraActivity extends AppCompatActivity implements CvCameraVi
         }
     };
 
-    public frontCameraActivity() {
+    public backCameraActivity() {
         Log.i(TAG, "Instantiated new " + this.getClass());
     }
 
@@ -115,20 +117,20 @@ public class frontCameraActivity extends AppCompatActivity implements CvCameraVi
         super.onCreate(savedInstanceState);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.front_camera);
-        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view2);
+        setContentView(R.layout.back_camera);
+        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.show_camera_activity_java_surface_view2_back);
         mOpenCvCameraView.setMaxFrameSize(720, 1280);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
 
 
-        final Switch houghCircles_Switch = findViewById(R.id.switch_HoughCircle);
-        final Switch ellipsFitting_Switch = findViewById(R.id.switch_EllipsFitting);
-        final Switch thresholdInv_switch = findViewById(R.id.threhold_inv);
+        final Switch houghCircles_Switch = findViewById(R.id.switch_HoughCircle_back);
+        final Switch ellipsFitting_Switch = findViewById(R.id.switch_EllipsFitting_back);
+        final Switch thresholdInv_switch = findViewById(R.id.threhold_inv_back);
         thresholdInv_switch.setVisibility(View.INVISIBLE);
-        final ImageButton switch_activity = findViewById(R.id.switch_activity2);
+        final ImageButton switch_activity = findViewById(R.id.switch_activity2_back);
 
-        seekBarZoom=findViewById(R.id.seekBarZoomid3);
+        seekBarZoom=findViewById(R.id.seekBarZoomid3_back);
         seekBarZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -142,7 +144,7 @@ public class frontCameraActivity extends AppCompatActivity implements CvCameraVi
             }
         });
 
-        seekBarThreshold=findViewById(R.id.ellipseThreshold);
+        seekBarThreshold=findViewById(R.id.ellipseThreshold_back);
         seekBarThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -210,7 +212,7 @@ public class frontCameraActivity extends AppCompatActivity implements CvCameraVi
         switch_activity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v3) {
-                startActivity(new Intent(frontCameraActivity.this, MainActivity.class));
+                startActivity(new Intent(backCameraActivity.this, MainActivity.class));
             }
         });
 
@@ -223,7 +225,7 @@ public class frontCameraActivity extends AppCompatActivity implements CvCameraVi
 
             @Override
             public void onDoubleClick(View v) {
-                startActivity(new Intent(frontCameraActivity.this, backCameraActivity.class));
+                startActivity(new Intent(backCameraActivity.this, frontCameraActivity.class));
             }
         });
     }
@@ -356,11 +358,11 @@ public class frontCameraActivity extends AppCompatActivity implements CvCameraVi
                 double area_max = 0;
                 int index_area_max = 0;
                 for(int i = 0; i < contours.size(); i++){
-                   double area = Imgproc.contourArea(contours.get(i), false);
-                   if(area > area_max){
-                       index_area_max = i;
-                       area_max = area;
-                   }
+                    double area = Imgproc.contourArea(contours.get(i), false);
+                    if(area > area_max){
+                        index_area_max = i;
+                        area_max = area;
+                    }
                 }
 
                 if(contours.get(index_area_max).height() > 5){
@@ -376,5 +378,6 @@ public class frontCameraActivity extends AppCompatActivity implements CvCameraVi
     }
 
 }
+
 
 

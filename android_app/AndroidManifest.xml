@@ -14,6 +14,11 @@
             android:screenOrientation="portrait"
             >
         </activity>
+        <activity android:name=".backCameraActivity"
+            android:label="iBionic Vision"
+            android:screenOrientation="portrait"
+            >
+        </activity>
         <activity android:name=".MainActivity"
             android:label="iBionic Vision"
             android:screenOrientation="portrait"

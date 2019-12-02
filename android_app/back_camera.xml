@@ -11,11 +11,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:visibility="gone"
-        android:id="@+id/show_camera_activity_java_surface_view2"
+        android:id="@+id/show_camera_activity_java_surface_view2_back"
         opencv:show_fps="true"
-        opencv:camera_id="front" />
+        opencv:camera_id="back" />
     <Switch
-        android:id="@+id/switch_HoughCircle"
+        android:id="@+id/switch_HoughCircle_back"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_weight="1"
@@ -24,7 +24,7 @@
         android:translationY="20dp" />
 
     <Switch
-        android:id="@+id/switch_EllipsFitting"
+        android:id="@+id/switch_EllipsFitting_back"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_weight="1"
@@ -33,7 +33,7 @@
         android:translationY="80dp" />
 
     <Switch
-        android:id="@+id/threhold_inv"
+        android:id="@+id/threhold_inv_back"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_weight="1"
@@ -43,7 +43,7 @@
 
 
     <SeekBar
-        android:id="@+id/seekBarZoomid3"
+        android:id="@+id/seekBarZoomid3_back"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="50dp"
@@ -52,7 +52,7 @@
         android:min="0"/>
 
     <SeekBar
-        android:id="@+id/ellipseThreshold"
+        android:id="@+id/ellipseThreshold_back"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="50dp"
@@ -73,7 +73,7 @@
         android:alpha="0.5"/>
     -->
     <ImageButton
-        android:id="@+id/switch_activity2"
+        android:id="@+id/switch_activity2_back"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"

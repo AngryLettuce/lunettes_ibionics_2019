@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
             255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
     };
 
-    public boolean switch_HoughCircles_state = false;
     public boolean switch_state = false;
     public boolean switch_state2 = false;
     public double seekBarValue = 1;
@@ -120,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
+
         //Ask for the Camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED){
@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
         final Switch switch1 = findViewById(R.id.img_proc_switch);
         final Switch switch2 = findViewById(R.id.img_proc_switch2);
-        final Switch houghCircles_Switch = findViewById(R.id.switch_HoughCircle);
-        final ImageButton switch_Camera = findViewById(R.id.switch_camera);
+
+        final ImageButton switch_activity = findViewById(R.id.switch_activity);
 
         seekBarZoom=findViewById(R.id.seekBarZoomid);
         seekBarZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -181,28 +181,14 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
                 }
             }
         });
-        switch_Camera.setOnClickListener(new View.OnClickListener() {
+        switch_activity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v3) {
                 startActivity(new Intent(MainActivity.this, frontCameraActivity.class));
             }
         });
 
-        houghCircles_Switch.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v4) {
 
-                // check current state of a Switch (true or false).
-                Boolean switchState = houghCircles_Switch.isChecked();
-                if (switchState == true){
-                    Log.d(TAG, "Switch Activated");
-                    switch_HoughCircles_state = true;
-                }
-                else{
-                    Log.d(TAG, "Switch not Activated");
-                    switch_HoughCircles_state = false;
-                }
-            }
-        });
     }
     @Override
     public void onPause()
@@ -254,13 +240,13 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         // Get black and white input image
         Mat mRgba = inputFrame.rgba();
-        Mat gray = new Mat();
-        Imgproc.cvtColor(mRgba, gray, Imgproc.COLOR_BGR2GRAY);
+
 
         Mat resizeImage = new Mat(small_height, small_width, mRgba.type());
         int linearResize = Imgproc.INTER_LINEAR;
         int cubicResize = Imgproc.INTER_CUBIC;
 
+        /*
          // Auto brightness control
         Core.MinMaxLocResult mmr = Core.minMaxLoc(mRgba);
         int mRgba_max_val = (int) mmr.maxVal; //Get max pixel level
@@ -273,19 +259,21 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
         alpha = 255/input_range; // Alpha is a global pixel multiplier
         beta = -mRgba_min_val * alpha; // Beta is a global pixel offset
         gray.convertTo(gray, -1, alpha, beta); //Apply brightness control
+
+        */
         try{
             //Apply region of interest
             zoom = seekBarValue; // Eventually link with slider
 
             // Find bounds of region of interest
-            orig = gray.size();
+            orig = mRgba.size();
             offx = (int) (0.5 * (1.0 - zoom) * orig.width);
             offy = (int) (0.5 * (1.0 - zoom) * orig.height);
             rowEnd = (int) (orig.height - offy);
             colEnd = (int) (orig.width - offx);
 
             // crop the part, you want to zoom into:
-            cropped = gray.submat(offy, rowEnd, offx, colEnd);
+            cropped = mRgba.submat(offy, rowEnd, offx, colEnd);
             // resize to original screen resolution
             Imgproc.resize(cropped, cropped, orig); //Maybe remove?
         }
@@ -294,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
         }
         // Image processing starts here
         if (switch_state) {
+            Imgproc.cvtColor(cropped, cropped, Imgproc.COLOR_BGR2GRAY);
             // First step for Sobel image processing
             Imgproc.GaussianBlur(cropped, cropped, new Size(5, 5), 0.75, 0.75, Core.BORDER_DEFAULT);
             // Apply sobel transform to image
@@ -306,6 +295,9 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
         // Create 16 x 18 matrix to store downsized matrix
         // Apply 16 x 18 downsize
         if (switch_state2){
+            if(!switch_state) {
+                Imgproc.cvtColor(cropped, cropped, Imgproc.COLOR_BGR2GRAY);
+            }
             Imgproc.resize(cropped, resizeImage, resizeImage.size(), 0, 0, linearResize);
             // Limit colors to 8 levels of gray
             // Iterate through all pixels and apply a look
@@ -323,25 +315,7 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
             // Upscale the image to show it on the screen
             Imgproc.resize(resizeImage, cropped, cropped.size(), 0, 0, cubicResize);
         }
-        /*
-        if (switch_HoughCircles_state) {
-            Imgproc.medianBlur(cropped, cropped, 5);
-            Mat circles = new Mat();
-            Imgproc.HoughCircles(cropped, circles, Imgproc.HOUGH_GRADIENT, 1.0,
-                    (double)cropped.rows()/16, // change this value to detect circles with different distances to each other
-                    100.0, 30.0, 1, 30); // change the last two parameters
 
-            for (int x = 0; x < circles.cols(); x++) {
-                double[] c = circles.get(0, x);
-                Point center = new Point(Math.round(c[0]), Math.round(c[1]));
-                // circle center
-                Imgproc.circle(mRgba, center, 1, new Scalar(0,100,100), 2, 8, 0 );
-                // circle outline
-                //int radius = (int) Math.round(c[2]);
-                //Imgproc.circle(mRgba, center, radius, new Scalar(255,0,255), 3, 8, 0 );
-            }
-
-        } */
         return cropped; // This function must return
     }
 
