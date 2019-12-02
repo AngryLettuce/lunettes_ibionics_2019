@@ -21,7 +21,7 @@
 #define ENABLE_SOFT_LDAC 0x300000
 #define VBIAS 80
 //#define V_DIFF_MAX 120
-#define V_DIFF_MAX 75
+#define V_DIFF_MAX 85
 #define V_DIFF_TO_ANGLE_FACTOR 0.046
 
 #define SPI_CHANNEL 0
@@ -32,7 +32,7 @@
 using namespace std;
 
 Mems::Mems() :
-	spi(SPI_CHANNEL, 500000, 1),
+	spi(SPI_CHANNEL, 1000000, 1),
 	enable(GPIO45_MEMS_EN_DRV) {
 #ifdef __arm__
 	//clock(GPIO4_MEMS_FILT_X),

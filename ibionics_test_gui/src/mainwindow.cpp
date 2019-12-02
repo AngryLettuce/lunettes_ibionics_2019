@@ -72,6 +72,7 @@ void MainWindow::tabChange(int currentIndex)
     }
     else if(currentIndex == calibrationIndex)
     {
+        laser_pos_control.laser.on();
         if(cameras->verifyCameraPresent(0))
             connect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
         else
@@ -79,6 +80,12 @@ void MainWindow::tabChange(int currentIndex)
     }
     else if(currentIndex == memsIndex)
     {
+        if(memsTab->laser_on) {
+            laser_pos_control.laser.on();
+        } 
+        else {
+            laser_pos_control.laser.off();
+        }
         if(cameras->verifyCameraPresent(0))
             connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
         else

@@ -55,9 +55,10 @@ void EyeWorldTab::processFrameEye()
     (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEye, posX, posY) ;
 
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
+        mainWindowPtr->laser_pos_control.send_pos(posX, posY);
         mainWindowPtr->laser_pos_control.laser.on();
         cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(180, 180, 180), -1);
-        mainWindowPtr->laser_pos_control.send_pos(posX, posY);
+        
     }
     else
         mainWindowPtr->laser_pos_control.laser.off();
