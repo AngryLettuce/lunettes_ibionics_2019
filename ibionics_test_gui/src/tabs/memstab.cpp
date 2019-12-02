@@ -90,7 +90,8 @@ void MemsTab::switchLaserState()
 
 void MemsTab::processMemsFrame()
 {
-    imgEye = *(mainWindowPtr->cameras->readImgCam(0));
+    imgEye = mainWindowPtr->cameras->frameBufferCam0.back();
+    //imgEye = *(mainWindowPtr->cameras->readImgCam(0));
     if(imgEye.empty()) return;
 
     //Crop and resize EyeCam image according to calibration settings

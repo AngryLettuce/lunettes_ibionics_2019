@@ -1,7 +1,7 @@
 #include "systemCameras.h"
 
 
-systemCameras::systemCameras()
+systemCameras::systemCameras(MainWindow* mw)
 {
     camResolution[0][0]= 640;
     camResolution[0][1]= 480;
@@ -31,6 +31,7 @@ systemCameras::systemCameras()
     camInterface[1].shutdown_pins[1] = 13;
 
     int initializedCam = 0;
+
 
 #ifdef __arm__
     camState[0] = arducam_init_camera2(&arducamInstance[0], camInterface[0]);
@@ -114,6 +115,29 @@ systemCameras::systemCameras()
     width = camWorld.get(cv::CAP_PROP_FRAME_WIDTH);
     height = camWorld.get(cv::CAP_PROP_FRAME_HEIGHT);
     std::cout << width << " " << height << std::endl;*/
+
+
+    frameBufferCam0 = *new std::vector<cv::Mat> [framebuffer*sizeof(readImgCam(0))];
+    frameBufferEyeProceed = *new std::vector<cv::Mat> [framebuffer*sizeof(readImgCam(0))];
+    frameBufferCam1 = *new std::vector<cv::Mat> [framebuffer*sizeof(readImgCam(1))];
+    frameBufferWorldProceed = *new std::vector<cv::Mat> [framebuffer*sizeof(readImgCam(1))];
+
+    mainWindowPtr = mw;
+
+    frameBufferCam0.clear();
+    frameBufferCam1.clear();
+    frameBufferEyeProceed.clear();
+    frameBufferWorldProceed.clear();
+
+//    std::thread t1(&systemCameras::grabCam0Frame, this);
+//    std::thread t2(&systemCameras::grabCam1Frame, this);
+
+//    std::thread threadCam0(&systemCameras::grabCam0Frame);
+//    std::thread threadCam1(&systemCameras::grabCam1Frame);
+
+//    std::thread threadEyeProcess(&systemCameras::processEyeFrame);
+//    std::thread threadWorldProcess(&systemCameras::processWorldFrame);
+
 }
 
 systemCameras::~systemCameras()
@@ -190,6 +214,131 @@ cv::Mat* systemCameras::readImgCam(int CamIndex)
         return nullptr;
 
     return &processedImg;
+}
+
+std::thread systemCameras::grabCam0Frame(void){
+    cv::Mat frame;
+    frameBufferCam0.clear();
+    while(!stopSig){
+        frame = *readImgCam(0);
+        //std::cout <<"yo in grb0Fr One frame read : "<<std::endl;
+        if(frameBufferCam0.size() > 2)
+            frameBufferCam0.pop_back();
+        if(frameBufferCam0.size() < framebuffer){
+            frameBufferCam0.push_back(frame);
+            //std::cout << "Cam 0 : " << frame.channels() << std::endl ;
+        }
+
+        else
+            frameBufferCam0.clear();
+    }
+
+}
+
+std::thread systemCameras::grabCam1Frame(void){
+    cv::Mat frame;
+    frameBufferCam1.clear();
+    while(!stopSig){
+        frame = *readImgCam(1);
+                //std::cout <<"yo in grb1Fr One frame read : "<<std::endl;
+        if(frameBufferCam1.size() > 2)
+            frameBufferCam1.pop_back();
+        if(frameBufferCam1.size() < framebuffer){
+            frameBufferCam1.push_back(frame);
+            //std::cout << "Cam 1 : " << frame.channels() << std::endl ;
+        }
+        else
+            frameBufferCam1.clear();
+        //cv::imshow("yop 1", frame);
+    }
+}
+
+std::thread systemCameras::processEyeFrame(void){
+    cv::Mat frame;
+    cv::Mat frameCropped;
+    cv::Mat frameResized;
+    cv::Mat framePupil;
+    while(!stopSig){
+        if(!frameBufferCam0.empty()){
+            //std::cout << " Cam0 : " << frame.channels()<< std::endl;
+            frame = frameBufferCam0.front();
+            cropRegion(&frame, &frame, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY,
+                       mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
+            cv::resize(frame, frame, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
+
+            (mainWindowPtr->eyeWorldTab->pupilMethod) ?
+                 applyEllipseMethod(&frame, mainWindowPtr->eyeWorldTab->slider->value(), mainWindowPtr->eyeWorldTab->posX, mainWindowPtr->eyeWorldTab->posY, mainWindowPtr->eyeWorldTab->stepsCombo.currentIndex()) :
+                 applyHoughMethod(&frame, mainWindowPtr->eyeWorldTab->posX, mainWindowPtr->eyeWorldTab->posY) ;
+
+            // maybe?
+            // QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
+        }
+        if (frameBufferEyeProceed.size() > 2)
+            frameBufferEyeProceed.pop_back();
+
+        if (!frameBufferEyeProceed.empty() && frameBufferEyeProceed.size() < framebuffer)
+            frameBufferEyeProceed.push_back(frame);
+        else if(frameBufferEyeProceed.size() >= framebuffer)
+            frameBufferEyeProceed.clear();
+
+    }
+}
+
+std::thread systemCameras::processWorldFrame(void){
+    cv::Mat frame;
+    cv::Mat frameCropped;
+    cv::Mat frameResized;
+    cv::Mat frameWorld;
+
+    int posXWorld;
+    int posYWorld;
+    //std::cout <<"yo in PrWorldFr"<<std::endl;
+    cv::Mat gray_LUT(1, 256, CV_8U);
+    uchar*p = gray_LUT.ptr();
+    for (int i = 0; i < 256; i++) {
+            p[i] = grayLevelsTable[i];
+    }
+
+    while(!stopSig){
+        if(!frameBufferCam1.empty()){
+            //std::cout<< " Cam1 : " << frame.channels()<< std::endl;
+            frame = frameBufferCam1.front();
+
+            if(((mainWindowPtr->eyeWorldTab->posX >= 0) && (mainWindowPtr->eyeWorldTab->posX < CAMERA_RESOLUTION)) &&
+               ((mainWindowPtr->eyeWorldTab->posY >= 0) && (mainWindowPtr->eyeWorldTab->posY < CAMERA_RESOLUTION)) )
+            {
+
+                frameCropped = frame;
+                //Adjust pupil position to worldCam resolution
+                posXWorld = mainWindowPtr->eyeWorldTab->posX * frame.cols / CAMERA_RESOLUTION;
+                posYWorld = mainWindowPtr->eyeWorldTab->posY * frame.rows / CAMERA_RESOLUTION;
+
+
+                if(frame.channels() <= 1){
+                    (RECTSHOW) ? cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, true) : cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, false);
+                }
+                else{
+                    cv::cvtColor(frame,frameCropped,cv::COLOR_RGB2GRAY);
+                    (RECTSHOW) ? cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, true) : cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, false);
+                }
+                /*(RECTSHOW) ? cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, true) :
+                             cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, false);
+
+                if(frame.channels() > 1)
+                    cv::cvtColor(frameCropped, frameCropped, cv::COLOR_RGB2GRAY);*/
+
+                traitementWorld(&frameCropped, gray_LUT);
+                drawWorl2img(&frame, &frameCropped, posXWorld, posYWorld);
+            }
+        }
+        if (frameBufferWorldProceed.size() > 2)
+            frameBufferWorldProceed.pop_back();
+
+        if (!frameBufferWorldProceed.empty() && frameBufferWorldProceed.size() < framebuffer)
+            frameBufferWorldProceed.push_back(frameResized);
+        else if(frameBufferWorldProceed.size() >= framebuffer)
+            frameBufferWorldProceed.clear();
+    }
 }
 
 

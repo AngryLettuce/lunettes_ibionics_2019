@@ -24,6 +24,7 @@ class MemsTab; //foward declaration to avoid circular dependencies with memstab.
 class EyeWorldTab; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 class CalibrationTab; //foward declaration to avoid circular dependencies with calibrationtab.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h
+class systemCameras;
 
 class MainWindow : public QMainWindow
 {

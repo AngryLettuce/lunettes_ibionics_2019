@@ -44,7 +44,6 @@ class EyeWorldTab : public QWidget
     Q_OBJECT
 public:
     explicit EyeWorldTab(QWidget *parent = nullptr, MainWindow* mW = nullptr);
-    cv::Mat* getImage(int camera_instance, int width, int height);
 
     cv::Mat imgEye;
     cv::Mat imgWorld;
@@ -69,7 +68,7 @@ public:
 
     QComboBox stepsCombo;
 
-    std::chrono::time_point<std::chrono::system_clock> start,end;
+    std::chrono::time_point<std::chrono::system_clock> startEvent, endReadImg, endResize, endPupilMethod, endEvent, startImgProc, endImgProc;
 
 signals:
 

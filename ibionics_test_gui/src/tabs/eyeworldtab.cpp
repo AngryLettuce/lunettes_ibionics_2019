@@ -41,18 +41,29 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
 void EyeWorldTab::processFrameEye()
 {
-    //start = std::chrono::system_clock::now();
-    imgEye = *(mainWindowPtr->cameras->readImgCam(0));
+
+    startEvent = std::chrono::system_clock::now();
+    imgEye = mainWindowPtr->cameras->frameBufferCam0.back();
+    //imgEye = *(mainWindowPtr->cameras->readImgCam(0));
+    endReadImg = std::chrono::system_clock::now();
     if(imgEye.empty()) return;
-    
+
+    //imgEye = mainWindowPtr->cameras->frameBufferEyeProceed.back();
+
     int comboBoxIndex = stepsCombo.currentIndex();
 
     //Crop EyeCam image according to calibration settings
+    startImgProc = std::chrono::system_clock::now();
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
+    endImgProc = std::chrono::system_clock::now();
     //Resize to constant resolution
     cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
+    endResize = std::chrono::system_clock::now();
 
     (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEye, posX, posY) ;
+    endPupilMethod  = std::chrono::system_clock::now();
+
+
 
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
         mainWindowPtr->laser_pos_control.laser.on();
@@ -65,17 +76,26 @@ void EyeWorldTab::processFrameEye()
     cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
     QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
-    //end = std::chrono::system_clock::now();
-    //std::chrono::duration<double> elapsed_seconds = end-start;
-    //std::cout << elapsed_seconds.count() << std::endl;
+
+    endEvent = std::chrono::system_clock::now();
+    //----------------------------------------------------------Profiling---------------------------------------------------------------------------------
+
+//    std::cout << "Read Img Time :" <<   (std::chrono::duration<double>(endReadImg-startEvent)).count()*1000 << std::endl;
+//    std::cout << "Crop Time : " <<      (std::chrono::duration<double>(endImgProc-startImgProc)).count()*1000 << std::endl;
+//    std::cout << "Resize Time : " <<    (std::chrono::duration<double>(endResize-endImgProc)).count()*1000 << std::endl;
+//    std::cout << "Method Time : " << (std::chrono::duration<double>(endPupilMethod-endResize)).count()*1000 << std::endl;
+//    std::cout << "All Time : " << (std::chrono::duration<double>(endEvent-startEvent)).count()*1000 << std::endl;
+
 
 }
 
 void EyeWorldTab::processFrameWorld()
 {
-    imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);    
-	if(imgWorld.empty()) return;
-    
+    imgWorld = mainWindowPtr->cameras->frameBufferCam1.back();
+    //imgWorld = mainWindowPtr->cameras->frameBufferWorldProceed.back();
+    //imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
+    if(imgWorld.empty()) return;
+
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION )
     {
         cv::Mat img2World = imgWorld;
@@ -102,9 +122,11 @@ void EyeWorldTab::processFrameWorld()
         drawWorl2img(&imgWorld, &img2World,posXWorld,posYWorld);
         //cv::imshow("test",imgWorld);
     }
+
     cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
     QImage qimgWorld(reinterpret_cast<uchar*>(imgWorld.data), imgWorld.cols, imgWorld.rows, imgWorld.step, QImage::Format_RGB888);
     imgLblWorld->setPixmap(QPixmap::fromImage(qimgWorld));
+
 }
 
 

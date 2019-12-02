@@ -40,8 +40,8 @@ CalibrationTab::CalibrationTab(QWidget *parent, MainWindow* mW) : QWidget(parent
 
 void CalibrationTab::processCalibrationFrame()
 {
-
-    imgEye = *mainWindowPtr->cameras->readImgCam(0);
+    imgEye = mainWindowPtr->cameras->frameBufferEyeProceed.back();
+    //imgEye = *mainWindowPtr->cameras->readImgCam(0);
     if(imgEye.empty()) return;
     
     //Get corners of roi

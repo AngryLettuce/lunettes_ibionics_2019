@@ -36,14 +36,9 @@ MainWindow::MainWindow(QWidget *parent)
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
     
-    //Considering it start on the mems tab
-    if(cameras->verifyCameraPresent(0))
-        connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
-    else
-        std::cout<<"Error EyeCam not accessible"<<std::endl;
-    
-    laser_pos_control.draw_rectangle(10);
-    laser_pos_control.send_pos(CAMERA_RESOLUTION/2,CAMERA_RESOLUTION/2);
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -84,6 +79,10 @@ void MainWindow::tabChange(int currentIndex)
         else
             std::cout<<"Error EyeCam not accessible"<<std::endl;
     }
+    std::thread t1(&systemCameras::grabCam0Frame, cameras);
+    std::thread t2(&systemCameras::grabCam1Frame, cameras);
+    std::thread t3(&systemCameras::processEyeFrame, cameras);
+    std::thread t4(&systemCameras::processWorldFrame, cameras);
 }
 
 void MainWindow::initHw()
@@ -93,7 +92,18 @@ void MainWindow::initHw()
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
 
-    cameras = new systemCameras();
+    cameras = new systemCameras(this);
+
+    //Considering it start on the mems tab
+    if(cameras->verifyCameraPresent(0))
+        connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
+    else
+        std::cout<<"Error EyeCam not accessible"<<std::endl;
+
+
+    laser_pos_control.draw_rectangle(10);
+    laser_pos_control.send_pos(CAMERA_RESOLUTION/2,CAMERA_RESOLUTION/2);
+
 }
 
 void MainWindow::saveCalibrationGridParams() {
