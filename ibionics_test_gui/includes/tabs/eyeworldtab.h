@@ -32,9 +32,12 @@
 #define NORMAL_COLUMN_SPAN 1
 
 #define BUTTON_COLUMN_SPAN 2
-#define SLIDER_COLUMN_SPAN 2
+#define SLIDER_COLUMN_SPAN 1
 #define SPACER_ROW_SPAN 6
 #define SPACER_COLUMN_SPAN 3
+
+#define ROI_LINES 160
+#define ROI_COL 180
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with mainwindow.h
@@ -56,7 +59,8 @@ public:
     QLabel *worldFpsLabel;
     
     QPushButton *button_method;
-    QSlider *slider;
+    QSlider *slider_threshold;
+    QSlider *slider_ROI;
     QGridLayout *layout;
 
     int posX = 0;
@@ -70,6 +74,9 @@ public:
     QComboBox stepsCombo;
 
     std::chrono::time_point<std::chrono::system_clock> start,end;
+
+    cv::Mat gray_LUT;
+    uchar*gray_level_LUT_pointer;
 
 signals:
 
