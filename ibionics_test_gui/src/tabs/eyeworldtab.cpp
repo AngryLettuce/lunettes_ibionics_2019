@@ -57,7 +57,7 @@ void EyeWorldTab::processFrameEye()
     //start = std::chrono::system_clock::now();
     imgEye = *(mainWindowPtr->cameras->readImgCam(0));
     if(imgEye.empty()) return;
-    
+
     int comboBoxIndex = stepsCombo.currentIndex();
 
     //Crop EyeCam image according to calibration settings
@@ -77,7 +77,7 @@ void EyeWorldTab::processFrameEye()
             cv::circle(imgEye, cv::Point(posX, posY), 6, cv::Scalar(180, 180, 180), -1);
         }
 
-        
+
     }
     else
         mainWindowPtr->laser_pos_control.laser.off();
@@ -93,9 +93,9 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
-    imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);    
+    imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
 	if(imgWorld.empty()) return;
-    
+
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION )
     {
         cv::Mat img2World = imgWorld;
@@ -104,19 +104,19 @@ void EyeWorldTab::processFrameWorld()
         int posXWorld = posX * imgWorld.cols / CAMERA_RESOLUTION;
         int posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
 
-        int ROI_WIDTH = ROI_COL * slider_threshold->value() / 10;
-        int ROI_HEIGHT = ROI_LINES * slider_threshold->value() / 10;
+        int roi_width = ROI_COL * slider_ROI->value() / 10;
+        int roi_height = ROI_LINES * slider_ROI->value() / 10;
 
         if(imgWorld.channels() <= 1){
-            (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, ROI_HEIGHT, ROI_WIDTH, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, ROI_HEIGHT, ROI_WIDTH, false);
+            (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, roi_height, roi_width, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, roi_height, roi_width, false);
         }
         else{
             cv::cvtColor(imgWorld,img2World,cv::COLOR_RGB2GRAY);
-            (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, ROI_HEIGHT, ROI_WIDTH, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, ROI_HEIGHT, ROI_WIDTH, false);
+            (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, roi_height, roi_width, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, roi_height, roi_width, false);
         }
 
-        traitementWorld(&img2World,gray_LUT);
-        drawWorl2img(&imgWorld, &img2World,posXWorld,posYWorld);
+        traitementWorld(&img2World, gray_LUT);
+        drawWorl2img(&imgWorld, &img2World, posXWorld, posYWorld, roi_height, roi_width);
         //cv::imshow("test",imgWorld);
     }
     cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
@@ -126,7 +126,7 @@ void EyeWorldTab::processFrameWorld()
 
 
 void EyeWorldTab::switchPupilMethodButton()
-{   
+{
     pupilMethod = !pupilMethod; //change stage of pupil detection
     if(VERBOSE)
         std::cout << ((pupilMethod) ? "Change pupil detection method to Ellipse" : "Change pupil detection method to hough circle")<< std::endl;
