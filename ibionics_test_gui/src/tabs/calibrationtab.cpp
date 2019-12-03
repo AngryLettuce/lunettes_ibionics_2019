@@ -64,11 +64,11 @@ void CalibrationTab::processCalibrationFrame()
     // Drawing calibration grid
     cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
     int line_pos, i;
-    for (i = 0, line_pos = upSide; i < rows; i++, line_pos+=heightSpace)
+    for (i = 0, line_pos = upSide; i < rows-1; i++, line_pos+=heightSpace)
     
         cv::line(imgEye, cv::Point(leftSide, line_pos), cv::Point(rightSide, line_pos), cv::Scalar(0, 255, 0));
 
-    for (i = 0, line_pos = leftSide; i < columns; i++, line_pos+=widthSpace)
+    for (i = 0, line_pos = leftSide; i < columns-1; i++, line_pos+=widthSpace)
         cv::line(imgEye, cv::Point(line_pos, upSide), cv::Point(line_pos, downSide), cv::Scalar(0, 255, 0));
 
     cv::rectangle(imgEye, cv::Rect(upLeft, downRight) , cv::Scalar(0,255,0), 1, 8,0 );

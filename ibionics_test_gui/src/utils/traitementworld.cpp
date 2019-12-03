@@ -11,7 +11,7 @@ void traitementWorld(cv::Mat *imgZoom,cv::Mat gray_LUT)
 }
 
 //put img zoom into imgOr
-void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y)
+void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, int roi_width)
 {
 
     std::vector<cv::Mat> channels(3);
@@ -38,8 +38,8 @@ void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y)
     //imgOr(roi).copyTo(imgZoom)
     //src.copyTo(dst.rowRange(1, 6).colRange(3, 10));
 
-    x = getRegionPos(x,180,imgOr->cols);
-    y = getRegionPos(y,160,imgOr->rows);
+    x = getRegionPos(x, roi_width, imgOr->cols);
+    y = getRegionPos(y, roi_height, imgOr->rows);
 
     //std::cout<< "imgOr rows : "<< imgOr->rows << " imgOr cols : " << imgOr->cols << std::endl;
     //std::cout<< "imgZo rows : "<< imgZoom->rows << " imgZo cols : " << imgZoom->cols << std::endl;
@@ -47,8 +47,8 @@ void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y)
     //std::cout<<"cols demander de "<< x <<" a "<< x + imgZoom->cols << std::endl;
 
     //resize
-    cv::resize(*imgZoom,*imgZoom,cv::Size(18,16),cv::INTER_LINEAR );
-    cv::resize(*imgZoom,*imgZoom,cv::Size(180,160),cv::INTER_CUBIC);
+    cv::resize(*imgZoom, *imgZoom, cv::Size(18, 16), cv::INTER_LINEAR );
+    cv::resize(*imgZoom, *imgZoom, cv::Size(roi_width, roi_height), cv::INTER_CUBIC);
 
     imgZoom->copyTo(imgOr->rowRange(y,y+imgZoom->rows).colRange(x,x+imgZoom->cols));
 
