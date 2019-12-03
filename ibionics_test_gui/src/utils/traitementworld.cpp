@@ -47,7 +47,7 @@ void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, i
     //std::cout<<"cols demander de "<< x <<" a "<< x + imgZoom->cols << std::endl;
 
     //resize
-    cv::resize(*imgZoom, *imgZoom, cv::Size(18, 16), CV::INTER_LINEAR );
+    cv::resize(*imgZoom, *imgZoom, cv::Size(18, 16), cv::INTER_LINEAR );
     cv::resize(*imgZoom, *imgZoom, cv::Size(roi_width, roi_height), cv::INTER_CUBIC);
 
     imgZoom->copyTo(imgOr->rowRange(y,y+imgZoom->rows).colRange(x,x+imgZoom->cols));
