@@ -23,7 +23,7 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     slider_threshold = new QSlider(Qt::Horizontal, this);
     slider_threshold->setMinimum(0);
     slider_threshold->setMaximum(125);
-    slider_threshold->setValue(25);
+    slider_threshold->setValue(50);
 
     slider_ROI = new QSlider(Qt::Horizontal, this);
     slider_ROI->setMinimum(1);
@@ -95,53 +95,52 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
-
     static int imgSwitchCounter = 0;
-    static std::string imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/12.png";
+    static std::string imagePath = "/home/pi/Desktop/ImagesResized/12.png";
     switch (imgSwitchCounter) {
 
         case(SECONDS_SWITCH):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/1.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/1.png";
         break;
 
         case(SECONDS_SWITCH*2):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/2.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/2.png";
         break;
 
         case(SECONDS_SWITCH*3):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/4.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/4.png";
         break;
 
         case(SECONDS_SWITCH*4):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/5.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/5.png";
         break;
 
         case(SECONDS_SWITCH*5):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/6.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/6.png";
         break;
 
         case(SECONDS_SWITCH*6):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/7.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/7.png";
         break;
 
         case(SECONDS_SWITCH*7):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/8.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/8.png";
         break;
 
         case(SECONDS_SWITCH*8):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/9.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/9.png";
         break;
 
         case(SECONDS_SWITCH*9):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/10.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/10.png";
         break;
 
         case(SECONDS_SWITCH*10):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/11.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/11.png";
         break;
 
         case(SECONDS_SWITCH*11):
-            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/12.png";
+            imagePath = "/home/pi/Desktop/ImagesResized/12.png";
             imgSwitchCounter = 0;
         break;
 
@@ -153,17 +152,33 @@ void EyeWorldTab::processFrameWorld()
     imgWorld = cv::imread(imagePath, cv::IMREAD_COLOR);
     //imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
 
-
     if(imgWorld.empty()) return;
 
+    //used for low pass filter on ROI
+    static int previousPosX = posX;
+    static int previousPosY = posY;
 
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION )
     {
         cv::Mat img2World = imgWorld;
 
-        //Adjust pupil position to worldCam resolution
-        int posXWorld = posX * imgWorld.cols / CAMERA_RESOLUTION;
-        int posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
+        
+        int posXWorld;
+        int posYWorld;
+        if(abs(posX-previousPosX) > LOWPASS_CUTOFF_VALUE || abs(posY-previousPosY) > LOWPASS_CUTOFF_VALUE)
+        {
+            //Adjust pupil position to worldCam resolution
+            posXWorld = posX * imgWorld.cols / CAMERA_RESOLUTION;
+            posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
+            previousPosX = posX;
+            previousPosY = posY;
+        }
+        else 
+        {
+            //Adjust pupil position to worldCam resolution
+            posXWorld = previousPosX * imgWorld.cols / CAMERA_RESOLUTION;
+            posYWorld = previousPosY * imgWorld.rows / CAMERA_RESOLUTION;
+        }
 
         int roi_width = ROI_COL * slider_ROI->value() / 10;
         int roi_height = ROI_LINES * slider_ROI->value() / 10;
@@ -206,5 +221,3 @@ void EyeWorldTab::switchPupilMethodButton()
 
     }
 }
-
-

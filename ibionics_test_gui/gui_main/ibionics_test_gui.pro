@@ -8,7 +8,7 @@ QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = app_main
+TARGET = app_main_plan_B
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use

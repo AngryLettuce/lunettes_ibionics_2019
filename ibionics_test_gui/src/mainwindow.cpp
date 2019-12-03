@@ -65,10 +65,12 @@ void MainWindow::tabChange(int currentIndex)
         else
             std::cout<<"Error EyeCam not accessible"<<std::endl;
 
+        /*
         if(cameras->verifyCameraPresent(1))
             connect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
         else
-            std::cout<<"Error WorldCam not accessible"<<std::endl;
+            std::cout<<"Error WorldCam not accessible"<<std::endl;*/
+        connect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
     }
     else if(currentIndex == calibrationIndex)
     {
