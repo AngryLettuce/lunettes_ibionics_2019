@@ -95,12 +95,13 @@ void MainWindow::tabChange(int currentIndex)
 
 void MainWindow::initHw()
 {
+    cameras = new systemCameras();
     tmrTimerEye = new QTimer(this);
     tmrTimerWorld = new QTimer(this);
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
 
-    cameras = new systemCameras();
+    
 }
 
 void MainWindow::saveCalibrationGridParams() {

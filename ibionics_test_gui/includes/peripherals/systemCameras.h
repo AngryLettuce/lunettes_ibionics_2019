@@ -32,11 +32,13 @@ private:
     int camState[2];
     int camResolution[2][2];
 
-    cv::Mat processedImg;
-
+    cv::Mat processedImgEye;
+    cv::Mat processedImgEye2;
+    cv::Mat processedImgWorld;
+    
     bool isCamMipi[2];
 
-    BUFFER *arducamBuffer = nullptr;
+    BUFFER *arducamBuffer;
     
     IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 100};
 

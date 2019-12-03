@@ -1,5 +1,5 @@
 #include "systemCameras.h"
-
+#include <linux/v4l2-controls.h>
 
 systemCameras::systemCameras()
 {
@@ -36,7 +36,12 @@ systemCameras::systemCameras()
     camState[0] = arducam_init_camera2(&arducamInstance[0], camInterface[0]);
     if(!camState[0]){
         arducam_set_resolution(arducamInstance[0], &camResolution[0][0], &camResolution[0][1]);
-        arducamBuffer = arducam_capture(arducamInstance[0], &fmt, 3000);
+        //arducam_software_auto_white_balance(arducamInstance[0],1);
+        //arducam_software_auto_exposure(arducamInstance[0],1);
+        arducam_set_control(arducamInstance[0], V4L2_CID_EXPOSURE, 1000);
+        camIdentifier[initializedCam] = 0;
+        initializedCam++;
+        /*arducamBuffer = arducam_capture(arducamInstance[0], &fmt, 3000);
         if (arducamBuffer != nullptr) {
             std::cout << "Cam0 Initialized (EyeCam)" << std::endl;
             arducam_software_auto_white_balance(arducamInstance[0],1);
@@ -44,9 +49,9 @@ systemCameras::systemCameras()
             camIdentifier[initializedCam] = 0;
             initializedCam++;
         }
-        arducam_release_buffer(arducamBuffer);
+        arducam_release_buffer(arducamBuffer);*/
     }
-
+/*
     camState[1] = arducam_init_camera2(&arducamInstance[1], camInterface[1]);
     if(!camState[1]){
         arducam_set_resolution(arducamInstance[1], &camResolution[1][0], &camResolution[1][1]);
@@ -59,7 +64,7 @@ systemCameras::systemCameras()
             initializedCam++;
         }
         arducam_release_buffer(arducamBuffer);
-    }
+    }*/
 #endif
     
     /*int width;
@@ -171,25 +176,37 @@ cv::Mat* systemCameras::readImgCam(int CamIndex)
 
     if(camIdentifier[CamIndex] == 0 || camIdentifier[CamIndex] == 1){
         #ifdef __arm__
-        arducamBuffer = arducam_capture((camIdentifier[CamIndex] == 0) ? arducamInstance[0] : arducamInstance[1], &fmt, 3000);
+        arducamBuffer = arducam_capture((camIdentifier[CamIndex] == 0) ? arducamInstance[0] : arducamInstance[1], &fmt, 12000);
+        if(!arducamBuffer) {
+            return &processedImgEye2;
+        }
         width = VCOS_ALIGN_UP(width, 32);
         height = VCOS_ALIGN_UP(height, 16);
-        processedImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data);
-        cv::cvtColor(processedImg, processedImg, cv::COLOR_YUV2BGR_I420);
+        processedImgEye = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data);
+        processedImgEye2 = processedImgEye.clone();
+        cv::cvtColor(processedImgEye2, processedImgEye2, cv::COLOR_YUV2BGR_I420);
         arducam_release_buffer(arducamBuffer);
+        return &processedImgEye2;
         #endif
     }
 
-    else if(camIdentifier[CamIndex] == 2)
-        (CamIndex == 0) ? camEye.read(processedImg) : camWorld.read(processedImg);
+    else if(camIdentifier[CamIndex] == 2) {
+        if(CamIndex == 0) {
+            camEye.read(processedImgEye2);
+            return &processedImgEye2;
+        }
+        else {
+            camWorld.read(processedImgWorld);
+            return &processedImgWorld;
+        } 
+    }
 
-    else if(camIdentifier[CamIndex] == 3)
-        camWorld.read(processedImg);
-
+    else if(camIdentifier[CamIndex] == 3){
+        camWorld.read(processedImgWorld);
+        return &processedImgWorld;
+    }
     else
         return nullptr;
-
-    return &processedImg;
 }
 
 
