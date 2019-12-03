@@ -43,8 +43,8 @@ void EyeWorldTab::processFrameEye()
 {
 
     startEvent = std::chrono::system_clock::now();
-    imgEye = mainWindowPtr->cameras->frameBufferCam0.back();
-    //imgEye = *(mainWindowPtr->cameras->readImgCam(0));
+    if(frameBufferCam0.size() >= 2)
+        imgEye = frameBufferCam0.back();
     endReadImg = std::chrono::system_clock::now();
     if(imgEye.empty()) return;
 
@@ -78,22 +78,12 @@ void EyeWorldTab::processFrameEye()
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
 
     endEvent = std::chrono::system_clock::now();
-    //----------------------------------------------------------Profiling---------------------------------------------------------------------------------
-
-//    std::cout << "Read Img Time :" <<   (std::chrono::duration<double>(endReadImg-startEvent)).count()*1000 << std::endl;
-//    std::cout << "Crop Time : " <<      (std::chrono::duration<double>(endImgProc-startImgProc)).count()*1000 << std::endl;
-//    std::cout << "Resize Time : " <<    (std::chrono::duration<double>(endResize-endImgProc)).count()*1000 << std::endl;
-//    std::cout << "Method Time : " << (std::chrono::duration<double>(endPupilMethod-endResize)).count()*1000 << std::endl;
-//    std::cout << "All Time : " << (std::chrono::duration<double>(endEvent-startEvent)).count()*1000 << std::endl;
-
-
 }
 
 void EyeWorldTab::processFrameWorld()
 {
-    imgWorld = mainWindowPtr->cameras->frameBufferCam1.back();
-    //imgWorld = mainWindowPtr->cameras->frameBufferWorldProceed.back();
-    //imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
+    if(frameBufferCam1.size() >= 2)
+        imgWorld = frameBufferCam1.back();
     if(imgWorld.empty()) return;
 
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION )

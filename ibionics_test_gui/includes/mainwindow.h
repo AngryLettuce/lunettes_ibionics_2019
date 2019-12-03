@@ -11,6 +11,8 @@
 #include "gpiotab.h"
 #include "eyeworldtab.h"
 #include "calibrationtab.h"
+#include "QThread"
+#include <thread>
 
 #include "config.h"
 #include "laser_pos_control.h"
@@ -50,9 +52,6 @@ public:
     QTimer *tmrTimerEye;
     QTimer *tmrTimerWorld;
 
-    //cv::VideoCapture camEye;
-    //cv::VideoCapture camWorld;
-
     Laser_pos_control laser_pos_control;
 
     config* systemConfigs;
@@ -67,7 +66,8 @@ public:
     int calibrationPosY;
     int roiSize;
 
-    systemCameras* cameras;
+    std::thread tEye;
+    std::thread tWorld;
 
 private:
     int memsIndex;

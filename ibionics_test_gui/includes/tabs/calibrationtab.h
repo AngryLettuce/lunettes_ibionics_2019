@@ -17,6 +17,8 @@
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class MediaLabel; //foward declaration to avoid circular dependencies with medialabel.h
 
+extern std::vector<cv::Mat> frameBufferCam0 ;
+
 class CalibrationTab : public QWidget
 {
     Q_OBJECT
@@ -41,7 +43,7 @@ public:
     cv::Point upLeft;
     cv::Point downRight;
 
-    cv::Mat processedImg;
+    //cv::Mat processedImg;
     
     MainWindow* mainWindowPtr;
 

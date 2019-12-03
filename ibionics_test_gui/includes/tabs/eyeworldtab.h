@@ -39,6 +39,9 @@
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with mainwindow.h
 
+extern std::vector<cv::Mat> frameBufferCam0 ;
+extern std::vector<cv::Mat> frameBufferCam1 ;
+
 class EyeWorldTab : public QWidget
 {
     Q_OBJECT
@@ -64,7 +67,7 @@ public:
     MainWindow* mainWindowPtr;
 
     cv::Point pupilPos;
-    cv::Mat processedImg;
+    //cv::Mat processedImg;
 
     QComboBox stepsCombo;
 

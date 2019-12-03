@@ -45,8 +45,6 @@ MemsTab::MemsTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     //Link signals to slots
     connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
     connect(button, SIGNAL (clicked()), this, SLOT (switchLaserState()));
-
-    //mainWindowPtr = mW;
 }
 
 void MemsTab::comboboxItemChanged(int index)
@@ -90,9 +88,8 @@ void MemsTab::switchLaserState()
 
 void MemsTab::processMemsFrame()
 {
-    imgEye = mainWindowPtr->cameras->frameBufferCam0.back();
-    //imgEye = *(mainWindowPtr->cameras->readImgCam(0));
-    if(imgEye.empty()) return;
+    if(frameBufferCam0.size() >= 2)
+        imgEye = frameBufferCam0.back();
 
     //Crop and resize EyeCam image according to calibration settings
     cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);

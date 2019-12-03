@@ -14,6 +14,8 @@
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 //class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h
 
+extern std::vector<cv::Mat> frameBufferCam0 ;
+
 class MemsTab : public QWidget
 {
     Q_OBJECT

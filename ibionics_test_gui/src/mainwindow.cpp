@@ -2,6 +2,44 @@
 
 #include "mainwindow.h"
 
+int stopSig = 0;
+int frameBuffer = 50;
+std::vector<cv::Mat> frameBufferCam0 = *new std::vector<cv::Mat>[frameBuffer*640*480];
+std::vector<cv::Mat> frameBufferCam1 = *new std::vector<cv::Mat>[frameBuffer*640*480];
+systemCameras cameras;
+
+void grabCam0Frame(void){
+    cv::Mat frameEye;
+    frameBufferCam0.clear();
+    while(!stopSig){
+        if(cameras.verifyCameraPresent(0)){
+            frameEye = cameras.readImgEye();
+            if(frameBufferCam0.size() > 2)
+                frameBufferCam0.pop_back();
+            if(frameBufferCam0.size() < frameBuffer)
+                frameBufferCam0.push_back(frameEye);
+            else
+                frameBufferCam0.clear();
+        }
+    }
+}
+
+void grabCam1Frame(void){
+    cv::Mat frameWorld;
+    frameBufferCam1.clear();
+    while(!stopSig){
+        if(cameras.verifyCameraPresent(1)){
+            frameWorld = cameras.readImgWorld();
+            if(frameBufferCam1.size() > 2)
+                frameBufferCam1.pop_back();
+            if(frameBufferCam1.size() < frameBuffer)
+                frameBufferCam1.push_back(frameWorld);
+            else
+                frameBufferCam1.clear();
+        }
+    }
+}
+
 #define CALIBRATION_GRID_PARAMS_FILENAME "/home/pi/Desktop/s8ibionics/ibionics_test_gui/gui_main/calibrationGridParams.txt"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -35,16 +73,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
-    
-
-
-
+    connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
 }
 
 MainWindow::~MainWindow()
 {
-    delete cameras;
-    //TODO exit clean (close laser, events, etc...)
+    tEye.join();
+    tWorld.join();
 }
 
 void MainWindow::tabChange(int currentIndex)
@@ -55,34 +90,17 @@ void MainWindow::tabChange(int currentIndex)
     disconnect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
         
     if(currentIndex == eyeWorldIndex){
-        if(cameras->verifyCameraPresent(0))
-            connect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
-        else
-            std::cout<<"Error EyeCam not accessible"<<std::endl;
-
-        if(cameras->verifyCameraPresent(1))
-            connect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
-        else
-            std::cout<<"Error WorldCam not accessible"<<std::endl;
+        connect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
+        connect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
     }
     else if(currentIndex == calibrationIndex)
     {
-        if(cameras->verifyCameraPresent(0))
-            connect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
-        else
-            std::cout<<"Error EyeCam not accessible"<<std::endl;
+        connect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
     }
     else if(currentIndex == memsIndex)
     {
-        if(cameras->verifyCameraPresent(0))
-            connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
-        else
-            std::cout<<"Error EyeCam not accessible"<<std::endl;
+        connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
     }
-    std::thread t1(&systemCameras::grabCam0Frame, cameras);
-    std::thread t2(&systemCameras::grabCam1Frame, cameras);
-    std::thread t3(&systemCameras::processEyeFrame, cameras);
-    std::thread t4(&systemCameras::processWorldFrame, cameras);
 }
 
 void MainWindow::initHw()
@@ -92,18 +110,14 @@ void MainWindow::initHw()
     tmrTimerEye->start(33);
     tmrTimerWorld->start(33);//33 ms default
 
-    cameras = new systemCameras(this);
-
-    //Considering it start on the mems tab
-    if(cameras->verifyCameraPresent(0))
-        connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
-    else
-        std::cout<<"Error EyeCam not accessible"<<std::endl;
-
-
     laser_pos_control.draw_rectangle(10);
     laser_pos_control.send_pos(CAMERA_RESOLUTION/2,CAMERA_RESOLUTION/2);
 
+    tEye = std::thread(grabCam0Frame);
+    tWorld = std::thread(grabCam1Frame);
+    //This is an arbitrary value. A smaller delay would probably do the job
+    // it let the cameras the time to boot up before the app want frames
+    QThread::msleep(1000);
 }
 
 void MainWindow::saveCalibrationGridParams() {
