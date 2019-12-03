@@ -21,7 +21,7 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     slider_threshold = new QSlider(Qt::Horizontal, this);
     slider_threshold->setMinimum(0);
     slider_threshold->setMaximum(125);
-    slider_threshold->setValue(25);
+    slider_threshold->setValue(50);
 
     slider_ROI = new QSlider(Qt::Horizontal, this);
     slider_ROI->setMinimum(1);
@@ -104,18 +104,20 @@ void EyeWorldTab::processFrameWorld()
     {
         cv::Mat img2World = imgWorld;
 
-        //Adjust pupil position to worldCam resolution
+        
         int posXWorld;
         int posYWorld;
-        if(abs(posX-previousPosX) > LOWPASS_CUTOFF_VALUE && abs(posY-previousPosY) > LOWPASS_CUTOFF_VALUE)
+        if(abs(posX-previousPosX) > LOWPASS_CUTOFF_VALUE || abs(posY-previousPosY) > LOWPASS_CUTOFF_VALUE)
         {
+            //Adjust pupil position to worldCam resolution
             posXWorld = posX * imgWorld.cols / CAMERA_RESOLUTION;
             posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
             previousPosX = posX;
             previousPosY = posY;
         }
-        else
+        else 
         {
+            //Adjust pupil position to worldCam resolution
             posXWorld = previousPosX * imgWorld.cols / CAMERA_RESOLUTION;
             posYWorld = previousPosY * imgWorld.rows / CAMERA_RESOLUTION;
         }
