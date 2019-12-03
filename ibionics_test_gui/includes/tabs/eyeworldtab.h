@@ -36,6 +36,8 @@
 #define SPACER_ROW_SPAN 6
 #define SPACER_COLUMN_SPAN 3
 
+#define SECONDS_SWITCH 300 //30pfs*10seconds
+
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with mainwindow.h
 

@@ -1,4 +1,6 @@
 #include "eyeworldtab.h"
+#include <string>
+
 
 EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 {
@@ -74,9 +76,66 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
-    imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);    
-	if(imgWorld.empty()) return;
-    
+    static int imgSwitchCounter = 0;
+    static std::string imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/12.png";
+    switch (imgSwitchCounter) {
+
+        case(SECONDS_SWITCH):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/1.png";
+        break;
+
+        case(SECONDS_SWITCH*2):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/2.png";
+        break;
+
+        case(SECONDS_SWITCH*3):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/4.png";
+        break;
+
+        case(SECONDS_SWITCH*4):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/5.png";
+        break;
+
+        case(SECONDS_SWITCH*5):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/6.png";
+        break;
+
+        case(SECONDS_SWITCH*6):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/7.png";
+        break;
+
+        case(SECONDS_SWITCH*7):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/8.png";
+        break;
+
+        case(SECONDS_SWITCH*8):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/9.png";
+        break;
+
+        case(SECONDS_SWITCH*9):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/10.png";
+        break;
+
+        case(SECONDS_SWITCH*10):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/11.png";
+        break;
+
+        case(SECONDS_SWITCH*11):
+            imagePath = "C:/Users/houma/Downloads/ImagesResized/ImagesResized/12.png";
+            imgSwitchCounter = 0;
+        break;
+
+        default:
+        break;
+
+    }
+    imgSwitchCounter += 1;
+    imgWorld = cv::imread(imagePath, cv::IMREAD_COLOR);
+    //imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
+
+
+    if(imgWorld.empty()) return;
+
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION )
     {
         cv::Mat img2World = imgWorld;
