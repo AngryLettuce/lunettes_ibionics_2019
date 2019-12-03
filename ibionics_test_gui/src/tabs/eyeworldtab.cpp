@@ -93,6 +93,10 @@ void EyeWorldTab::processFrameEye()
 
 void EyeWorldTab::processFrameWorld()
 {
+    //used for low pass filter on ROI
+    static int previousPosX = posX;
+    static int previousPosY = posY;
+
     imgWorld = *(mainWindowPtr->cameras)->readImgCam(1);
 	if(imgWorld.empty()) return;
 
@@ -101,8 +105,20 @@ void EyeWorldTab::processFrameWorld()
         cv::Mat img2World = imgWorld;
 
         //Adjust pupil position to worldCam resolution
-        int posXWorld = posX * imgWorld.cols / CAMERA_RESOLUTION;
-        int posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
+        int posXWorld;
+        int posYWorld;
+        if(abs(posX-previousPosX) > LOWPASS_CUTOFF_VALUE && abs(posY-previousPosY) > LOWPASS_CUTOFF_VALUE)
+        {
+            posXWorld = posX * imgWorld.cols / CAMERA_RESOLUTION;
+            posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
+            previousPosX = posX;
+            previousPosY = posY;
+        }
+        else
+        {
+            posXWorld = previousPosX * imgWorld.cols / CAMERA_RESOLUTION;
+            posYWorld = previousPosY * imgWorld.rows / CAMERA_RESOLUTION;
+        }
 
         int roi_width = ROI_COL * slider_ROI->value() / 10;
         int roi_height = ROI_LINES * slider_ROI->value() / 10;
@@ -145,5 +161,3 @@ void EyeWorldTab::switchPupilMethodButton()
 
     }
 }
-
-

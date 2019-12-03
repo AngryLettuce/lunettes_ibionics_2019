@@ -39,6 +39,8 @@
 #define ROI_LINES 160
 #define ROI_COL 180
 
+#define LOWPASS_CUTOFF_VALUE 15
+
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 class Laser_pos_control; //foward declaration to avoid circular dependencies with mainwindow.h
 
