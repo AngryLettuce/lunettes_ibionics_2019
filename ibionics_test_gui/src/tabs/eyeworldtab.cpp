@@ -57,6 +57,7 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
 
 void EyeWorldTab::processFrameEye()
 {
+    startProcessEye = std::chrono::system_clock::now();
     if(frameBufferCam0.size() >= 2)
         imgEye = frameBufferCam0.back();
     if(imgEye.empty()) return;
@@ -80,10 +81,15 @@ void EyeWorldTab::processFrameEye()
     cv::cvtColor(imgEyeResized, imgEyeToShow, cv::COLOR_BGR2RGB);
     QImage qimgEye(reinterpret_cast<uchar*>(imgEyeToShow.data), imgEyeToShow.cols, imgEyeToShow.rows, imgEyeToShow.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
+    endProcessEye = std::chrono::system_clock::now();
+    double msTimeEye = std::chrono::duration<double> ((endProcessEye - startProcessEye)*1000).count();
+    if (msTimeEye != 0)
+        eyeFpsLabel->setText(QString("FPS (Eye) : %1").arg(round((1/msTimeEye)*1000)));
 }
 
 void EyeWorldTab::processFrameWorld()
 {
+    startProcessWorld = std::chrono::system_clock::now();
     //used for low pass filter on ROI
     static int previousPosX = posX;
     static int previousPosY = posY;
@@ -132,6 +138,11 @@ void EyeWorldTab::processFrameWorld()
     cv::cvtColor(imgWorld,imgWorldToShow,cv::COLOR_BGR2RGB);
     QImage qimgWorld(reinterpret_cast<uchar*>(imgWorldToShow.data), imgWorldToShow.cols, imgWorldToShow.rows, imgWorldToShow.step, QImage::Format_RGB888);
     imgLblWorld->setPixmap(QPixmap::fromImage(qimgWorld));
+
+    endProcessWorld = std::chrono::system_clock::now();
+    double msTimeWorld = std::chrono::duration<double> ((endProcessWorld - startProcessWorld) * 1000 ).count();
+    if (msTimeWorld != 0)
+        worldFpsLabel->setText(QString("FPS (World) : %1").arg(round((1/msTimeWorld)*1000)));
 
 }
 

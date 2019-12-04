@@ -88,7 +88,7 @@ public:
 
     QComboBox stepsCombo;
 
-    std::chrono::time_point<std::chrono::system_clock> startEvent, endReadImg, endResize, endPupilMethod, endEvent, startImgProc, endImgProc;
+    std::chrono::time_point<std::chrono::system_clock> startProcessEye, endProcessEye, startProcessWorld, endProcessWorld;
 
     cv::Mat gray_LUT;
     uchar*gray_level_LUT_pointer;
