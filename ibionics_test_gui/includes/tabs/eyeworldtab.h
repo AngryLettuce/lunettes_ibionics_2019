@@ -18,11 +18,12 @@
 #include "ctime"
 
 #define BUTTON_METHOD_ROW 0
-#define SLIDER_PARAM_ROW 1
-#define IMAGES_ROW 2
-#define COMBOBOX_INTERMEDIATE_ROW 3
-#define SPACER_ROW 4
-#define FPS_ROW 5
+#define FPS_ROW 1
+#define SLIDER_PARAM_ROW 2
+#define IMAGES_ROW 3
+#define COMBOBOX_INTERMEDIATE_ROW 4
+#define SPACER_ROW 5
+
 
 #define IMAGE_EYE_COLUMN 0
 #define IMAGE_WORLD_COLUMN 1
@@ -68,6 +69,8 @@ public:
 
     QLabel *eyeFpsLabel;
     QLabel *worldFpsLabel;
+
+    QPushButton *button_interpol;
     
     QPushButton *button_method;
     QSlider *slider_threshold;
@@ -77,6 +80,7 @@ public:
     int posX = 0;
     int posY = 0;
     bool pupilMethod = true;
+    int interpolMethod = 0;
     MainWindow* mainWindowPtr;
 
     cv::Point pupilPos;
@@ -95,6 +99,7 @@ public slots:
     void processFrameEye();
     void processFrameWorld();
     void switchPupilMethodButton();
+    void switchInterpolMethodButton();
 
 };
 

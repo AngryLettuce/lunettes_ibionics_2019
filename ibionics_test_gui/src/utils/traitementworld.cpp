@@ -11,7 +11,7 @@ void traitementWorld(cv::Mat *imgZoom,cv::Mat gray_LUT)
 }
 
 //put img zoom into imgOr
-void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, int roi_width)
+void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, int roi_width, int interpolMethod)
 {
 
     std::vector<cv::Mat> channels(3);
@@ -48,7 +48,16 @@ void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, i
 
     //resize
     cv::resize(*imgZoom, *imgZoom, cv::Size(18, 16), cv::INTER_LINEAR );
-    cv::resize(*imgZoom, *imgZoom, cv::Size(roi_width, roi_height), cv::INTER_CUBIC);
+
+    if(interpolMethod == 0)
+        cv::resize(*imgZoom, *imgZoom, cv::Size(roi_width, roi_height), cv::INTER_NEAREST);
+    else if (interpolMethod == 1)
+        cv::resize(*imgZoom, *imgZoom, cv::Size(roi_width, roi_height), cv::INTER_LINEAR);
+    else if (interpolMethod == 2)
+        cv::resize(*imgZoom, *imgZoom, cv::Size(roi_width, roi_height), cv::INTER_CUBIC);
+    else
+        cv::resize(*imgZoom, *imgZoom, cv::Size(roi_width, roi_height), cv::INTER_NEAREST);
+
 
     imgZoom->copyTo(imgOr->rowRange(y,y+imgZoom->rows).colRange(x,x+imgZoom->cols));
 

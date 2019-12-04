@@ -9,6 +9,7 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     eyeFpsLabel = new QLabel("FPS (Eye) :",this);
     worldFpsLabel = new QLabel("FPS (World) :",this);
     button_method = new QPushButton("using Ellipse, click to switch to hough circle", this);
+    button_interpol = new QPushButton("PPV => Bilinéaire", this);
     QSpacerItem *lastColSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
     QSpacerItem *lastRowSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -37,11 +38,13 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     layout->addWidget(slider_threshold  ,SLIDER_PARAM_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, SLIDER_COLUMN_SPAN);
     layout->addWidget(slider_ROI        ,SLIDER_PARAM_ROW, IMAGE_WORLD_COLUMN, NORMAL_ROW_SPAN, SLIDER_COLUMN_SPAN);
     layout->addWidget(&stepsCombo       ,COMBOBOX_INTERMEDIATE_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addWidget(button_interpol   ,COMBOBOX_INTERMEDIATE_ROW, IMAGE_WORLD_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
 
     layout->addItem(lastColSpacer       ,BUTTON_METHOD_ROW, SPACER_COLUMN, SPACER_ROW_SPAN, NORMAL_COLUMN_SPAN);
     layout->addItem(lastRowSpacer       ,SPACER_ROW ,IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, SPACER_COLUMN_SPAN);
 
     connect(button_method, SIGNAL (clicked()), this, SLOT (switchPupilMethodButton()));
+    connect(button_interpol, SIGNAL(clicked()), this, SLOT (switchInterpolMethodButton()));
     mainWindowPtr = mW;
 
     //generate the gray LUT;
@@ -123,7 +126,7 @@ void EyeWorldTab::processFrameWorld()
         }
 
         traitementWorld(&imgWorldCropped, gray_LUT);
-        drawWorl2img(&imgWorld, &imgWorldCropped, posXWorld, posYWorld, roi_height, roi_width);
+        drawWorl2img(&imgWorld, &imgWorldCropped, posXWorld, posYWorld, roi_height, roi_width, interpolMethod);
     }
 
     cv::cvtColor(imgWorld,imgWorldToShow,cv::COLOR_BGR2RGB);
@@ -153,3 +156,14 @@ void EyeWorldTab::switchPupilMethodButton()
 
     }
 }
+
+void EyeWorldTab::switchInterpolMethodButton(){
+    interpolMethod = (interpolMethod <= 2) ? 0 : interpolMethod + 1;
+    if (interpolMethod == 0)
+        button_interpol->setText("PPV => Bilinéaire");
+    else if (interpolMethod == 1)
+        button_interpol->setText("Bilinéaire => Bicubique");
+    else if (interpolMethod == 2)
+        button_interpol->setText("Bicubique => PPV");
+}
+

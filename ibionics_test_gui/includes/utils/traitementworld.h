@@ -27,6 +27,6 @@
 void traitementWorld(cv::Mat *imgZoom,cv::Mat gray_LUT);
 
 //put img zoom into imgOr
-void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, int roi_width);
+void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, int roi_width, int interpolMethod);
 
 #endif // TRAITEMENTWORLD_H
