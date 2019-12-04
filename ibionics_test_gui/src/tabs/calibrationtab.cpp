@@ -68,9 +68,9 @@ void CalibrationTab::processCalibrationFrame()
     for (int i = leftSide; i<rightSide; i += widthSpace)
         cv::line(imgEye, cv::Point(i, upSide), cv::Point(i, downSide), cv::Scalar(255, 0, 255));
     
-    cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
-    cv::rectangle(imgEye, cv::Rect(upLeft, downRight) , cv::Scalar(0,255,0), 1, 8,0 );
-    QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
+	cv::cvtColor(imgEye,imgEyeToShow,cv::COLOR_BGR2RGB);
+    cv::rectangle(imgEyeToShow, cv::Rect(upLeft, downRight) , cv::Scalar(0,255,0), 1, 8,0 );
+    QImage qimgEye(reinterpret_cast<uchar*>(imgEyeToShow.data), imgEyeToShow.cols, imgEyeToShow.rows, imgEyeToShow.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
 }
 

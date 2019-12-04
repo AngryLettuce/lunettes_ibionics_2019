@@ -90,10 +90,11 @@ void MemsTab::processMemsFrame()
 {
     if(frameBufferCam0.size() >= 2)
         imgEye = frameBufferCam0.back();
+    if(imgEye.empty()) return;
 
     //Crop and resize EyeCam image according to calibration settings
-    cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
-    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
+    cropRegion(&imgEye, &imgEyeCropped, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
+    cv::resize(imgEyeCropped, imgEyeResized, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
     if(laser_on){
         posX = imgLblEye->posX;
         posY = imgLblEye->posY;
@@ -106,8 +107,8 @@ void MemsTab::processMemsFrame()
             lastposY = posY;
         }
     }
-    cv::cvtColor(imgEye,imgEye,cv::COLOR_BGR2RGB);
-    QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
+    cv::cvtColor(imgEyeResized,imgEyeToShow,cv::COLOR_BGR2RGB);
+    QImage qimgEye(reinterpret_cast<uchar*>(imgEyeToShow.data), imgEyeToShow.cols, imgEyeToShow.rows, imgEyeToShow.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
 
     //std::cout<<"PosX: "<< posX<<" PosY: "<< posY<<std::endl;

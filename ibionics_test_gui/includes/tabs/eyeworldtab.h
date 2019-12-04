@@ -49,7 +49,14 @@ public:
     explicit EyeWorldTab(QWidget *parent = nullptr, MainWindow* mW = nullptr);
 
     cv::Mat imgEye;
+    cv::Mat imgEyeCropped;
+    cv::Mat imgEyeResized;
+    cv::Mat imgEyeToShow;
+
     cv::Mat imgWorld;
+    cv::Mat imgWorldCropped;
+    cv::Mat imgWorldOverlapped;
+    cv::Mat imgWorldToShow;
 
     QLabel *imgLblEye;
     QLabel *imgLblWorld;

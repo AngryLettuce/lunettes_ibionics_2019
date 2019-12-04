@@ -54,27 +54,27 @@ void EyeWorldTab::processFrameEye()
 
     //Crop EyeCam image according to calibration settings
     startImgProc = std::chrono::system_clock::now();
-    cropRegion(&imgEye, &imgEye, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
+    cropRegion(&imgEye, &imgEyeCropped, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY, mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
     endImgProc = std::chrono::system_clock::now();
     //Resize to constant resolution
-    cv::resize(imgEye, imgEye, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
+    cv::resize(imgEyeCropped, imgEyeResized, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
     endResize = std::chrono::system_clock::now();
 
-    (pupilMethod) ? applyEllipseMethod(&imgEye, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEye, posX, posY) ;
+    (pupilMethod) ? applyEllipseMethod(&imgEyeResized, slider->value(), posX, posY, comboBoxIndex) : applyHoughMethod(&imgEyeResized, posX, posY) ;
     endPupilMethod  = std::chrono::system_clock::now();
 
 
 
     if(posX >= 0 && posX < CAMERA_RESOLUTION && posY >= 0 && posY < CAMERA_RESOLUTION ) {
         mainWindowPtr->laser_pos_control.laser.on();
-        cv::circle(imgEye, cv::Point(posX, posY), 7, cv::Scalar(180, 180, 180), -1);
+        cv::circle(imgEyeResized, cv::Point(posX, posY), 7, cv::Scalar(180, 180, 180), -1);
         mainWindowPtr->laser_pos_control.send_pos(posX, posY);
     }
     else
         mainWindowPtr->laser_pos_control.laser.off();
 
-    cv::cvtColor(imgEye, imgEye, cv::COLOR_BGR2RGB);
-    QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
+    cv::cvtColor(imgEyeResized, imgEyeToShow, cv::COLOR_BGR2RGB);
+    QImage qimgEye(reinterpret_cast<uchar*>(imgEyeToShow.data), imgEyeToShow.cols, imgEyeToShow.rows, imgEyeToShow.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
 
     endEvent = std::chrono::system_clock::now();
@@ -95,11 +95,11 @@ void EyeWorldTab::processFrameWorld()
         int posYWorld = posY * imgWorld.rows / CAMERA_RESOLUTION;
 
         if(imgWorld.channels() <= 1){
-            (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, false);
+            (RECTSHOW) ? cropRegion(&imgWorld, &imgWorldCropped, posXWorld, posYWorld, 160, 180, true) : cropRegion(&imgWorld, &imgWorldCropped, posXWorld, posYWorld, 160, 180, false);
         }
         else{
             cv::cvtColor(imgWorld,img2World,cv::COLOR_RGB2GRAY);
-            (RECTSHOW) ? cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, true) : cropRegion(&imgWorld, &img2World, posXWorld, posYWorld, 160, 180, false);
+            (RECTSHOW) ? cropRegion(&imgWorld, &imgWorldCropped, posXWorld, posYWorld, 160, 180, true) : cropRegion(&imgWorld, &imgWorldCropped, posXWorld, posYWorld, 160, 180, false);
         }
 
         cv::Mat gray_LUT(1, 256, CV_8U);
@@ -108,13 +108,13 @@ void EyeWorldTab::processFrameWorld()
                 p[i] = grayLevelsTable[i];
         }
 
-        traitementWorld(&img2World,gray_LUT);
-        drawWorl2img(&imgWorld, &img2World,posXWorld,posYWorld);
+        traitementWorld(&imgWorldCropped,gray_LUT);
+        drawWorl2img(&imgWorldCropped, &imgWorldOverlapped,posXWorld,posYWorld);
         //cv::imshow("test",imgWorld);
     }
 
-    cv::cvtColor(imgWorld,imgWorld,cv::COLOR_BGR2RGB);
-    QImage qimgWorld(reinterpret_cast<uchar*>(imgWorld.data), imgWorld.cols, imgWorld.rows, imgWorld.step, QImage::Format_RGB888);
+    cv::cvtColor(imgWorldOverlapped,imgWorldToShow,cv::COLOR_BGR2RGB);
+    QImage qimgWorld(reinterpret_cast<uchar*>(imgWorldToShow.data), imgWorldToShow.cols, imgWorldToShow.rows, imgWorldToShow.step, QImage::Format_RGB888);
     imgLblWorld->setPixmap(QPixmap::fromImage(qimgWorld));
 
 }

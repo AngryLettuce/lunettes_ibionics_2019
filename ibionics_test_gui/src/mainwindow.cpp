@@ -78,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    stopSig = 1;
     tEye.join();
     tWorld.join();
 }

@@ -27,6 +27,7 @@ public:
     cv::Mat* getImage(int camNumber, int width, int height);
     void keyPressEvent(QKeyEvent *event);
     cv::Mat imgEye;
+    cv::Mat imgEyeToShow;
 
     MediaLabel *imgLblEye;
 

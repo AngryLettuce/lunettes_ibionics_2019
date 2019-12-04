@@ -23,6 +23,9 @@ public:
     explicit MemsTab(QWidget *parent = nullptr, MainWindow* mW = nullptr);
     MediaLabel *imgLblEye;
     cv::Mat imgEye;
+    cv::Mat imgEyeCropped;
+    cv::Mat imgEyeResized;
+    cv::Mat imgEyeToShow;
 
     QPixmap *pix;
     QLabel *posMouseLabel;
