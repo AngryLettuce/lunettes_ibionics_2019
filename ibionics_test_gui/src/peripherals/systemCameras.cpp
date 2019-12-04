@@ -1,6 +1,5 @@
 #include "systemCameras.h"
 
-
 systemCameras::systemCameras()
 {
     camResolution[0][0]= 640;
@@ -37,7 +36,12 @@ systemCameras::systemCameras()
     camState[0] = arducam_init_camera2(&arducamInstance[0], camInterface[0]);
     if(!camState[0]){
         arducam_set_resolution(arducamInstance[0], &camResolution[0][0], &camResolution[0][1]);
-        arducamBuffer = arducam_capture(arducamInstance[0], &fmt, 3000);
+        //arducam_software_auto_white_balance(arducamInstance[0],1);
+        //arducam_software_auto_exposure(arducamInstance[0],1);
+        arducam_set_control(arducamInstance[0], V4L2_CID_EXPOSURE, 1000);
+        camIdentifier[initializedCam] = 0;
+        initializedCam++;
+        /*arducamBuffer = arducam_capture(arducamInstance[0], &fmt, 3000);
         if (arducamBuffer != nullptr) {
             std::cout << "Cam0 Initialized (EyeCam)" << std::endl;
             arducam_software_auto_white_balance(arducamInstance[0],1);
@@ -45,9 +49,9 @@ systemCameras::systemCameras()
             camIdentifier[initializedCam] = 0;
             initializedCam++;
         }
-        arducam_release_buffer(arducamBuffer);
+        arducam_release_buffer(arducamBuffer);*/
     }
-
+/*
     camState[1] = arducam_init_camera2(&arducamInstance[1], camInterface[1]);
     if(!camState[1]){
         arducam_set_resolution(arducamInstance[1], &camResolution[1][0], &camResolution[1][1]);
@@ -60,13 +64,13 @@ systemCameras::systemCameras()
             initializedCam++;
         }
         arducam_release_buffer(arducamBuffer);
-    }
+    }*/
 #endif
-    
+
     /*int width;
     int height;
     int fps;*/
-    
+
     if(initializedCam == 0){
         int firstCamFound = 0;
         camIdentifier[0] = 2;
@@ -98,7 +102,7 @@ systemCameras::systemCameras()
     }
 
     if(initializedCam == 1){
-        if( (camWorld.open(0) && camWorld.grab()) || 
+        if( (camWorld.open(0) && camWorld.grab()) ||
             (camWorld.open(1) && camWorld.grab()) ||
             (camWorld.open(2) && camWorld.grab()) ||
             (camWorld.open(3) && camWorld.grab()) ){
@@ -174,7 +178,7 @@ cv::Mat systemCameras::readImgEye()
         arducamBuffer = arducam_capture((camIdentifier[0] == 0) ? arducamInstance[0] : arducamInstance[1], &fmt, 3000);
         width = VCOS_ALIGN_UP(width, 32);
         height = VCOS_ALIGN_UP(height, 16);
-        eyeImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data);
+        eyeImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data).clone();
         cv::cvtColor(&eyeImg, &eyeImg, cv::COLOR_YUV2BGR_I420);
         arducam_release_buffer(arducamBuffer);
         #endif
@@ -192,12 +196,13 @@ cv::Mat systemCameras::readImgWorld()
 
     if(camIdentifier[1] == 1){
         #ifdef __arm__
-        arducamBuffer = arducam_capture((camIdentifier[1] == 0) ? arducamInstance[0] : arducamInstance[1], &fmt, 3000);
+        arducamBuffer = arducam_capture(arducamInstance[1], &fmt, 3000);
         width = VCOS_ALIGN_UP(width, 32);
         height = VCOS_ALIGN_UP(height, 16);
-        worldImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data);
+        worldImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data).clone();
         cv::cvtColor(&worldImg, &worldImg, cv::COLOR_YUV2BGR_I420);
         arducam_release_buffer(arducamBuffer);
+        return &processedImgEye2;
         #endif
     }
     else if(camIdentifier[1] == 2)
@@ -208,123 +213,6 @@ cv::Mat systemCameras::readImgWorld()
     return worldImg;
 }
 
-//cv::Mat* systemCameras::readImgCam(int CamIndex)
-//{
-//    int width = camResolution[!(camIdentifier[CamIndex] == 0)][0];
-//    int height = camResolution[!(camIdentifier[CamIndex] == 0)][1];
 
 
-//    if(camIdentifier[CamIndex] == 0 || camIdentifier[CamIndex] == 1){
-//        #ifdef __arm__
-//        arducamBuffer = arducam_capture((camIdentifier[CamIndex] == 0) ? arducamInstance[0] : arducamInstance[1], &fmt, 3000);
-//        width = VCOS_ALIGN_UP(width, 32);
-//        height = VCOS_ALIGN_UP(height, 16);
-//        processedImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data);
-//        cv::cvtColor(processedImg, processedImg, cv::COLOR_YUV2BGR_I420);
-//        arducam_release_buffer(arducamBuffer);
-//        #endif
-//    }
-
-//    else if(camIdentifier[CamIndex] == 2)
-//        (CamIndex == 0) ? camEye.read(processedImg) : camWorld.read(processedImg);
-
-//    else if(camIdentifier[CamIndex] == 3)
-//        camWorld.read(processedImg);
-
-//    else
-//        return nullptr;
-
-//    return &processedImg;
-//}
-
-/*
-void systemCameras::processEyeFrame(void){
-    cv::Mat frame;
-    cv::Mat frameCropped;
-    cv::Mat frameResized;
-    cv::Mat framePupil;
-    while(!stopSig){
-        if(!frameBufferCam0.empty()){
-            //std::cout << " Cam0 : " << frame.channels()<< std::endl;
-            frame = frameBufferCam0.front();
-            cropRegion(&frame, &frame, mainWindowPtr->calibrationPosX, mainWindowPtr->calibrationPosY,
-                       mainWindowPtr->roiSize, mainWindowPtr->roiSize, false);
-            cv::resize(frame, frame, cv::Size(CAMERA_RESOLUTION, CAMERA_RESOLUTION), 0, 0, cv::INTER_LINEAR);
-
-            (mainWindowPtr->eyeWorldTab->pupilMethod) ?
-                 applyEllipseMethod(&frame, mainWindowPtr->eyeWorldTab->slider->value(), mainWindowPtr->eyeWorldTab->posX, mainWindowPtr->eyeWorldTab->posY, mainWindowPtr->eyeWorldTab->stepsCombo.currentIndex()) :
-                 applyHoughMethod(&frame, mainWindowPtr->eyeWorldTab->posX, mainWindowPtr->eyeWorldTab->posY) ;
-
-            // maybe?
-            // QImage qimgEye(reinterpret_cast<uchar*>(imgEye.data), imgEye.cols, imgEye.rows, imgEye.step, QImage::Format_RGB888);
-        }
-        if (frameBufferEyeProceed.size() > 2)
-            frameBufferEyeProceed.pop_back();
-
-        if (!frameBufferEyeProceed.empty() && frameBufferEyeProceed.size() < framebuffer)
-            frameBufferEyeProceed.push_back(frame);
-        else if(frameBufferEyeProceed.size() >= framebuffer)
-            frameBufferEyeProceed.clear();
-
-    }
-}
-
-void systemCameras::processWorldFrame(void){
-    cv::Mat frame;
-    cv::Mat frameCropped;
-    cv::Mat frameResized;
-    cv::Mat frameWorld;
-
-    int posXWorld;
-    int posYWorld;
-    //std::cout <<"yo in PrWorldFr"<<std::endl;
-    cv::Mat gray_LUT(1, 256, CV_8U);
-    uchar*p = gray_LUT.ptr();
-    for (int i = 0; i < 256; i++) {
-            p[i] = grayLevelsTable[i];
-    }
-
-    while(!stopSig){
-        if(!frameBufferCam1.empty()){
-            //std::cout<< " Cam1 : " << frame.channels()<< std::endl;
-            frame = frameBufferCam1.front();
-
-            if(((mainWindowPtr->eyeWorldTab->posX >= 0) && (mainWindowPtr->eyeWorldTab->posX < CAMERA_RESOLUTION)) &&
-               ((mainWindowPtr->eyeWorldTab->posY >= 0) && (mainWindowPtr->eyeWorldTab->posY < CAMERA_RESOLUTION)) )
-            {
-
-                frameCropped = frame;
-                //Adjust pupil position to worldCam resolution
-                posXWorld = mainWindowPtr->eyeWorldTab->posX * frame.cols / CAMERA_RESOLUTION;
-                posYWorld = mainWindowPtr->eyeWorldTab->posY * frame.rows / CAMERA_RESOLUTION;
-
-
-                if(frame.channels() <= 1){
-                    (RECTSHOW) ? cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, true) : cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, false);
-                }
-                else{
-                    cv::cvtColor(frame,frameCropped,cv::COLOR_RGB2GRAY);
-                    (RECTSHOW) ? cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, true) : cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, false);
-                }
-                /*(RECTSHOW) ? cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, true) :
-                             cropRegion(&frame, &frameCropped, posXWorld, posYWorld, 160, 180, false);
-
-                if(frame.channels() > 1)
-                    cv::cvtColor(frameCropped, frameCropped, cv::COLOR_RGB2GRAY);*/
-
-                /*traitementWorld(&frameCropped, gray_LUT);
-                drawWorl2img(&frame, &frameCropped, posXWorld, posYWorld);
-            }
-        }
-        if (frameBufferWorldProceed.size() > 2)
-            frameBufferWorldProceed.pop_back();
-
-        if (!frameBufferWorldProceed.empty() && frameBufferWorldProceed.size() < framebuffer)
-            frameBufferWorldProceed.push_back(frameResized);
-        else if(frameBufferWorldProceed.size() >= framebuffer)
-            frameBufferWorldProceed.clear();
-    }
-}
-
-*/
 

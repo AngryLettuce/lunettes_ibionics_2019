@@ -77,10 +77,12 @@ void MemsTab::switchLaserState()
     laser_on = !laser_on; //change stage of laser
 
     if (laser_on){
+        imgLblEye->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         seqCombo->setEnabled(true);
         connect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
     }
     else{
+        imgLblEye->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         seqCombo->setEnabled(false);
         disconnect(seqCombo, SIGNAL(activated(int)), this, SLOT(comboboxItemChanged(int)));
     }

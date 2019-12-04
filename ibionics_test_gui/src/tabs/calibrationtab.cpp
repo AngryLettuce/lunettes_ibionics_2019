@@ -62,13 +62,15 @@ void CalibrationTab::processCalibrationFrame()
     int widthSpace = (downSide - upSide)/(columns-1);
     
     // Drawing calibration grid
-    for (int i = upSide; i<downSide; i += heightSpace)
-        cv::line(imgEye, cv::Point(leftSide, i), cv::Point(rightSide, i), cv::Scalar(0, 255, 255));
-
-    for (int i = leftSide; i<rightSide; i += widthSpace)
-        cv::line(imgEye, cv::Point(i, upSide), cv::Point(i, downSide), cv::Scalar(255, 0, 255));
+    cv::cvtColor(imgEye,imgEyeToShow,cv::COLOR_BGR2RGB);
+    int line_pos, i;
+    for (i = 0, line_pos = upSide; i < rows-1; i++, line_pos+=heightSpace)
     
-	cv::cvtColor(imgEye,imgEyeToShow,cv::COLOR_BGR2RGB);
+        cv::line(imgEyeToShow, cv::Point(leftSide, line_pos), cv::Point(rightSide, line_pos), cv::Scalar(0, 255, 0));
+
+    for (i = 0, line_pos = leftSide; i < columns-1; i++, line_pos+=widthSpace)
+        cv::line(imgEyeToShow, cv::Point(line_pos, upSide), cv::Point(line_pos, downSide), cv::Scalar(0, 255, 0));
+
     cv::rectangle(imgEyeToShow, cv::Rect(upLeft, downRight) , cv::Scalar(0,255,0), 1, 8,0 );
     QImage qimgEye(reinterpret_cast<uchar*>(imgEyeToShow.data), imgEyeToShow.cols, imgEyeToShow.rows, imgEyeToShow.step, QImage::Format_RGB888);
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));   
@@ -172,12 +174,14 @@ void CalibrationTab::startCalibration()
     
     if(!inCalibration)
     {
+        imgLblEye->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         slider->setEnabled(false);
         button->setText("In Calibration");
         inCalibration = true;
     }
     else
     {
+        imgLblEye->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         slider->setEnabled(true);
         button->setText("Start Calibration");
 

@@ -73,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Link signals to slots
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabChange(int)));
+    laser_pos_control.draw_rectangle(10);
+    laser_pos_control.send_pos(CAMERA_RESOLUTION/2,CAMERA_RESOLUTION/2);
     connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
 }
 
@@ -85,22 +87,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::tabChange(int currentIndex)
 {
-    disconnect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
-    disconnect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
-    disconnect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
-    disconnect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
+    disconnect(tmrTimerEye,     SIGNAL(timeout()),  eyeWorldTab,    SLOT(processFrameEye()));
+    disconnect(tmrTimerWorld,   SIGNAL(timeout()),  eyeWorldTab,    SLOT(processFrameWorld()));
+    disconnect(tmrTimerEye,     SIGNAL(timeout()),  calibrationTab, SLOT(processCalibrationFrame()));
+    disconnect(tmrTimerEye,     SIGNAL(timeout()),  memsTab,        SLOT(processMemsFrame()));
         
     if(currentIndex == eyeWorldIndex){
-        connect(tmrTimerEye, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameEye()));
-        connect(tmrTimerWorld, SIGNAL(timeout()), eyeWorldTab, SLOT(processFrameWorld()));
+        connect(tmrTimerEye,    SIGNAL(timeout()),  eyeWorldTab,    SLOT(processFrameEye()));
+        connect(tmrTimerWorld,  SIGNAL(timeout()),  eyeWorldTab,    SLOT(processFrameWorld()));
     }
-    else if(currentIndex == calibrationIndex)
-    {
-        connect(tmrTimerEye, SIGNAL(timeout()), calibrationTab, SLOT(processCalibrationFrame()));
+    else if(currentIndex == calibrationIndex){
+        laser_pos_control.laser.on();
+        connect(tmrTimerEye,    SIGNAL(timeout()),  calibrationTab, SLOT(processCalibrationFrame()));
     }
     else if(currentIndex == memsIndex)
     {
-        connect(tmrTimerEye, SIGNAL(timeout()), memsTab, SLOT(processMemsFrame()));
+        (memsTab->laser_on) ? laser_pos_control.laser.on() : laser_pos_control.laser.off();
+        connect(tmrTimerEye,    SIGNAL(timeout()),  memsTab,        SLOT(processMemsFrame()));
     }
 }
 
