@@ -36,40 +36,36 @@ systemCameras::systemCameras()
     camState[0] = arducam_init_camera2(&arducamInstance[0], camInterface[0]);
     if(!camState[0]){
         arducam_set_resolution(arducamInstance[0], &camResolution[0][0], &camResolution[0][1]);
-        //arducam_software_auto_white_balance(arducamInstance[0],1);
-        //arducam_software_auto_exposure(arducamInstance[0],1);
+        #ifdef __unix__
         arducam_set_control(arducamInstance[0], V4L2_CID_EXPOSURE, 1000);
+        #endif
         camIdentifier[initializedCam] = 0;
         initializedCam++;
-        /*arducamBuffer = arducam_capture(arducamInstance[0], &fmt, 3000);
-        if (arducamBuffer != nullptr) {
+        arducamEyeBuffer = arducam_capture(arducamInstance[0], &fmt, 3000);
+        if (arducamEyeBuffer != nullptr) {
             std::cout << "Cam0 Initialized (EyeCam)" << std::endl;
             arducam_software_auto_white_balance(arducamInstance[0],1);
             arducam_software_auto_exposure(arducamInstance[0],1);
             camIdentifier[initializedCam] = 0;
             initializedCam++;
         }
-        arducam_release_buffer(arducamBuffer);*/
+        arducam_release_buffer(arducamEyeBuffer);
     }
-/*
+
     camState[1] = arducam_init_camera2(&arducamInstance[1], camInterface[1]);
     if(!camState[1]){
         arducam_set_resolution(arducamInstance[1], &camResolution[1][0], &camResolution[1][1]);
-        arducamBuffer = arducam_capture(arducamInstance[1], &fmt, 3000);
-        if (arducamBuffer != nullptr) {
+        arducamWorldBuffer = arducam_capture(arducamInstance[1], &fmt, 3000);
+        if (arducamWorldBuffer != nullptr) {
             std::cout << "Cam1 Initialized (WorldCam)" << std::endl;
             arducam_software_auto_white_balance(arducamInstance[1],1);
             arducam_software_auto_exposure(arducamInstance[1],1);
             camIdentifier[initializedCam] = 1;
             initializedCam++;
         }
-        arducam_release_buffer(arducamBuffer);
-    }*/
+        arducam_release_buffer(arducamWorldBuffer);
+    }
 #endif
-
-    /*int width;
-    int height;
-    int fps;*/
 
     if(initializedCam == 0){
         int firstCamFound = 0;
@@ -84,16 +80,7 @@ systemCameras::systemCameras()
             firstCamFound = 3;
         else
             camIdentifier[0] = 4;
-        //camEye.setResolution(camResolution[0][0], camResolution[0][1])
-        /*width = camEye.get(cv::CAP_PROP_FRAME_WIDTH);
-        height = camEye.get(cv::CAP_PROP_FRAME_HEIGHT);
-        fps = camEye.get(cv::CAP_PROP_FPS);
-        std::cout << width << " " << height << " " << fps << std::endl;
-        camEye.set(cv::CAP_PROP_FRAME_WIDTH, 0);
-        camEye.set(cv::CAP_PROP_FRAME_HEIGHT, 0);
-        width = camEye.get(cv::CAP_PROP_FRAME_WIDTH);
-        height = camEye.get(cv::CAP_PROP_FRAME_HEIGHT);
-        std::cout << width << " " << height << std::endl;*/
+
         camIdentifier[1] = 4;
         if( (camWorld.open(firstCamFound+1) && camWorld.grab()) ||
             (camWorld.open(firstCamFound+2) && camWorld.grab()) ||
@@ -109,16 +96,6 @@ systemCameras::systemCameras()
             camIdentifier[1] = 2;
         }
     }
-    //camWorld.setResolution(camResolution[1][0], camResolution[1][1])
-    /*width = camWorld.get(cv::CAP_PROP_FRAME_WIDTH);
-    height = camWorld.get(cv::CAP_PROP_FRAME_HEIGHT);
-    fps = camWorld.get(cv::CAP_PROP_FPS);
-    std::cout << width << " " << height << " " << fps << std::endl;
-    camWorld.set(cv::CAP_PROP_FRAME_WIDTH, 0);
-    camWorld.set(cv::CAP_PROP_FRAME_HEIGHT, 0);
-    width = camWorld.get(cv::CAP_PROP_FRAME_WIDTH);
-    height = camWorld.get(cv::CAP_PROP_FRAME_HEIGHT);
-    std::cout << width << " " << height << std::endl;*/
 }
 
 systemCameras::~systemCameras()
@@ -170,39 +147,42 @@ void setMIPISwitchesMode(int mode)
 
 cv::Mat systemCameras::readImgEye()
 {
+    auto start = std::chrono::system_clock::now();
     int width = camResolution[0][0];
     int height = camResolution[0][1];
 
     if(camIdentifier[0] == 0 || camIdentifier[0] == 1){
         #ifdef __arm__
-        arducamBuffer = arducam_capture((camIdentifier[0] == 0) ? arducamInstance[0] : arducamInstance[1], &fmt, 3000);
+        arducamEyeBuffer = arducam_capture((camIdentifier[0] == 0) ? arducamInstance[0] : arducamInstance[1], &fmt, 3000);
         width = VCOS_ALIGN_UP(width, 32);
         height = VCOS_ALIGN_UP(height, 16);
-        eyeImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data).clone();
-        cv::cvtColor(&eyeImg, &eyeImg, cv::COLOR_YUV2BGR_I420);
-        arducam_release_buffer(arducamBuffer);
+        eyeImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamEyeBuffer->data).clone();
+        arducam_release_buffer(arducamEyeBuffer);
+        cv::cvtColor(eyeImg, eyeImg, cv::COLOR_YUV2BGR_I420);
         #endif
     }
     else if(camIdentifier[0] == 2)
         camEye.read(eyeImg);
 
+    eyeSensorLatency = std::chrono::duration<double> ((std::chrono::system_clock::now() - start)*1000);
     return eyeImg;
 }
 
 cv::Mat systemCameras::readImgWorld()
 {
+    auto start = std::chrono::system_clock::now();
+
     int width = camResolution[1][0];
     int height = camResolution[1][1];
 
     if(camIdentifier[1] == 1){
         #ifdef __arm__
-        arducamBuffer = arducam_capture(arducamInstance[1], &fmt, 3000);
+        arducamWorldBuffer = arducam_capture(arducamInstance[1], &fmt, 3000);
         width = VCOS_ALIGN_UP(width, 32);
         height = VCOS_ALIGN_UP(height, 16);
-        worldImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamBuffer->data).clone();
-        cv::cvtColor(&worldImg, &worldImg, cv::COLOR_YUV2BGR_I420);
-        arducam_release_buffer(arducamBuffer);
-        return &processedImgEye2;
+        worldImg = cv::Mat(cv::Size(width, (int) (height * 1.5)), CV_8UC1, arducamWorldBuffer->data).clone();
+        arducam_release_buffer(arducamWorldBuffer);
+        cv::cvtColor(worldImg, worldImg, cv::COLOR_YUV2BGR_I420);
         #endif
     }
     else if(camIdentifier[1] == 2)
@@ -210,6 +190,7 @@ cv::Mat systemCameras::readImgWorld()
     else if(camIdentifier[1] == 3)
         camWorld.read(worldImg);
 
+        worldSensorLatency = std::chrono::duration<double> ((std::chrono::system_clock::now() - start)*1000);
     return worldImg;
 }
 

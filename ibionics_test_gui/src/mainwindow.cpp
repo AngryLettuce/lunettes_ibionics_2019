@@ -6,6 +6,8 @@ int stopSig = 0;
 int frameBuffer = 50;
 std::vector<cv::Mat> frameBufferCam0 = *new std::vector<cv::Mat>[frameBuffer*640*480];
 std::vector<cv::Mat> frameBufferCam1 = *new std::vector<cv::Mat>[frameBuffer*640*480];
+std::chrono::duration<double> eyeCamLatency;
+std::chrono::duration<double> worldCamLatency;
 systemCameras cameras;
 
 void grabCam0Frame(void){
@@ -21,6 +23,7 @@ void grabCam0Frame(void){
             else
                 frameBufferCam0.clear();
         }
+        eyeCamLatency = cameras.eyeSensorLatency;
     }
 }
 
@@ -37,6 +40,7 @@ void grabCam1Frame(void){
             else
                 frameBufferCam1.clear();
         }
+        worldCamLatency = cameras.worldSensorLatency;
     }
 }
 

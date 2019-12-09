@@ -67,7 +67,6 @@ SOURCES     +=  main.cpp \
                 $${BASE_FOLDER}/src/utils/houghCircle.cpp \
                 $${BASE_FOLDER}/src/utils/medialabel.cpp \
                 $${BASE_FOLDER}/src/utils/testvideo.cpp \
-		$${BASE_FOLDER}/src/utils/saturate.cpp \
                 $${BASE_FOLDER}/src/utils/traitementWorld.cpp \
                 $${BASE_FOLDER}/src/peripherals/systemCameras.cpp \
                 $${MEMS_LASER_FOLDER}/src/modules/button.cpp \
@@ -99,7 +98,6 @@ HEADERS     +=  $${BASE_FOLDER}/includes/mainwindow.h \
                 $${BASE_FOLDER}/includes/utils/medialabel.h \
                 $${BASE_FOLDER}/includes/utils/modes.h \
                 $${BASE_FOLDER}/includes/utils/testvideo.h \
-		$${BASE_FOLDER}/includes/utils/saturate.h \
                 $${BASE_FOLDER}/includes/utils/traitementWorld.h \
                 $${BASE_FOLDER}/includes/peripherals/systemCameras.h \            
                 $${BASE_FOLDER}/includes/modules/*.h \

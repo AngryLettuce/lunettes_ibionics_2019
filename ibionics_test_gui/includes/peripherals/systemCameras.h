@@ -11,6 +11,10 @@
 #include <queue>
 #include "mainwindow.h"
 
+#ifdef __unix__
+#include "linux/v4l2-controls.h"
+#endif
+
 #define VCOS_ALIGN_DOWN(p,n) (((ptrdiff_t)(p)) & ~((n)-1))
 #define VCOS_ALIGN_UP(p,n) VCOS_ALIGN_DOWN((ptrdiff_t)(p)+(n)-1,(n))
 
@@ -29,9 +33,6 @@ public:
     cv::Mat readImgEye();
     cv::Mat readImgWorld();
 
-    //std::vector<cv::Mat> frameBufferCam0;
-    //std::vector<cv::Mat> frameBufferCam1;
-
     int camIdentifier[2] = {0, 0};
     cv::VideoCapture camEye;
     cv::VideoCapture camWorld;
@@ -47,7 +48,12 @@ public:
 
     //MainWindow* mainWindowPtr = nullptr;
 
-    BUFFER *arducamBuffer = nullptr;
+    BUFFER *arducamEyeBuffer;
+    BUFFER *arducamWorldBuffer;
+
+    std::chrono::duration<double> eyeSensorLatency;
+    std::chrono::duration<double> worldSensorLatency;
+
 
     IMAGE_FORMAT fmt = {IMAGE_ENCODING_I420, 100};
 

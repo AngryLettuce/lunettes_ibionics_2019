@@ -80,8 +80,6 @@ void applyHoughMethod(cv::Mat *imageReturned,int &posX,int &posY)
         posY = -1;
     }
     else {
-        //std::cout << circles[0] << std::endl;
-        //std::cout << circles[1] << std::endl;
         Point center(cvRound(circles[0][0]), cvRound(circles[0][1]));
         posX = center.x;
         posY = center.y;

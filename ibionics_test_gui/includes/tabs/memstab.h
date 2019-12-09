@@ -9,7 +9,6 @@
 #include <opencv2/core.hpp>
 #include "medialabel.h"
 #include "mainwindow.h"
-#include "saturate.h"
 
 class MainWindow; //foward declaration to avoid circular dependencies with mainwindow.h
 //class Laser_pos_control; //foward declaration to avoid circular dependencies with eyeWorldtab.h

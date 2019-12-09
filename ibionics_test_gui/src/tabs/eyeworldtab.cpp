@@ -8,11 +8,13 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     imgLblWorld = new QLabel("WORLD",this);
     eyeFpsLabel = new QLabel("FPS (Eye) :",this);
     worldFpsLabel = new QLabel("FPS (World) :",this);
+    eyeLatencyLabel = new QLabel("Eye Latency : ", this);
+    worldLatencyLabel = new QLabel("World Latency : ", this);
     button_method = new QPushButton("using Ellipse, click to switch to hough circle", this);
     button_interpol = new QPushButton("PPV => Bilinéaire", this);
+
     QSpacerItem *lastColSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
     QSpacerItem *lastRowSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Expanding);
-
 
     stepsCombo.addItem("Original");
     stepsCombo.addItem("Threshold");
@@ -32,6 +34,8 @@ EyeWorldTab::EyeWorldTab(QWidget *parent, MainWindow* mW) : QWidget(parent)
     //Placement in Layout
     layout->addWidget(eyeFpsLabel       ,FPS_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
     layout->addWidget(worldFpsLabel     ,FPS_ROW, IMAGE_WORLD_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addWidget(eyeLatencyLabel   ,LATENCY_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
+    layout->addWidget(worldLatencyLabel ,LATENCY_ROW, IMAGE_WORLD_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
     layout->addWidget(imgLblEye         ,IMAGES_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
     layout->addWidget(imgLblWorld       ,IMAGES_ROW, IMAGE_WORLD_COLUMN, NORMAL_ROW_SPAN, NORMAL_COLUMN_SPAN);
     layout->addWidget(button_method     ,BUTTON_METHOD_ROW, IMAGE_EYE_COLUMN, NORMAL_ROW_SPAN, BUTTON_COLUMN_SPAN);
@@ -83,8 +87,12 @@ void EyeWorldTab::processFrameEye()
     imgLblEye->setPixmap(QPixmap::fromImage(qimgEye));
     endProcessEye = std::chrono::system_clock::now();
     double msTimeEye = std::chrono::duration<double> ((endProcessEye - startProcessEye)*1000).count();
-    if (msTimeEye != 0)
-        eyeFpsLabel->setText(QString("FPS (Eye) : %1").arg(round((1/msTimeEye)*1000)));
+
+    //std::cout<< eyeCamLatency.count() <<std::endl;
+    if (msTimeEye != 0){
+        eyeFpsLabel->setText(QString("FPS (Eye) : %2").arg(round((1/msTimeEye)*1000)));
+        eyeLatencyLabel->setText(QString("Latency :%1").arg(round(eyeCamLatency.count())));
+    }
 }
 
 void EyeWorldTab::processFrameWorld()
@@ -141,9 +149,10 @@ void EyeWorldTab::processFrameWorld()
 
     endProcessWorld = std::chrono::system_clock::now();
     double msTimeWorld = std::chrono::duration<double> ((endProcessWorld - startProcessWorld) * 1000 ).count();
-    if (msTimeWorld != 0)
+    if (msTimeWorld != 0){
         worldFpsLabel->setText(QString("FPS (World) : %1").arg(round((1/msTimeWorld)*1000)));
-
+        worldLatencyLabel->setText(QString("Latency :%1").arg(round(worldCamLatency.count())));
+    }
 }
 
 
@@ -169,7 +178,11 @@ void EyeWorldTab::switchPupilMethodButton()
 }
 
 void EyeWorldTab::switchInterpolMethodButton(){
-    interpolMethod = (interpolMethod <= 2) ? 0 : interpolMethod + 1;
+    std::cout << "yo yo yo"<<std::endl;
+    interpolMethod++;
+    if(interpolMethod > 2)
+        interpolMethod = 0;
+    //interpolMethod = (interpolMethod <= 2) ? 0 : interpolMethod + 1;
     if (interpolMethod == 0)
         button_interpol->setText("PPV => Bilinéaire");
     else if (interpolMethod == 1)

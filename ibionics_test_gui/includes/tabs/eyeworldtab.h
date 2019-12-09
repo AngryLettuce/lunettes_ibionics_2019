@@ -18,11 +18,13 @@
 #include "ctime"
 
 #define BUTTON_METHOD_ROW 0
-#define FPS_ROW 1
-#define SLIDER_PARAM_ROW 2
-#define IMAGES_ROW 3
-#define COMBOBOX_INTERMEDIATE_ROW 4
-#define SPACER_ROW 5
+
+#define SLIDER_PARAM_ROW 1
+#define IMAGES_ROW 2
+#define COMBOBOX_INTERMEDIATE_ROW 3
+#define SPACER_ROW 4
+#define FPS_ROW 5
+#define LATENCY_ROW 6
 
 
 #define IMAGE_EYE_COLUMN 0
@@ -34,7 +36,7 @@
 
 #define BUTTON_COLUMN_SPAN 2
 #define SLIDER_COLUMN_SPAN 1
-#define SPACER_ROW_SPAN 6
+#define SPACER_ROW_SPAN 7
 #define SPACER_COLUMN_SPAN 3
 
 #define ROI_LINES 160
@@ -47,6 +49,8 @@ class Laser_pos_control; //foward declaration to avoid circular dependencies wit
 
 extern std::vector<cv::Mat> frameBufferCam0 ;
 extern std::vector<cv::Mat> frameBufferCam1 ;
+extern std::chrono::duration<double> eyeCamLatency;
+extern std::chrono::duration<double> worldCamLatency;
 
 class EyeWorldTab : public QWidget
 {
@@ -69,6 +73,8 @@ public:
 
     QLabel *eyeFpsLabel;
     QLabel *worldFpsLabel;
+    QLabel *eyeLatencyLabel;
+    QLabel *worldLatencyLabel;
 
     QPushButton *button_interpol;
     

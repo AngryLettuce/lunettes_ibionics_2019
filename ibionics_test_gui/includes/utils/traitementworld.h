@@ -16,17 +16,10 @@
 #include "grayLevelsTable.h"
 #include "crop.h"
 
-//TO DO
-//prendre imgZoom
-//edge detection--optional
-//8 lv gray
-//down scale to 16x18
-//upscale to 160*180
-
-//take imgZoom apply sequence
 void traitementWorld(cv::Mat *imgZoom,cv::Mat gray_LUT);
 
-//put img zoom into imgOr
 void drawWorl2img(cv::Mat *imgOr,cv::Mat *imgZoom,int x,int y, int roi_height, int roi_width, int interpolMethod);
+
+void saturateValue(int &value, int min, int max);
 
 #endif // TRAITEMENTWORLD_H
