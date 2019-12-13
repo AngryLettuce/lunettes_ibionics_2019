@@ -178,7 +178,7 @@ void EyeWorldTab::switchPupilMethodButton()
 }
 
 void EyeWorldTab::switchInterpolMethodButton(){
-    std::cout << "yo yo yo"<<std::endl;
+    //std::cout << "yo yo yo"<<std::endl;
     interpolMethod++;
     if(interpolMethod > 2)
         interpolMethod = 0;
